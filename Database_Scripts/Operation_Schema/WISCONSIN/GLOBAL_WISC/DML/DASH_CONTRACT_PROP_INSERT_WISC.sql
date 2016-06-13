@@ -19,7 +19,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'sso.redirect.logout',
-     'https://mo.drcedirect.com/',
+     'https://wi.drcedirect.com/',
      'DRC|wisc',
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
@@ -31,7 +31,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'sso.redirect.loginfail',
-     'https://mo.drcedirect.com/PublicContent/Errors/ErrorPage.aspx',
+     'https://wi.drcedirect.com/PublicContent/Errors/ErrorPage.aspx',
      'DRC|wisc',
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
@@ -43,7 +43,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'email.sender',
-     'maphelpdesk@ctb.com',
+     'wihelpdesk@datarecognitioncorp.com',
      NULL,
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
@@ -107,7 +107,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'title.tab.home.application',
-     'DRC Online Reporting System',
+     'WI Forward Reports',
      NULL,
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
@@ -119,7 +119,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'title.tab.application',
-     'DRC Online Reporting System',
+     'WI Forward Reports',
      NULL,
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
@@ -155,7 +155,7 @@ BEGIN
   VALUES
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'static.pdf.location',
-     'DRCREPORTS',
+     'WIREPORTS',
      NULL,
      V_PROJECTID);
 

@@ -90,10 +90,10 @@ BEGIN
      PROJECTID)
   VALUES
     (DB_REPORT_ID_SEQ.NEXTVAL,
-     'User''s Guide to Interpreting Reports',
+     'User&#39;s Guide to Interpreting Reports',
      'User Guide for WISC',
      'API_NFCUSTOM',
-     'resourcepdf|resourcepdf.do?pdfFileName=/Static_PDF/Users_Guide_to_Interpreting_Reports.pdf',
+     'resourcepdf|resourcepdf.do?pdfFileName=/Static_PDF/Users_Guide.pdf',
      'AC',
      SYSDATE,
      V_PROJECTID);   

@@ -53,7 +53,7 @@ BEGIN
         AND PROJECTID = V_PROJECTID),
      1089,
      q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
-<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: WIHelpdesk@datarecognitioncorp.com</p>]',
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpdesk@datarecognitioncorp.com">WIHelpdesk@datarecognitioncorp.com</a></u></p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
@@ -85,9 +85,9 @@ BEGIN
 <div class="h1style" style="margin-left: 0px;">&nbsp;</div>
 
 <div class="loginMsg">
-<p>Please note: Direct login to this site is not allowed. Only authorized DRC System Administrators can access through this link. Please login through <u><a href="https://mo.drcedirect.com/"><span style="color:#0000CD;">eDIRECT</span></a></u>&nbsp;via SSO.&nbsp;</p>
+<p>Please note: Direct login to this site is not allowed. Only authorized DRC System Administrators can access through this link. Please login through <u><a href="https://wi.drcedirect.com/"><span style="color:#0000CD;">eDIRECT</span></a></u>&nbsp;via SSO.&nbsp;</p>
 
-<p>If you do not have eDirect login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
+<p>If you do not have eDIRECT login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
 </div>
 
 <div class="boxshade" style="margin-top: 10px;">
@@ -98,7 +98,7 @@ BEGIN
 <div class="relative" style="height: auto; text-align: justify;">
 <p><b>Test Data Availability</b></p>
 
-<p><span style="font-size: 13px;">The Spring 2016 Wisconsin Forward Exam student results, for the Science content area, will be available 10 business days from your district&rsquo;s testing completion date. English Language Arts and Mathematics reports will be available September 01, 2016.</span></p>
+<p><span style="font-size: 13px;">The Spring 2016 student results will be available in July 2016.</span></p>
 
 <p><b>About Your Privacy</b></p>
 
@@ -150,19 +150,43 @@ BEGIN
       WHERE UPPER(REPORT_NAME) = 'GENERIC SYSTEM CONFIGURATION'
         AND PROJECTID = V_PROJECTID),
      1097,
-     '<h2>Welcome to the Wisconsin Forward Exam Reporting System</h2>
-<p><span style="font-size:16px;">The Online reports available on this site can be used to analyze curriculm strengts and needs in your district or school.</span></p>
+     q'[<h2>Welcome to the Wisconsin Forward Exam Reporting System</h2>
+
+<p><span style="font-size:16px;">The Online reports available on this site can be used to analyze curriculum strengths and needs in your district or school.</span></p>
+
 <p>&nbsp;</p>
-<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;">
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<div>
 <p style="font-size: 13px; "><span style="font-size:18px;"><u><b>Test Data Availability</b></u></span></p>
+
 <p style="font-size: 13px; "><span style="font-size:16px;">The Spring 2016 student results will be available in July 2016.</span></p>
 </div>
+
 <div>
 <p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
+<p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
+
 <p style="font-size: 13px; background-color: rgb(255, 255, 255);">&nbsp;</p>
 </div>
-<p><b>Privacy Notice:</b></p>
-<p><span style="font-size: 12px;">Student information is protected by the Family Education Rights and Privacy Act, the individuals with Disabilities Education Act, and other federal and state laws.</span></p>',
+
+<p><span style="font-size:16px;"><b>Privacy Notice:</b></span></p>
+
+<p><span style="font-size:16px;">Student information is protected by the Family Education Rights and Privacy Act, the individuals with Disabilities Education Act, and other federal and state laws.</span></p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
@@ -184,7 +208,7 @@ BEGIN
         AND PROJECTID = V_PROJECTID),
      1099,
      q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
-<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: WIHelpdesk@datarecognitioncorp.com</p>]',
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpdesk@datarecognitioncorp.com">WIHelpdesk@datarecognitioncorp.com</a></u></p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
