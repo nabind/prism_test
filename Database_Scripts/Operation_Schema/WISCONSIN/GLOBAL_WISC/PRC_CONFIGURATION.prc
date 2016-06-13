@@ -329,15 +329,15 @@ BEGIN
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
            WHERE REPORT_NAME = 'User&#39;s Guide to Interpreting Reports'
-                 AND PROJECTID = V_PROJECTID),
+             AND PROJECTID = V_PROJECTID),
          V_ROLEID_USER,
          REC_ORG_LEVEL.ORG_LEVEL,
          V_DEFAULT_CUST_PROD_ID,
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
            WHERE REPORT_NAME = 'User&#39;s Guide to Interpreting Reports'
-                 AND PROJECTID = V_PROJECTID),
-                  V_PROJECTID,
+             AND PROJECTID = V_PROJECTID),
+         V_PROJECTID,
          V_DMRA_ACTIVATION_STATUS,
          SYSDATE);
     
@@ -347,8 +347,9 @@ BEGIN
     SELECT ACTIVATION_STATUS
       INTO V_DMRA_ACTIVATION_STATUS
       FROM DASH_REPORTS
-     WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
-     AND PROJECTID = V_PROJECTID;
+     WHERE UPPER(REPORT_NAME) =
+           UPPER('http://dpi.wi.gov/assessment/forward')
+       AND PROJECTID = V_PROJECTID;
   
     FOR REC_ORG_LEVEL IN (SELECT DISTINCT ORG_LEVEL FROM ORG_TP_STRUCTURE) LOOP
     
@@ -366,16 +367,18 @@ BEGIN
         (V_DB_UL_MENUID,
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
-           WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
-           AND PROJECTID = V_PROJECTID),
+           WHERE UPPER(REPORT_NAME) =
+                 UPPER('http://dpi.wi.gov/assessment/forward')
+             AND PROJECTID = V_PROJECTID),
          V_ROLEID_USER,
          REC_ORG_LEVEL.ORG_LEVEL,
          V_DEFAULT_CUST_PROD_ID,
          (SELECT DB_REPORTID
             FROM DASH_REPORTS
-           WHERE UPPER(REPORT_NAME) = UPPER('http://dpi.wi.gov/assessment/forward')
-           AND PROJECTID = V_PROJECTID),
-           V_PROJECTID,
+           WHERE UPPER(REPORT_NAME) =
+                 UPPER('http://dpi.wi.gov/assessment/forward')
+             AND PROJECTID = V_PROJECTID),
+         V_PROJECTID,
          V_DMRA_ACTIVATION_STATUS,
          SYSDATE);
     
@@ -389,7 +392,9 @@ BEGIN
                                FROM DASH_REPORTS
                               WHERE ACTIVATION_STATUS = 'AC'
                                 AND (REPORT_TYPE = 'API_LINK' OR
-                                    REPORT_TYPE = 'API_CUSTOM')
+                                    REPORT_TYPE = 'API_CUSTOM' OR
+                                    REPORT_TYPE = 'API_TABLE' OR
+                                    REPORT_TYPE = 'API')
                                 AND PROJECTID = V_PROJECTID) LOOP
     
       IF UPPER(REC_DASH_REPORTS.REPORT_NAME) = 'MANAGE USERS' THEN
@@ -417,6 +422,9 @@ BEGIN
         V_ACTION_TYPE := 'GRTIC';
       ELSIF UPPER(REC_DASH_REPORTS.REPORT_NAME) = 'STUDENT DATA FILE' THEN
         V_ACTION_TYPE := 'SDF';
+      ELSIF REC_DASH_REPORTS.REPORT_NAME = 'Student Roster' OR
+            REC_DASH_REPORTS.REPORT_NAME = 'Summary Dashboard' THEN
+        V_ACTION_TYPE := 'DRPT';
       END IF;
     
       FOR REC_DASH_RPT_ACTION IN (SELECT *
