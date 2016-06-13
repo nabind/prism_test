@@ -81,6 +81,21 @@ BEGIN
      'Edit Actions',
      V_PROJECTID,
      SYSDATE);
+	 
+  INSERT INTO DASH_RPT_ACTION
+    (DB_ACTIONID,
+     ACTION_NAME,
+     ACTION_TYPE,
+     DESCRIPTION,
+     PROJECTID,
+     CREATED_DATE_TIME)
+  VALUES
+    (SEQ_DASH_RPT_ACTION.NEXTVAL,
+     'Excel',
+     'DRPT',
+     'Excel',
+     V_PROJECTID,
+     SYSDATE);
 
   COMMIT;
 
