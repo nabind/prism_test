@@ -15,6 +15,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -45,6 +47,9 @@ import com.ctb.prism.report.transferobject.ReportMessageTO;
 import com.ctb.prism.report.transferobject.ReportParameterTO;
 import com.ctb.prism.report.transferobject.ReportTO;
 import com.ctb.prism.webservice.transferobject.ReportActionTO;
+
+
+
 import com.ctb.prism.core.Service.ISimpleDBService;
 
 import java.beans.Introspector;
@@ -338,12 +343,12 @@ public class ReportBusinessImpl implements IReportBusiness {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) pairs.getValue()),','), "'"));
 									} else {
-										if(((Object[]) pairs.getValue())[0] instanceof String ) {
-											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-													CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));											
-										} else {
-											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
-										}										
+									  if(!StringUtils.isNumeric(((String[]) pairs.getValue())[0])) {
+					                	  query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+													CustomStringUtil.appendString("'",((String[]) pairs.getValue())[0], "'"));
+					                  } else {
+					                	  query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), ((String[]) pairs.getValue())[0]);
+					                  }
 									}
 								} else {
 									if("p_generate_file".equals((String) pairs.getKey())){
@@ -353,12 +358,15 @@ public class ReportBusinessImpl implements IReportBusiness {
 										query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
 												CustomStringUtil.appendString("'",Utils.arrayToSeparatedString(((String[]) tempObj.toArray()),','), "'"));
 									} else {
-										if(tempObj.get(0).getValue() instanceof String ) {
+										if(!StringUtils.isNumeric(tempObj.get(0).getValue())) {
 											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
-													CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));									
+													CustomStringUtil.appendString("'",tempObj.get(0).getValue(), "'"));		
 										} else {
-											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), tempObj.get(0).getValue());
-										}										
+											query = query.replaceAll(CustomStringUtil.getJasperParameterStringRegx((String) pairs.getKey()), 
+													tempObj.get(0).getValue());
+										}
+										
+										
 									}
 								}
 								/*if (matched) {
