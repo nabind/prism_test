@@ -319,6 +319,8 @@ public class LoginController {
 		String orgLvl = null;
 		Map<String,Object> paramMap = new HashMap<String, Object>();
 		StringBuilder roles =new StringBuilder();
+		/*This count will be used for counting home visit for display notification after login*/
+		int count = 0;
 		try {
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (!(auth instanceof AnonymousAuthenticationToken)) {
@@ -417,6 +419,14 @@ public class LoginController {
 				req.getSession().setAttribute(IApplicationConstants.CUSTOMER, user.getCustomerId());
 				req.getSession().setAttribute(IApplicationConstants.EMAIL, user.getUserEmail());
 				req.getSession().setAttribute(IApplicationConstants.PRODUCT_NAME, user.getProduct());
+				
+				
+				if(req.getSession().getAttribute(IApplicationConstants.HOME_VISIT_COUNT) != null) {
+					count= (Integer) req.getSession().getAttribute(IApplicationConstants.HOME_VISIT_COUNT);
+				}
+				
+				count = count+1;				
+				req.getSession().setAttribute(IApplicationConstants.HOME_VISIT_COUNT,count);
 				
 				String switchUser = (String) req.getSession().getAttribute(IApplicationConstants.PREV_ADMIN);
 				
@@ -573,7 +583,7 @@ public class LoginController {
 						homeReport.setProductName("TerraNova 3 : ");
 						modelAndView = new ModelAndView("user/welcome");
 						modelAndView.addObject("homeReport", homeReport);
-						if(!isSwitchUser) {
+						if(!isSwitchUser && (Integer)(req.getSession().getAttribute(IApplicationConstants.HOME_VISIT_COUNT)) == 1) {
 							StringBuffer notificationMsg = new StringBuffer();							
 							notificationMsg.append("Last Login :: ").append(user.getLastLoginTime())
 								.append(" <p> Password Changed Since :: ").append(user.getPwdChangedSince());							
@@ -590,7 +600,7 @@ public class LoginController {
 					homeReport.setReportApiUrl(homeReport.getOtherUrl());
 					homeReport.setReportName("Home");
 					modelAndView.addObject("homeReport", homeReport);
-					if(!isSwitchUser) {
+					if(!isSwitchUser && (Integer)(req.getSession().getAttribute(IApplicationConstants.HOME_VISIT_COUNT)) == 1) {
 						StringBuffer notificationMsg = new StringBuffer();							
 						notificationMsg.append("Last Login :: ").append(user.getLastLoginTime())
 							.append(" <p> Password Changed Since :: ").append(user.getPwdChangedSince());							

@@ -19,11 +19,13 @@
 		<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>		
 		<script>
 		var lastLogin = $("#lastLogin").val();
-		
-		 $("#notification").fadeIn("slow").append(lastLogin);
-		 $(".dismiss").click(function(){
-				 $("#notification").delay(1000).fadeOut('slow');
-		 });
+		if(lastLogin.length > 0) {
+			$("#notification").fadeIn("slow").append(lastLogin);
+			 $(".dismiss").click(function(){
+					 $("#notification").delay(1000).fadeOut('slow');
+			 });
+		}
+		 
 		
 		 /*$(function () {
 			  $('#notification').fadeIn('slow', function () {
