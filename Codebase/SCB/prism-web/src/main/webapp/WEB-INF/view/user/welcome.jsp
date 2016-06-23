@@ -12,9 +12,10 @@
 					</div>
 				</div>
 		</div>
-		<div class="notification" id="notification" style="display: none;">
+		<!-- Blocked for the time being, until customer approval -->
+		<!-- <div class="notification" id="notification" style="display: none;">
 					<span class="dismiss"><a title="dismiss this notification">x</a></span>
-		</div>	
+		</div>	 -->
 		<input type="hidden" value="${lastLogin}" id="lastLogin"/>
 		<script src="scripts/js/libs/jquery-1.7.2.min.js"></script>		
 		<script>

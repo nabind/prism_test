@@ -299,4 +299,6 @@ public interface IApplicationConstants {
 	
 	public static final String OFFSET_DAYS="1";
 	
+	public static final String HOME_VISIT_COUNT = "homeVisitCount";
+	
 }
