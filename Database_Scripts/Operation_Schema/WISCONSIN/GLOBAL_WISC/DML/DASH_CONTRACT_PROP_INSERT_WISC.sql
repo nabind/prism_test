@@ -84,7 +84,7 @@ BEGIN
     ((SELECT MAX(DB_PROPERTYID) + 1 FROM DASH_CONTRACT_PROP),
      'hmac.secret.key',
      'WBIgdSF66cYsZoNfe5S82IrsN9P',
-     NULL,
+     'DRC|wisc',
      V_PROJECTID);
   INSERT INTO DASH_CONTRACT_PROP
     (DB_PROPERTYID,
