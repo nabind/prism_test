@@ -262,6 +262,9 @@
   										<c:when test="${fn:contains(themeName, 'usmo')}" >
 											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /> <span class="red">(For DRC System Administrators Only)</span></button>
 										</c:when>
+										<c:when test="${fn:contains(themeName, 'wisc')}" >
+											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /> <span class="red">(For DRC System Administrators Only)</span></button>
+										</c:when>
 										<c:otherwise>
 											<button type="submit" class="button big glossy" id="login"><spring:message code="login.from.head" /></button>
 										</c:otherwise>
