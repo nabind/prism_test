@@ -233,7 +233,9 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 									paramMap.put("userRoles", new String[]{"ROLE_USER","ROLE_INT"});
 								} else if(SSO_USER_TYPE.User.toString().equalsIgnoreCase(role)) {
 									paramMap.put("userRoles", new String[]{"ROLE_USER","ROLE_SUM", "ROLE_INT"});
-								}
+								} else if(SSO_USER_TYPE.Regular.toString().equalsIgnoreCase(role)) {
+									paramMap.put("userRoles", new String[]{"ROLE_USER"});
+								} 
 								/** End: special handling for MO/DRC **/
 							} else {
 								if(SSO_USER_TYPE.Admin.toString().equalsIgnoreCase(role)){
