@@ -17,6 +17,9 @@ increment by 1
 cache 20;
 
 alter table ORG_NODE_DIM
+  drop constraint CHK_ORG_MODE;
+
+alter table ORG_NODE_DIM
   add constraint CHK_ORG_MODE
   check (ORG_MODE IN ('PUBLIC','PRIVATE','CHOICE','-99'));
 
