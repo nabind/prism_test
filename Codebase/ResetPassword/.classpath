@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/spring-security-core-3.1.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="C:/Users/233208.INDIA/.m2/repository/xerces/xercesImpl/2.9.1/xercesImpl-2.9.1.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/avalon-framework-4.1.5.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/org-apache-batik.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/core-renderer-R8pre2.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/fop-1.1.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/itext-2.1.7.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/itextpdf-5.5.4.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/w3c.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/xmlgraphics-commons-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/xmlworker-5.4.1.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/netbeans/modules/ext/batik-svggen-1.7.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/netbeans/modules/ext/batik-transcoder-1.7.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/commons-codec-1.9.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_21"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.7.0_21/jre/lib/rt.jar"/>
+	<classpathentry kind="lib" path="D:/Software/Jar/jsr105-api-1.0.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
