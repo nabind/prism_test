@@ -17,7 +17,8 @@ SELECT  (SELECT MAX(CUSTOMERID) FROM CUSTOMER_INFO)+ROWNUM AS CUSTOMERID,
        'WI' AS CUSTOMER_CODE,
        (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME='Wisconsin Forward Exam') AS PROJECTID,
        SYSDATE AS DATETIMESTAMP
-FROM DUAL;      
+FROM DUAL; 
+COMMIT;     
 --SELECT * FROM CUSTOMER_INFO;
 
 --ADMIN_DIM;
@@ -190,9 +191,9 @@ FROM(SELECT CONT.CONTENT_NAME AS SUBTEST_NAME,
 
 
 --OBJECTIVE_DIM
---SELECT * FROM OBJECTIVE_DIM WHERE PROJECTID = 5 AND OBJECTIVE_NAME='Political Science and Citizenship'
+--SELECT * FROM OBJECTIVE_DIM WHERE PROJECTID = 4 AND OBJECTIVE_NAME='Political Science and Citizenship'
 --UPDATE OBJECTIVE_DIM SET OBJECTIVE_CODE = 3 WHERE PROJECTID = 5 AND OBJECTIVE_NAME='Political Science and Citizenship'
---DELETE FROM OBJECTIVE_DIM WHERE PROJECTID = 5
+--DELETE FROM OBJECTIVE_DIM WHERE PROJECTID = 4
 ALTER TABLE OBJECTIVE_DIM MODIFY OBJECTIVE_NAME VARCHAR2(65);
 ALTER TABLE OBJECTIVE_DIM MODIFY OBJECTIVE_DESC VARCHAR2(300);
 INSERT INTO OBJECTIVE_DIM
@@ -206,9 +207,9 @@ SELECT (SELECT MAX(OBJECTIVEID) FROM OBJECTIVE_DIM)+ROWNUM AS OBJECTIVEID,
        SYSDATE AS DATETIMESTAMP
 FROM (select 'Reading Key Ideas and Details' AS NME,          '01' AS CODE,  '01' AS TYP,     '01' AS SUBTEST_CODE,  'A' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Reading  Craft & Structure/Integration of Knowledge & Ideas' AS NME,          '02' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'B' AS DESCRIPTION FROM DUAL
+      select 'Reading Craft & Structure/Integration of Knowledge & Ideas' AS NME,          '02' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'B' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Reading  Vocabulary Use' AS NME,          '03' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'C' AS DESCRIPTION FROM DUAL
+      select 'Reading Vocabulary Use' AS NME,          '03' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'C' AS DESCRIPTION FROM DUAL
       UNION ALL
       select 'Writing/Language Text Types and Purposes' AS NME,          '04' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
@@ -227,17 +228,17 @@ FROM (select 'Reading Key Ideas and Details' AS NME,          '01' AS CODE,  '01
       UNION ALL
       select 'Measurement and Data' AS NME,          '04' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Geometry' AS NME,        '05' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
+      select 'Ratios and Proportional Relationships' AS NME,          '05' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Ratios and Proportional Relationships' AS NME,          '06' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
+      select 'The Number System' AS NME,        '06' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'The Number System' AS NME,        '07' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
+      select 'Expressions and Equations' AS NME,  '07' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'H' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Expressions and Equations' AS NME,  '08' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'H' AS DESCRIPTION FROM DUAL
+      select 'Functions' AS NME,          '08' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'J' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Statistics and Probability' AS NME,        '09' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'I' AS DESCRIPTION FROM DUAL
+      select 'Geometry' AS NME,        '09' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Functions' AS NME,          '10' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'J' AS DESCRIPTION FROM DUAL
+      select 'Statistics and Probability' AS NME,        '10' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'I' AS DESCRIPTION FROM DUAL
       UNION ALL
       ---
 	  select 'Science Connections & Nature of Science' AS NME,          '01' AS CODE,  '03' AS TYP,  '03' AS SUBTEST_CODE,  'A/B' AS DESCRIPTION FROM DUAL
@@ -262,8 +263,16 @@ FROM (select 'Reading Key Ideas and Details' AS NME,          '01' AS CODE,  '01
       select 'Economics' AS NME,          '04' AS CODE,  '04' AS TYP,  '04' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
       select 'The Behavioral Sciences' AS NME,        '05' AS CODE,  '04' AS TYP,  '04' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
-      )META_OBJ;
+      ORDER BY SUBTEST_CODE,CODE)META_OBJ;
 
+COMMIT;
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Reading - Key Ideas and Details' WHERE OBJECTIVE_NAME = 'Reading Key Ideas and Details' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Reading - Craft & Structure/Integration of Knowledge & Ideas' WHERE OBJECTIVE_NAME = 'Reading Craft & Structure/Integration of Knowledge & Ideas' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Reading - Vocabulary Use' WHERE OBJECTIVE_NAME = 'Reading Vocabulary Use' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Writing/Language - Text Types and Purposes' WHERE OBJECTIVE_NAME = 'Writing/Language Text Types and Purposes' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Writing/Language - Research' WHERE OBJECTIVE_NAME = 'Writing/Language Research' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Writing/Language - Language Conventions' WHERE OBJECTIVE_NAME = 'Writing/Language Language Conventions' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
+UPDATE OBJECTIVE_DIM SET OBJECTIVE_NAME = 'Listening' WHERE OBJECTIVE_NAME = 'Writing/Language Listening' AND PROJECTID = (SELECT PROJECTID FROM PROJECT_DIM WHERE PROJECT_NAME = 'Wisconsin Forward Exam');
 COMMIT;
 
 /*UPDATE OBJECTIVE_DIM SET OBJECTIVE_DESC = q'[Students can read closely and analytically to comprehend a range of increasingly complex literary and informational texts.]'
@@ -440,19 +449,19 @@ COMMIT;
 --DROP TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
 CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
  AS 
- (select 'Reading Key Ideas and Details' AS NME,          '01' AS CODE,  '01' AS TYP,     '01' AS SUBTEST_CODE,  'A' AS DESCRIPTION FROM DUAL
+ (select 'Reading - Key Ideas and Details' AS NME,          '01' AS CODE,  '01' AS TYP,     '01' AS SUBTEST_CODE,  'A' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Reading  Craft & Structure/Integration of Knowledge & Ideas' AS NME,          '02' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'B' AS DESCRIPTION FROM DUAL
+      select 'Reading - Craft & Structure/Integration of Knowledge & Ideas' AS NME,          '02' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'B' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Reading  Vocabulary Use' AS NME,          '03' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'C' AS DESCRIPTION FROM DUAL
+      select 'Reading - Vocabulary Use' AS NME,          '03' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'C' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Writing/Language Text Types and Purposes' AS NME,          '04' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
+      select 'Writing/Language - Text Types and Purposes' AS NME,          '04' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Writing/Language Research' AS NME,      '05' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
+      select 'Writing/Language - Research' AS NME,      '05' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Writing/Language Language Conventions' AS NME,    '06' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
+      select 'Writing/Language - Language Conventions' AS NME,    '06' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Writing/Language Listening' AS NME,      '07' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
+      select 'Listening' AS NME,      '07' AS CODE,  '01' AS TYP,  '01' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
       UNION ALL
 	  ---
       select 'Operations and Algebraic Thinking' AS NME,        '01' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'A' AS DESCRIPTION FROM DUAL
@@ -463,17 +472,17 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
       UNION ALL
       select 'Measurement and Data' AS NME,          '04' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Geometry' AS NME,        '05' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
+      select 'Ratios and Proportional Relationships' AS NME,          '05' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Ratios and Proportional Relationships' AS NME,          '06' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'F' AS DESCRIPTION FROM DUAL
+      select 'The Number System' AS NME,        '06' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'The Number System' AS NME,        '07' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'G' AS DESCRIPTION FROM DUAL
+      select 'Expressions and Equations' AS NME,  '07' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'H' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Expressions and Equations' AS NME,  '08' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'H' AS DESCRIPTION FROM DUAL
+      select 'Functions' AS NME,          '08' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'J' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Statistics and Probability' AS NME,        '09' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'I' AS DESCRIPTION FROM DUAL
+      select 'Geometry' AS NME,        '09' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
       UNION ALL
-      select 'Functions' AS NME,          '10' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'J' AS DESCRIPTION FROM DUAL
+      select 'Statistics and Probability' AS NME,        '10' AS CODE,  '02' AS TYP,  '02' AS SUBTEST_CODE,  'I' AS DESCRIPTION FROM DUAL
       UNION ALL
       ---
 	  select 'Science Connections & Nature of Science' AS NME,          '01' AS CODE,  '03' AS TYP,  '03' AS SUBTEST_CODE,  'A/B' AS DESCRIPTION FROM DUAL
@@ -498,7 +507,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
       select 'Economics' AS NME,          '04' AS CODE,  '04' AS TYP,  '04' AS SUBTEST_CODE,  'D' AS DESCRIPTION FROM DUAL
       UNION ALL
       select 'The Behavioral Sciences' AS NME,        '05' AS CODE,  '04' AS TYP,  '04' AS SUBTEST_CODE,  'E' AS DESCRIPTION FROM DUAL
-      );
+      ) ORDER BY SUBTEST_CODE,CODE;
 
 
 
@@ -596,7 +605,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                   AND OBJ.PROJECTID = PJT.PROJECTID
                   AND GLM.LEVEL_MAPID = LMP.LEVEL_MAPID
                   AND STG_OBJ.SUBTEST_CODE  = '02'
-                  AND STG_OBJ.CODE  IN ('01','02','03','04')
+                  AND STG_OBJ.CODE  IN ('01','02','03','04','09')
                   AND GRD.PROJECTID = PJT.PROJECTID 
                   AND GRD.GRADEID = GLM.GRADEID
                   AND GRD.GRADE_CODE  IN ('03','04','05')
@@ -606,7 +615,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                         ASES.ASSESSMENTID)A;
               COMMIT;
               
-              --FOR MATH INSERT2
+              /*--FOR MATH INSERT2
                INSERT INTO SUBTEST_OBJECTIVE_MAP 
                  SELECT (SELECT MAX(SUBT_OBJ_MAPID) FROM SUBTEST_OBJECTIVE_MAP)+ROWNUM AS SUBT_OBJ_MAPID,
                         A.SUBTESTID,
@@ -656,7 +665,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                         GLM.LEVEL_MAPID,
                         ASES.ASSESSMENTID)A;
                         
-             COMMIT;
+             COMMIT;*/
              
              --FOR MATH INSERT3
                INSERT INTO SUBTEST_OBJECTIVE_MAP 
@@ -699,7 +708,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                   AND OBJ.PROJECTID = PJT.PROJECTID
                   AND GLM.LEVEL_MAPID = LMP.LEVEL_MAPID
                   AND STG_OBJ.SUBTEST_CODE  = '02'
-                  AND STG_OBJ.CODE  IN ('06')
+                  AND STG_OBJ.CODE  IN ('05','06','07','09','10')
                   AND GRD.PROJECTID = PJT.PROJECTID 
                   AND GRD.GRADEID = GLM.GRADEID
                   AND GRD.GRADE_CODE  IN ('06','07')
@@ -709,7 +718,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                         ASES.ASSESSMENTID)A;
                         
              COMMIT;
-            
+            /*
             --FOR MATH INSERT4
                INSERT INTO SUBTEST_OBJECTIVE_MAP 
                  SELECT (SELECT MAX(SUBT_OBJ_MAPID) FROM SUBTEST_OBJECTIVE_MAP)+ROWNUM AS SUBT_OBJ_MAPID,
@@ -760,7 +769,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                         GLM.LEVEL_MAPID,
                         ASES.ASSESSMENTID)A;
                         
-             COMMIT;
+             COMMIT;*/
              
              --FOR MATH INSERT5
                INSERT INTO SUBTEST_OBJECTIVE_MAP 
@@ -803,7 +812,7 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                   AND OBJ.PROJECTID = PJT.PROJECTID
                   AND GLM.LEVEL_MAPID = LMP.LEVEL_MAPID
                   AND STG_OBJ.SUBTEST_CODE  = '02'
-                  AND STG_OBJ.CODE  IN ('10')
+                  AND STG_OBJ.CODE  IN ('06','07','08','09','10')
                   AND GRD.PROJECTID = PJT.PROJECTID 
                   AND GRD.GRADEID = GLM.GRADEID
                   AND GRD.GRADE_CODE  IN ('08')
@@ -916,7 +925,9 @@ CREATE TABLE STG_WI_SUBTEST_OBJECTIVE_MAP
                         ASES.ASSESSMENTID)A;
                   
                   COMMIT;
-  ---SELECT * FROM SUBTEST_OBJECTIVE_MAP WHERE TRUNC(DATETIMESTAMP) = TRUNC(SYSDATE)                
+  ---SELECT * FROM SUBTEST_OBJECTIVE_MAP WHERE TRUNC(DATETIMESTAMP) = TRUNC(SYSDATE) 
+  ---SELECT * FROM PROJECT_DIM
+  ---delete FROM SUBTEST_OBJECTIVE_MAP  WHERE OBJECTIVEID IN (SELECT OBJECTIVEID FROM OBJECTIVE_DIM WHERE PROJECTID = 4)           
              
 -- ITEMSET_DIM             
 ALTER TABLE ITEMSET_DIM MODIFY ITEM_NAME VARCHAR2(50);
