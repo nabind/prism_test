@@ -99,7 +99,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   BEGIN
     IF P_IN_MESSAGE_TYPE = 'GSCM' THEN
-    
+
       OPEN P_OUT_CUR_MESSAGE FOR
         SELECT DM.REPORT_MSG AS REPORT_MSG
           FROM DASH_REPORTS DR, DASH_MESSAGES DM, DASH_MESSAGE_TYPE DMT
@@ -109,9 +109,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            AND DMT.MESSAGE_TYPE = P_IN_MESSAGE_TYPE
            AND DMT.MESSAGE_NAME = P_IN_MESSAGE_NAME
            AND DM.ACTIVATION_STATUS = 'AC';
-    
+
     ELSIF P_IN_MESSAGE_TYPE = 'PSCM' THEN
-    
+
       OPEN P_OUT_CUR_MESSAGE FOR
         SELECT DM.REPORT_MSG AS REPORT_MSG
           FROM DASH_REPORTS DR, DASH_MESSAGES DM, DASH_MESSAGE_TYPE DMT
@@ -123,9 +123,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            AND DMT.MESSAGE_NAME = P_IN_MESSAGE_NAME
            AND DMT.CUST_PROD_ID = P_IN_CUST_PROD_ID
            AND DM.ACTIVATION_STATUS = 'AC';
-    
+
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -140,9 +140,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                        P_IN_CUST_PROD_ID   IN CUST_PRODUCT_LINK.CUST_PROD_ID%TYPE,
                                        P_OUT_CUR_MESSAGE   OUT GET_REFCURSOR,
                                        P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
-  
+
   BEGIN
-  
+
     IF P_IN_MESSAGE_TYPE = 'GSCM' THEN
       /*
          RULES:
@@ -165,7 +165,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            AND DM.DB_REPORTID(+) = P_IN_REPORT_ID
            AND DMT.MESSAGE_TYPE IN ('GSCM')
          ORDER BY DMT.MESSAGE_NAME;
-    
+
     ELSIF P_IN_MESSAGE_TYPE = 'PSCM' THEN
       OPEN P_OUT_CUR_MESSAGE FOR
         SELECT DMT.MSG_TYPEID       MESSAGE_TYPEID,
@@ -183,7 +183,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            AND DMT.MESSAGE_TYPE IN ('PSCM')
            AND DMT.CUST_PROD_ID = P_IN_CUST_PROD_ID
          ORDER BY DMT.MESSAGE_NAME;
-    
+
     ELSE
       OPEN P_OUT_CUR_MESSAGE FOR
         SELECT DMT.MSG_TYPEID       MESSAGE_TYPEID,
@@ -201,9 +201,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            AND DMT.MESSAGE_TYPE NOT IN ('PSCM', 'GSCM')
            AND DMT.CUST_PROD_ID = P_IN_CUST_PROD_ID
          ORDER BY DMT.MESSAGE_NAME;
-    
+
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -212,7 +212,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
   PROCEDURE GET_GENERIC_MESSAGES(P_IN_REPORT_TYPE_LIST IN VARCHAR2,
                                  P_OUT_CUR_MESSAGE     OUT GET_REFCURSOR,
                                  P_OUT_EXCEP_ERR_MSG   OUT VARCHAR2) IS
-  
+
   BEGIN
     OPEN P_OUT_CUR_MESSAGE FOR
       SELECT DMT.MESSAGE_NAME, DM.REPORT_MSG
@@ -242,7 +242,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                P_IN_REPORT_ID      IN DASH_REPORTS.DB_REPORTID%TYPE,
                                P_OUT_CUR_REPORT    OUT GET_REFCURSOR,
                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
-  
+
   BEGIN
     IF P_IN_REPORT_ID = '-99' THEN
       OPEN P_OUT_CUR_REPORT FOR
@@ -421,7 +421,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                   REPORT_SEQ,
                   MENUNAME;
     END IF;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
@@ -443,24 +443,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                           P_OUT_STATUS_NUMBER    OUT NUMBER,
                           P_OUT_CUR_REPORT_NEW   OUT GET_REFCURSOR,
                           P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
     V_DB_REPORTID    DASH_REPORTS.DB_REPORTID%TYPE := 0;
     V_MSG_RPT_EXISTS VARCHAR2(1000) := 'REPORT EXISTS: ';
-  
+
     CURSOR DB_REPORTID_CUR(P_IN_REPORT_NAME       VARCHAR2,
                            P_IN_REPORT_FOLDER_URI VARCHAR2) IS
       SELECT DR.DB_REPORTID
         FROM DASH_REPORTS DR
        WHERE UPPER(DR.REPORT_NAME) = UPPER(P_IN_REPORT_NAME)
          AND UPPER(DR.REPORT_FOLDER_URI) = UPPER(P_IN_REPORT_FOLDER_URI);
-  
+
     V_DB_REPORTID_CUR    DB_REPORTID_CUR%ROWTYPE;
     P_OUT_EXCEP_ERR_MSG1 VARCHAR2(100);
-  
+
   BEGIN
-  
+
     P_OUT_STATUS_NUMBER := 0;
-  
+
     SELECT COUNT(DISTINCT DR.DB_REPORTID)
       INTO V_DB_REPORTID
       FROM DASH_REPORTS         DR,
@@ -475,12 +475,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                 AND UPPER(DR.REPORT_FOLDER_URI) =
                     UPPER(P_IN_REPORT_FOLDER_URI)
                 AND DMRA.CUST_PROD_ID = CPI.CUST_PROD_ID;
-  
-  
+
+
     IF V_DB_REPORTID = 1 THEN
       RAISE_APPLICATION_ERROR(-20000, V_MSG_RPT_EXISTS);
     END IF;
-  
+
     OPEN DB_REPORTID_CUR(P_IN_REPORT_NAME, P_IN_REPORT_FOLDER_URI);
     LOOP
       FETCH DB_REPORTID_CUR
@@ -489,11 +489,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
       V_DB_REPORTID := V_DB_REPORTID_CUR.DB_REPORTID;
     END LOOP;
     CLOSE DB_REPORTID_CUR;
-  
+
     IF V_DB_REPORTID = 0 THEN
-    
+
       SELECT DB_REPORT_ID_SEQ.NEXTVAL INTO V_DB_REPORTID FROM DUAL;
-    
+
       INSERT INTO DASH_REPORTS
         (DB_REPORTID,
          REPORT_NAME,
@@ -510,23 +510,23 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
          P_IN_REPORT_FOLDER_URI,
          'AC',
          SYSDATE);
-    
+
     END IF;
-  
+
     FOR REC_CUST_PROD_ID IN (WITH T AS
                                 (SELECT P_IN_CUST_PROD_IDS AS TXT FROM DUAL)
                                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS CUST_PROD_ID
                                  FROM T
                                CONNECT BY LEVEL <=
                                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-    
+
       FOR REC_ROLE IN (WITH T AS
                           (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)
                          SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
                            FROM T
                          CONNECT BY LEVEL <=
                                     LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-      
+
         FOR REC_ORG_NODE_LEVEL IN (WITH T AS
                                       (SELECT P_IN_ORG_NODE_LEVELS AS TXT
                                         FROM DUAL)
@@ -538,7 +538,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                      CONNECT BY LEVEL <=
                                                 LENGTH(REGEXP_REPLACE(TXT,
                                                                       '[^,]*')) + 1) LOOP
-        
+
           INSERT INTO DASH_MENU_RPT_ACCESS
             (DB_MENUID,
              DB_REPORTID,
@@ -557,18 +557,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
              V_DB_REPORTID,
              P_IN_ACTIVATION_STATUS,
              SYSDATE);
-        
+
         END LOOP;
       END LOOP;
     END LOOP;
-  
+
     SP_GET_REPORT_LIST(P_IN_CUSTOMERID,
                        V_DB_REPORTID,
                        P_OUT_CUR_REPORT_NEW,
                        P_OUT_EXCEP_ERR_MSG1);
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_STATUS_NUMBER := 0;
@@ -592,13 +592,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                            P_IN_REPORT_SEQ        DASH_MENU_RPT_ACCESS.REPORT_SEQ%TYPE,
                            P_OUT_STATUS_NUMBER    OUT NUMBER,
                            P_OUT_EXCEP_ERR_MSG    OUT VARCHAR2) IS
-  
+
     V_ACTION_TYPE DASH_RPT_ACTION.ACTION_TYPE%TYPE := '';
     V_ROLEID      ROLE.ROLEID%TYPE;
   BEGIN
-  
+
     P_OUT_STATUS_NUMBER := 0;
-  
+
     IF UPPER(P_IN_REPORT_NAME) = 'MANAGE USERS' THEN
       V_ACTION_TYPE := 'USR';
     ELSIF UPPER(P_IN_REPORT_NAME) = 'MANAGE ORGANIZATIONS' THEN
@@ -624,7 +624,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
     ELSIF UPPER(P_IN_REPORT_NAME) = 'STUDENT DATA FILE' THEN
       V_ACTION_TYPE := 'SDF';
     END IF;
-  
+
     UPDATE DASH_REPORTS
        SET REPORT_NAME       = P_IN_REPORT_NAME,
            REPORT_DESC       = P_IN_REPORT_DESC,
@@ -632,7 +632,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
            REPORT_TYPE       = P_IN_REPORT_TYPE,
            UPDATED_DATE_TIME = SYSDATE
      WHERE DB_REPORTID = P_IN_DB_REPORTID;
-  
+
     DELETE FROM DASH_MENU_RPT_ACCESS
      WHERE DB_REPORTID = P_IN_DB_REPORTID
        AND CUST_PROD_ID IN
@@ -649,7 +649,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                              CONNECT BY LEVEL <=
                                         LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
                             )));
-  
+
     DELETE FROM DASH_ACTION_ACCESS
      WHERE DB_REPORTID = P_IN_DB_REPORTID
        AND CUST_PROD_ID IN
@@ -666,21 +666,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                              CONNECT BY LEVEL <=
                                         LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1
                             )));
-  
+
     FOR REC_CUST_PROD_ID IN (WITH T AS
                                 (SELECT P_IN_CUST_PROD_IDS AS TXT FROM DUAL)
                                SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS CUST_PROD_ID
                                  FROM T
                                CONNECT BY LEVEL <=
                                           LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-    
+
       FOR REC_ROLE IN (WITH T AS
                           (SELECT P_IN_USER_ROLES AS TXT FROM DUAL)
                          SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_NAME
                            FROM T
                          CONNECT BY LEVEL <=
                                     LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) LOOP
-      
+
         FOR REC_ORG_NODE_LEVEL IN (WITH T AS
                                       (SELECT P_IN_ORG_NODE_LEVELS AS TXT
                                         FROM DUAL)
@@ -694,12 +694,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                                                 LENGTH(REGEXP_REPLACE(TXT,
                                                                       '[^,]*')) + 1) LOOP
           IF REC_ORG_NODE_LEVEL.ORG_NODE_LEVEL <> -999 THEN
-          
+
             SELECT ROLEID
               INTO V_ROLEID
               FROM ROLE
              WHERE ROLE_NAME = REC_ROLE.ROLE_NAME;
-          
+
             INSERT INTO DASH_MENU_RPT_ACCESS
               (DB_MENUID,
                DB_REPORTID,
@@ -718,7 +718,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                P_IN_REPORT_SEQ,
                P_IN_ACTIVATION_STATUS,
                SYSDATE);
-          
+
             FOR REC_DASH_RPT_ACTION IN (SELECT *
                                           FROM DASH_RPT_ACTION
                                          WHERE ACTION_TYPE = V_ACTION_TYPE
@@ -746,16 +746,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                  REC_DASH_RPT_ACTION.DB_ACTIONID,
                  P_IN_ACTIVATION_STATUS,
                  SYSDATE);
-            
+
             END LOOP;
-          
+
           END IF;
         END LOOP;
       END LOOP;
     END LOOP;
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_STATUS_NUMBER := 0;
@@ -770,33 +770,33 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
                              P_IN_CUSTOMERID     IN CUSTOMER_INFO.CUSTOMERID%TYPE,
                              P_OUT_STATUS_NUMBER OUT NUMBER,
                              P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
-  
+
   BEGIN
     P_OUT_STATUS_NUMBER := 0;
-  
+
     DELETE FROM DASH_MENU_RPT_ACCESS
      WHERE DB_REPORTID = P_IN_DB_REPORTID
        AND CUST_PROD_ID IN
            (SELECT CUST_PROD_ID
               FROM CUST_PRODUCT_LINK
              WHERE CUSTOMERID = P_IN_CUSTOMERID);
-  
+
     DELETE FROM DASH_MESSAGES DM
      WHERE DM.DB_REPORTID = P_IN_DB_REPORTID
        AND CUST_PROD_ID IN
            (SELECT CUST_PROD_ID
               FROM CUST_PRODUCT_LINK
              WHERE CUSTOMERID = P_IN_CUSTOMERID);
-  
+
     DELETE FROM DASH_ACTION_ACCESS
      WHERE DB_REPORTID = P_IN_DB_REPORTID
        AND CUST_PROD_ID IN
            (SELECT CUST_PROD_ID
               FROM CUST_PRODUCT_LINK
              WHERE CUSTOMERID = P_IN_CUSTOMERID);
-  
+
     P_OUT_STATUS_NUMBER := 1;
-  
+
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_STATUS_NUMBER := 0;
@@ -892,7 +892,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_MANAGE_REPORT AS
      WHERE DB_REPORTID = P_IN_REPORTID
        AND CUST_PROD_ID = P_IN_CUST_PROD_ID
        AND DB_ACTIONID = P_IN_ACTIONID;
-  
+
     FOR REC_ROLE_LEVEL_ID IN (WITH T AS
                                  (SELECT P_IN_ROLE_LEVEL_IDS AS TXT FROM DUAL)
                                 SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS ROLE_ID_LEVEL_ID
