@@ -72,7 +72,7 @@ import com.ctb.prism.login.transferobject.PwdHistory;
 import com.ctb.prism.login.transferobject.UserTO;
 import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
-@Repository
+//@Repository
 public class MLoginDAOImpl extends BaseDAO /*implements ILoginDAO*/{
 
 	private static final IAppLogger logger = LogFactory

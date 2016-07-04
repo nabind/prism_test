@@ -1,9 +1,5 @@
 package com.ctb.prism.login.dao;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.unwind;
-
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -19,15 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.jasperreports.engine.JRException;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -49,9 +40,8 @@ import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.transferobject.MenuTO;
 import com.ctb.prism.login.transferobject.UserTO;
-import com.jaspersoft.mongodb.connection.MongoDbConnection;
 
-//@Repository
+@Repository
 public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 
 	private static final IAppLogger logger = LogFactory
@@ -59,9 +49,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	
 	
 	@SuppressWarnings("deprecation")
-	
-	MongoDbConnection tascConnection = null;
-	
 	
 	/**
 	 * This method is used to return user authorities
@@ -1290,11 +1277,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			long t2 = System.currentTimeMillis();
 			logger.log(IAppLogger.INFO, "Exit: LoginDAOImpl - getUserRoleByUsername() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
-	}
-
-	public MongoDbConnection getPrismMongoConnectionCached(String contractName) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 }

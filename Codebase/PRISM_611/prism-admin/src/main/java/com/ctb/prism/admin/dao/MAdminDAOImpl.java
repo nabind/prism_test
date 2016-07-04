@@ -63,7 +63,7 @@ import com.ctb.prism.login.transferobject.OrgCategory;
 import com.ctb.prism.login.transferobject.OrgUser;
 import com.ctb.prism.login.transferobject.Roles;
 
-@Repository("adminDAO")
+//@Repository("adminDAO")
 @SuppressWarnings("unchecked")
 public class MAdminDAOImpl extends BaseDAO /*implements IAdminDAO*/ {
 

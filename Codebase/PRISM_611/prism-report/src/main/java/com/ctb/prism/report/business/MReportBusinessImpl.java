@@ -49,8 +49,8 @@ import com.ctb.prism.webservice.transferobject.ReportActionTO;
 import com.ctb.prism.core.Service.ISimpleDBService;
 
 import java.beans.Introspector;
-@Component("reportBusiness")
-public class MReportBusinessImpl implements IReportBusiness {
+//@Component("reportBusiness")
+public class MReportBusinessImpl /*implements IReportBusiness*/ {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportBusinessImpl.class.getName());
 

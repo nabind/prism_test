@@ -40,7 +40,7 @@ import com.ctb.prism.inors.util.InorsDownloadUtil;
  * @author TCS
  * 
  */
-//@Repository("inorsDAO")
+@Repository("inorsDAO")
 public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(InorsDAOImpl.class.getName());

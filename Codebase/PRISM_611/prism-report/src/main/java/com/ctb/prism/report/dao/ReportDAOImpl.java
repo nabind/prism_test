@@ -45,6 +45,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
+import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
 import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
@@ -77,7 +78,7 @@ import com.ctb.prism.webservice.transferobject.ReportActionTO;
 /**
  * This class is responsible for reading and writing to database. The transactions through this class should be related to report only.
  */
-//@Repository("reportDAO")
+@Repository("reportDAO")
 public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	private static final IAppLogger logger = LogFactory.getLoggerInstance(ReportDAOImpl.class.getName());
 

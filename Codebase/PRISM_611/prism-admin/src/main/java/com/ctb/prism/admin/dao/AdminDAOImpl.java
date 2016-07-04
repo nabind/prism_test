@@ -53,7 +53,7 @@ import com.ctb.prism.core.util.SaltedPasswordEncoder;
 import com.ctb.prism.core.util.Utils;
 import com.ctb.prism.login.dao.ILoginDAO;
 
-//@Repository("adminDAO")
+@Repository("adminDAO")
 @SuppressWarnings("unchecked")
 public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
