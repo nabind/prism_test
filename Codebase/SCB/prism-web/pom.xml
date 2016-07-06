@@ -11,6 +11,8 @@
   <url>http://maven.apache.org</url>
   <properties>
   	<asset>../assets</asset>
+  	<env-files>../assets/env-files</env-files>
+  	<env>dev</env>
   </properties>
   
   <dependencies>
@@ -302,6 +304,48 @@
 							<resources>
 								<resource>
 									<directory>${asset}/properties</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-context</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${basedir}/target/prism/META-INF</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${env-files}/${env}/</directory>
+									<includes>
+		                               <include>context.xml</include>
+		                               <filtering>true</filtering>
+		                            </includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-app-property</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<outputDirectory>${basedir}/prism/myclass/WEB-INF/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${env-files}/${env}/</directory>
+									<includes>
+		                               <include>jasperreports.properties</include>
+		                               <filtering>true</filtering>
+		                            </includes>
 								</resource>
 							</resources>
 						</configuration>
