@@ -995,7 +995,7 @@ div#nav ul li a {
 }
 .select-all{margin-left: 4px}
 .bold {font-weight: bold}
-
+/*
 .notification {
     position:absolute;
     top:0px;
@@ -1016,4 +1016,4 @@ div#nav ul li a {
     cursor:pointer;
     float:right;
     margin-right:2px;
-}
+}*/
