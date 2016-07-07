@@ -322,7 +322,7 @@ public class RESTAuthenticationFilter extends AbstractAuthenticationProcessingFi
 	        	if(contract != null && contract.trim().length() > 0) {
 	        		
 	        	} else {
-	        		contract = "inors"; // fallback
+	        		contract = "tasc"; // fallback
 	        	}
 	        	authRequest.setContractName(contract);
 		        // Allow subclasses to set the "details" property
