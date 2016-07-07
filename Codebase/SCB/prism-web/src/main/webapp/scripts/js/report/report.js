@@ -1156,20 +1156,24 @@ $("select#p_Roster_Rank_Order").html(rankOrderDom);
 }
 
 //============================= SELECT / DESELECT MULTI-SELECT INPUTS =============================
-function selectAllOption(event, select) {
+function selectAllOption(event, select, tabCount) {
 	event.preventDefault();
 	event.stopPropagation();
+	$(document).click();
 	var inputId = $(select).attr('id');
+	var formObj = $(".report-form-"+tabCount);
 	//var val = $("#"+inputId+" option:first:selected").text();
-	var selectedCount = $("option:selected", select).length;
-	var optionCount = $("option", select).length;
+	var selectedCount = $("option:selected", $(formObj).find( $("select[rel^='"+inputId+"']") )).length;
+	var optionCount = $("option", $(formObj).find( $("select[rel^='"+inputId+"']") )).length;
 	if(selectedCount < optionCount) {
-		$(select).find('option').prop('selected', true);
+		$(formObj).find( $("select[rel^='"+inputId+"']") ).find('option').prop('selected', true);
 	} else {
-		$(select).find('option').prop('selected', false);
-		$(select).find('option:first').prop('selected', true);
+		$(formObj).find( $("select[rel^='"+inputId+"']") ).find('option').prop('selected', false);
+		$(formObj).find( $("select[rel^='"+inputId+"']") ).find('option:first').prop('selected', true);
 	}
-	$(select).trigger('update-select-list').change();
+	$(formObj).find( $("select[rel^='"+inputId+"']") ).trigger('update-select-list').change();
+	$(formObj).find( $("select[rel^='"+inputId+"']") ).trigger('update-select-list');
+	$(formObj).find( $("select[rel^='"+inputId+"']") ).parent().trigger('click');
 }
 //============================= Populate cascading input control values =============================
 function getCascading(selectedObj) {

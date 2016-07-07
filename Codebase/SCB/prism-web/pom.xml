@@ -338,7 +338,7 @@
 						</goals>
 						<configuration>
 							<encoding>UTF-8</encoding>
-							<outputDirectory>${basedir}/prism/myclass/WEB-INF/classes</outputDirectory>
+							<outputDirectory>${basedir}/target/prism/WEB-INF/classes</outputDirectory>
 							<resources>
 								<resource>
 									<directory>${env-files}/${env}/</directory>

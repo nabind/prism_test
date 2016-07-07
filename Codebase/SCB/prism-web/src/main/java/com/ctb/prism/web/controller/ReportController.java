@@ -1946,6 +1946,7 @@ public class ReportController{
 					|| reportUrl.indexOf("Pdfs") != -1) {
 				req.setAttribute("icDownload", IApplicationConstants.TRUE);
 			}
+			
 			// get jasperprint object from com.ctb.prism.report.api.Controller (overridden jasper class)
 			Map<String, Object> sessionObj = (Map<String, Object>) req.getSession().getAttribute("apiJasperPrint" + reportUrl);
 			JasperPrint jasperPrint = null;
@@ -1955,15 +1956,18 @@ public class ReportController{
 						CustomStringUtil.appendString(reportUrl, Utils.getContractName()), null);
 			}
 			if (sessionObj != null && jasperPrint == null) {
-				JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
-				Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
-				if (isPrinterFriendly)
-					parameterValues.put("p_Is3D", IApplicationConstants.FLAG_N);
-				//IFillManager fillManager = new FillManagerImpl();
-				//jasperPrint = fillManager.fillReport(jasperReport, parameterValues);
-				jasperPrint = reportService.fillReportForTableApi(reportUrl, jasperReport, parameterValues);
-				// reset the value for regular report
-				parameterValues.put("p_Is3D", IApplicationConstants.FLAG_Y);
+				String hasReportPages = (String) req.getSession().getAttribute("dataPresent_"+reportUrl);
+				if(IApplicationConstants.TRUE.equals(hasReportPages)) {
+					JasperReport jasperReport = (JasperReport) sessionObj.get("jasperReport");
+					Map<String, Object> parameterValues = (Map<String, Object>) sessionObj.get("parameterValues");
+					if (isPrinterFriendly)
+						parameterValues.put("p_Is3D", IApplicationConstants.FLAG_N);
+					//IFillManager fillManager = new FillManagerImpl();
+					//jasperPrint = fillManager.fillReport(jasperReport, parameterValues);
+					jasperPrint = reportService.fillReportForTableApi(reportUrl, jasperReport, parameterValues);
+					// reset the value for regular report
+					parameterValues.put("p_Is3D", IApplicationConstants.FLAG_Y);
+				}
 			}
 			// get jasper print object
 			if (jasperPrint == null)
