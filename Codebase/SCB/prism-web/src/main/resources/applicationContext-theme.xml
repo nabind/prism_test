@@ -20,7 +20,7 @@
 
 	<bean id="themeResolver"
 		class="org.springframework.web.servlet.theme.CookieThemeResolver">
-		<property name="defaultThemeName" value="inors" />
+		<property name="defaultThemeName" value="tasc" />
 	</bean>
 
 	<bean id="themeSource"
