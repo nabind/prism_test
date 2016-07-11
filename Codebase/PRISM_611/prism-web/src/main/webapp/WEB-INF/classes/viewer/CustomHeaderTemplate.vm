@@ -31,6 +31,13 @@
     <script src='${contextPath}/servlets/requirejsconfig'></script>
     <link type='text/css' rel='stylesheet' href='${contextPath}/scripts/js/libs/theme/jquery.ui.all.css'></link>
     <link type='text/css' rel='stylesheet' href='${jasperreports_global_css}'></link>
+    
+    <!-- Added for Context Menu - Start -->
+    <link type='text/css' rel='stylesheet' href='${contextPath}/scripts/js/libs/contextMenu/contextMenu.css'></link>
+    <script src='${contextPath}/scripts/js/libs/contextMenu/contextMenu.js'></script>
+    <script src='${contextPath}/scripts/js/libs/contextMenu/contextMenuController.js'></script>
+    <!-- Added for Context Menu - End -->
+    
     <!--[if IE 9]><link rel="stylesheet" href="themes/acsi/css/ie9.css" type="text/css" /><![endif]-->
 </head>
 <body text="#000000" link="#000000" alink="#000000" vlink="#000000">
