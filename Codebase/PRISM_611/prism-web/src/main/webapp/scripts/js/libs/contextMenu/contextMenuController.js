@@ -1,14 +1,29 @@
+$(window).load(function(){
+	console.log('window loaded');
+	//tableRefresh();
+	//$('#LasLinkId').hide();
+});
+
+$(document).on('load', '#LasLinkId', function() {
+    console.log('document load LasLinkId');
+});
+
+$('#LasLinkId').load(function(){
+	console.log('LasLinkId loaded');
+});
+
 $(document).ready(function(){
 	var rowgroup = "";
 	var disag = "0";
 	var lastvalue = "";
 	var org_nodeid = "736002,736003";
 	var transpose = "0";
+	console.log('Page Ready')
 	//alert('Joy - Before');
-	setTimeout(function(){
+	/*setTimeout(function(){
 		//alert('Joy - After');
 		tableRefresh();
-	}, 2000);
+	}, 2000);*/
 	// $("#reportContainer").load(function(){
 		// alert('Joy - After');
 		// //tableRefresh();
@@ -16,7 +31,8 @@ $(document).ready(function(){
 	// $(document).on('load', '#reportContainer .jrxtrowheader span', function() {
 		 // alert('Joy - After');
 	// });
-	
+	tableRefresh();
+	$('#LasLinkId').hide();
 });
 
 function tableRefresh(){
