@@ -13,6 +13,7 @@ SET jar_list=(%lib_dir%\*.jar)
 
 SETLOCAL ENABLEDELAYEDEXPANSION
 
+
 FOR %%A IN %jar_list% DO (
 set jar_p=%%A
 set jar_n=!jar_p:~%length%,-4!
