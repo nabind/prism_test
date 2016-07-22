@@ -25,3 +25,4 @@ Lookup Table
 These tables holds relations between multiple dim tables
 
 PRISM uses STAR or Snowflake schema where fact table sits in the middle and is radically connected to other dimension tables. 
+------------
