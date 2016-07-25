@@ -81,7 +81,10 @@ public class MapService implements PrismPdfService {
 			if (dao == null) {
 				dao = new MapDao(configProperties);
 			}
-			for(String schoolOrgNodeId : schoolIds) {
+			for(String schoolSubtest : schoolIds) {
+				/** new - subtest code is coming with school id now - format <SCHOOL_ID>|<SUBTEST_ID>*/
+				String schoolSubtestArr[] = schoolSubtest.split("\\|");
+				String schoolOrgNodeId = schoolSubtestArr[0];
 				OrgTO orgTo = dao.getParentOrgNodeId(schoolOrgNodeId);
 				String districtOrgNodeId = orgTo.getParentJasperOrgId();
 				String customerId = orgTo.getCustomerCode();
@@ -103,11 +106,13 @@ public class MapService implements PrismPdfService {
 				String oldGrade = "", newGrade = "";
 				Map<String, String> map = new HashMap<String, String>();
 				Set<String> subtest = new HashSet<String>();
+				/** new - subtest code is coming with school id now */
+				subtest.add(schoolSubtestArr[1]);
 							
 				// divide students based on grade
 				for(StudentTO studentTO : students) {
 					newGrade = studentTO.getGradeId();
-					subtest.add(studentTO.getSubtest());
+					//subtest.add(studentTO.getSubtest()); /** Commenting this : new - subtest code is coming with school id now */
 
 					if(oldGrade.equals(newGrade)) {
 						studentIds.append(studentTO.getSubtest() + ":" +studentTO.getStudentBioId()+ ":" +studentTO.getMosisId()

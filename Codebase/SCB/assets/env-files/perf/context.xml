@@ -68,6 +68,20 @@
             password="missouri14perf"
             driverClassName="oracle.jdbc.driver.OracleDriver"
             url="jdbc:oracle:thin:@//10.160.23.38:1521/isteps"
+            logAbandoned="true" removeAbandoned="true" removeAbandonedTimeout="300"
+            initialSize="20"
             maxActive="100"
             maxIdle="20"/> 
+            
+     <Resource name="jdbc/wisc"
+            auth="Container"
+            type="javax.sql.DataSource"
+            username="wisconsin"
+            password="wisconsin16perf"
+            driverClassName="oracle.jdbc.driver.OracleDriver"
+            url="jdbc:oracle:thin:@//10.160.23.38:1521/isteps"
+            logAbandoned="true" removeAbandoned="true" removeAbandonedTimeout="300"
+			initialSize="20"
+            maxActive="100"
+            maxIdle="20"/>  
 </Context>
