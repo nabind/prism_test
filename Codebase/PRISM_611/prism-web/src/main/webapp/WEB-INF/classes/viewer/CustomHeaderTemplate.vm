@@ -31,10 +31,19 @@
     <script src='${contextPath}/servlets/requirejsconfig'></script>
     <link type='text/css' rel='stylesheet' href='${contextPath}/scripts/js/libs/theme/jquery.ui.all.css'></link>
     <link type='text/css' rel='stylesheet' href='${jasperreports_global_css}'></link>
+    
+    <!-- Added for Context Menu By Joy - Start -->
+    <link type='text/css' rel='stylesheet' href='${contextPath}/scripts/js/libs/contextMenu/contextMenu.css'></link>
+    <script src='${contextPath}/scripts/js/libs/contextMenu/contextMenu.js'></script>
+    <!-- Added for Context Menu - End -->
+    
     <!--[if IE 9]><link rel="stylesheet" href="themes/acsi/css/ie9.css" type="text/css" /><![endif]-->
 </head>
 <body text="#000000" link="#000000" alink="#000000" vlink="#000000">
 <div class='mainReportDiv body' style='width: 100%; height: 100%; overflow: visible;'>
+
+<div id='contextMenuDiv'></div>
+
 <table width="100%" cellpadding="5" cellspacing="0" border="0">
 <tr bgcolor="#DDDDDD">
   <td align="left" style="border-top: 0px solid #000000; border-bottom: 0px solid #000000;">
@@ -56,4 +65,3 @@
 </tr>
 <tr>
   <td align="center">
-

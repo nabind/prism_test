@@ -24,4 +24,5 @@ Fast changing objects are kept in FACT tables. Like, student’s score table –
 Lookup Table
 These tables holds relations between multiple dim tables
 
-PRISM uses STAR or Snowflake schema where fact table sits in the middle and is radically connected to other dimension tables. Here is an example
+PRISM uses STAR or Snowflake schema where fact table sits in the middle and is radically connected to other dimension tables. 
+------------

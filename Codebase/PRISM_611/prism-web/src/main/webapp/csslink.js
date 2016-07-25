@@ -3,7 +3,7 @@
  * This new imported js file will work after the tabular report is fully loaded
  */
 var imported = document.createElement("script");
-imported.src = "./scripts/js/report/contextMenu.js";
+imported.src="./scripts/js/libs/contextMenu/contextMenuController.js";
 document.getElementsByTagName("head")[0].appendChild(imported);
 
 /**

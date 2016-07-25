@@ -25,8 +25,8 @@ maven-install-jasper.bat
 maven-install-specific.bat
 
 #------------------- STEP 4 -------------------
-Build code using the following command from %ISTEP_HOME%
-mvn install
+Build code using the following command from %ISTEP_HOME% -- use -Denv=dev [for dev build or keep empty] -Denv=qa [for creating war for QA] -Denv=prod [for creating war for production] -Denv=perf [for creating war for performance] 
+mvn install -Denv=dev
 
 Clean code using the following command
 mvn clean

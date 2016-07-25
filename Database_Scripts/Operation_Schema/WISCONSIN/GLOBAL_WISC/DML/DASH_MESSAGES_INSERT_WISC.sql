@@ -53,7 +53,7 @@ BEGIN
         AND PROJECTID = V_PROJECTID),
      1089,
      q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
-<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpdesk@datarecognitioncorp.com">WIHelpdesk@datarecognitioncorp.com</a></u></p>]',
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpDesk@datarecognitioncorp.com">WIHelpDesk@datarecognitioncorp.com</a></u></p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
@@ -87,7 +87,7 @@ BEGIN
 <div class="loginMsg">
 <p>Please note: Direct login to this site is not allowed. Only authorized DRC System Administrators can access through this link. Please login through <u><a href="https://wi.drcedirect.com/"><span style="color:#0000CD;">eDIRECT</span></a></u>&nbsp;via SSO.&nbsp;</p>
 
-<p>If you do not have eDIRECT login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:wihelpdesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpdesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
+<p>If you do not have eDIRECT login or SSO access to the Wisconsin Forward Exam Reporting System, please contact at <u><a href="mailto:WIHelpDesk@datarecognitioncorp.com?subject=eDirect%20Login%20Needed"><span style="color:#0000CD;">WIHelpDesk@datarecognitioncorp.com</span></a></u> or 1-800-459-6530</p>
 </div>
 
 <div class="boxshade" style="margin-top: 10px;">
@@ -208,7 +208,7 @@ BEGIN
         AND PROJECTID = V_PROJECTID),
      1099,
      q'[<p>Copyright &copy; 2016 Data Recognition Corporation. All rights reserved. Read our <a href="http://www.datarecognitioncorp.com/Pages/privacy.aspx" style="text-decoration: underline;" target="_blank">Privacy Policy</a>.</p>
-<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpdesk@datarecognitioncorp.com">WIHelpdesk@datarecognitioncorp.com</a></u></p>]',
+<p>DRC/Wisconsin Help Desk: Toll Free 1-800-459-6530 Email: <u><a href="mailto:WIHelpDesk@datarecognitioncorp.com">WIHelpDesk@datarecognitioncorp.com</a></u></p>]',
      V_DEFAULT_CUST_PROD_ID,
      'AC',
      SYSDATE);
