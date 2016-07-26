@@ -239,5 +239,6 @@
 		<input type="hidden" name="reportId" id="reportId" value="${homeReport.reportId}">
 		<input type="hidden" name="studentId" class="studentIdForTab" value="${homeReport.studentBioId}">
 		<input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
+		<input type="hidden" name="applicationName" id="applicationName" value="<%=request.getContextPath()%>">
 	</div>
 </div>
