@@ -39,7 +39,7 @@ var org_nodeid = "736002,736003";
 				+"}";*/
 
 $(document).on('mousedown', '.jrxtrowheader', function(){
-	if(typeof $(this).attr("id") !== 'undefined'){
+	if(typeof($(this).attr("id")) !== 'undefined'){
 			openMenu($(this));
 		}
 } );
