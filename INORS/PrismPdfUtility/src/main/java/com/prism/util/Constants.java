@@ -113,4 +113,9 @@ public interface Constants {
 			"  WHERE LIN.CUSTOMERID = CUST.CUSTOMERID AND LIN.PRODUCTID = PROD.PRODUCTID ",
 			"  AND PROD.PRODUCT_NAME LIKE '%ISTEP%' AND LIN.ADMINID = ADM.ADMINID ",
 			" AND ADM.IS_CURRENT_ADMIN = 'Y' AND CUST.CUSTOMERID = ?");
+	
+	public static final String GET_LOGINPDF_PATH = CustomStringUtil.appendString("SELECT '/' || PROP.DB_PROPERY_VALUE || '/LoginPDFs/' || CUST.CUSTOMER_CODE ",
+																				" FROM CUSTOMER_INFO CUST, DASH_CONTRACT_PROP PROP ",
+																				" WHERE CUST.CUSTOMERID = ? ",
+																				" AND PROP.DB_PROPERTY_NAME = 'static.pdf.location'");
 }

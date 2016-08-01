@@ -2,6 +2,7 @@ package com.prism.service;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import com.prism.itext.PdfGenerator;
 import com.prism.mail.EmailSender;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
+import com.prism.util.AWSStorageUtil;
 import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
 import com.prism.util.FileUtil;
@@ -264,7 +266,8 @@ public class TascService implements PrismPdfService {
 	 * @param isEducationCenter
 	 * @return
 	 */
-	private boolean manupulateTenants(String level3OrgId, Properties configProperties, Properties tascProperties, String acLetterLocation, boolean migration, boolean state, boolean isEducationCenter) {
+	private boolean manupulateTenants(String level3OrgId, Properties configProperties, Properties tascProperties, 
+			String acLetterLocation, boolean migration, boolean state, boolean isEducationCenter) {
 		long processId = 0;
 		boolean schoolUserPresent = false;
 		String encDocLocation = "";
@@ -385,6 +388,19 @@ public class TascService implements PrismPdfService {
 							updateLog("Sending password email for PDF opening");
 							logger.info("Sending password email for PDF opening");
 							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
+							
+							
+							// S3 code
+							if ("true".equals(tascProperties.getProperty("moveFilesToS3"))) {
+								String rootPath = dao.getRootPathForLoginPdf(school.getCustomerCode());
+								rootPath = tascProperties.getProperty("environment.postfix").toUpperCase() + rootPath;
+								moveFilesToS3(rootPath, encDocLocation);
+								logger.info("All Files Successfully Moved to S3");
+							} else {
+								logger.info("Files NOT moved to S3");
+							}
+							
+							
 						} else {
 							updateLog("Error generating PDF");
 						}
@@ -583,6 +599,30 @@ public class TascService implements PrismPdfService {
 		lEndTime = new Date().getTime();
 		logElapsedTime("Mail sending : ");
 		return mailSent;
+	}
+	
+	/**
+	 * @param s3Path
+	 * @param dir
+	 * @return none
+	 */
+	private void moveFilesToS3(String s3Path, String pdf) {
+		pdf = pdf.replace("//", "/");
+		File pdfFile = new File(pdf);
+		AWSStorageUtil aWSStorageUtil = AWSStorageUtil.getInstance();
+		s3Path = s3Path.replace("//", "/");
+		logger.debug("Calling aWSStorageUtil.uploadObject(" + s3Path + ", " + pdf + ")");
+		if (pdfFile != null && pdfFile.isFile()) {
+			try {
+				aWSStorageUtil.uploadObject(s3Path, pdf);
+				logger.info("File Successfully Uploaded to S3");
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		} else if (pdfFile.isDirectory()) {
+			// TODO : Do we need recursive upload?
+		}		
+		
 	}
 
 }

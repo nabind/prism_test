@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.prism.jdcc.JDCConnectionDriver;
 import com.prism.to.OrgTO;
 import com.prism.to.UserTO;
+import com.prism.util.Constants;
 import com.prism.util.CustomStringUtil;
 
 public class TascDao extends CommonDao {
@@ -532,4 +533,28 @@ public class TascDao extends CommonDao {
 		}
 		return ustomerCode;
 	}
+	
+	public String getRootPathForLoginPdf(String customerId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String rootPath = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_LOGINPDF_PATH);
+			pstmt.setLong(1, Long.valueOf(customerId));
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				rootPath = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		logger.debug("customerId=" + customerId + ", Returning Root Path = " + rootPath);
+		return rootPath;
+	}
+	
 }
