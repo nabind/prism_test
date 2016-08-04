@@ -128,8 +128,8 @@
 	
 	function saveComment(){
 		var comments = $("textarea#comments").val();
-		var stateCode = $("#commentStateCode").val();
-		var uuid = $("#commentUuid").val();
+		var stateCode = $("#stateCode").val(); //$("#commentStateCode").val();
+		var uuid = $("#uuid").val(); //$("#commentUuid").val();
 		if(comments.length > 4000){
 			$("#commentErrorLog").show();
 			$("#commentErrorLog").css("color","red");
@@ -163,8 +163,8 @@
 	}
 	
 	function deleteStudent(bioId){
-		var dlStateCode = $("#commentStateCode").val();
-		var dlUuid = $("#commentUuid").val();
+		var dlStateCode = $("#stateCode").val(); // $("#commentStateCode").val();
+		var dlUuid = $("#uuid").val(); //$("#commentUuid").val();
 		
 		if (confirm('Are you sure you want to delete this student (biodid :'+bioId+')?')) {
 			/* var dataString = "bioId="+bioId+"&uuid="+uuid+"&stateCode="+stateCode+"&action=delete";
@@ -188,8 +188,8 @@
 	}
 	
 	function invalidateStudent(erTestSchId,undo){
-		var inStateCode = $("#commentStateCode").val();
-		var inUuid = $("#commentUuid").val();
+		var inStateCode = $("#stateCode").val(); //$("#commentStateCode").val();
+		var inUuid = $("#uuid").val(); // $("#commentUuid").val();
 		
 		if (confirm('Are you sure you want to invalidate this student (uuid :'+inUuid+')?')) {
 			
@@ -209,8 +209,8 @@
 	}
 	
 	function invalidateSchedule(erTestSchId,undo){
-		var insStateCode = $("#commentStateCode").val();
-		var insUuid = $("#commentUuid").val();
+		var insStateCode = $("#stateCode").val(); // $("#commentStateCode").val();
+		var insUuid = $("#uuid").val(); // $("#commentUuid").val();
 
 		if (confirm('Are you sure you want to invalidate this student (uuid :'+insUuid+')?')) {
 						
@@ -231,8 +231,8 @@
 	
 	
 	function unlock(schId,undo){
-		var unStateCode = $("#commentStateCode").val();
-		var unUuid = $("#commentUuid").val();
+		var unStateCode = $("#stateCode").val(); // $("#commentStateCode").val(); 
+		var unUuid = $("#uuid").val(); //$("#commentUuid").val();
 		
 		if (confirm('Are you sure you want to unlock this student (uuid :'+unUuid+')?')) {
   			  $('#supportTascForm')
