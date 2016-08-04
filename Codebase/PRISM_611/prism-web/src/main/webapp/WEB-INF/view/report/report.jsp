@@ -239,6 +239,9 @@
 		<input type="hidden" name="reportId" id="reportId" value="${homeReport.reportId}">
 		<input type="hidden" name="studentId" class="studentIdForTab" value="${homeReport.studentBioId}">
 		<input type="hidden" name="customerId" id="customerId" value="<%=(String) request.getSession().getAttribute(IApplicationConstants.CURRORG)%>">
-		<input type="hidden" name="applicationName" id="applicationName" value="<%=request.getContextPath()%>">
+		<input type="hidden" name="scheme" id="scheme" value="<%=request.getScheme()%>">
+		<input type="hidden" name="serverName" id="serverName" value="<%=request.getServerName()%>">
+		<input type="hidden" name="serverPort" id="serverPort" value="<%=request.getServerPort()%>">
+		<input type="hidden" name="contextPath" id="contextPath" value="<%=request.getContextPath()%>">
 	</div>
 </div>
