@@ -5,7 +5,7 @@ var actualText = "{"
 					+"'hiddenColumns':'',"
 					+"'disag':'1',"
 					+"'transpose':'0',"
-					+"'rowgroup':'Gender',"
+					+"'rowgroup':'Grade',"
 					+"'contextMenu':["  
 						+"{"  
 							+"'name':'Hide this Content Area',"
@@ -14,8 +14,7 @@ var actualText = "{"
 						+"}"
 					+"]"
 				+"}";
-*/				
-			
+*/
 /*				
 var actualText = "{"
 					+"'displayName':'SCHOOL000000100',"
@@ -66,7 +65,8 @@ var actualText = "{"
 					  +"}"
 				   +"]"
 				+"}";				
-*/							
+*/		
+				
 
 $(document).on('mousedown', '.jrxtrowheader, td[class^="header_"]', function(){
 	if(typeof($(this).attr("id")) !== 'undefined'){
@@ -108,16 +108,46 @@ function buildList(data){
 	return html;
 }
 
+function removeData(str,data){
+	str = str.replace(data,'');
+	str = str.trim();
+	var lastChar = str.substr(str.length - 1);
+	if(lastChar == ','){
+		str = str.substr(0, str.length - 1);
+	}
+	var firstChar = str.charAt(0);
+	if(firstChar == ','){
+		str = str.substr(1,str.length);
+	}
+	str = str.replace(',,',',');
+	return str;
+}
+
 function conMenuFunc(liObj){
 	var p_lastvalue = $('#contextMenuDiv').attr('lastValue');
 	var p_hidden_columns = $('#contextMenuDiv').attr('hiddenColumns');
 	var p_disag = $('#contextMenuDiv').attr('disag');
 	var p_transpose = $('#contextMenuDiv').attr('transpose');
 	var p_rowgroup = $('#contextMenuDiv').attr('rowgroup');
+	var p_org_nodeid = "";
 	if(liObj.attr('value') == -99){
 		p_rowgroup = liObj.text();
+		p_disag = 1;
 	}else{
-		p_hidden_columns += liObj.attr('value');
+		if(liObj.text() == 'Hide this Content Area'){
+			if(p_hidden_columns == ''){
+				p_hidden_columns += liObj.attr('value');
+			}else{
+				p_hidden_columns = p_hidden_columns + ',' + liObj.attr('value');
+			}
+		}else{
+			p_hidden_columns = removeData(p_hidden_columns,liObj.attr('value'));
+		}
+		
+		if(p_disag != 1){
+			p_org_nodeid = p_lastvalue;
+			p_lastvalue = "";
+		}
 	}
 	var reportUrl = window.parent.$('#reportUrl').attr('value');
 	var reportName = window.parent.$('#reportName').attr('value');
@@ -127,7 +157,7 @@ function conMenuFunc(liObj){
 	var serverPort = window.parent.$("#serverPort").attr("value");
 	var contextPath = window.parent.$("#contextPath").attr("value");
 	var fullReportURL = scheme+"://"+serverName+":"+serverPort+contextPath;
-	fullReportURL += "/openReportHtmlApi.do?reportUrl="+reportUrl+"&reportId="+reportId+"&reportName="+reportName+"&filter=true&p_rowgroup="+p_rowgroup+"&p_disag="+p_disag+"&p_lastvalue="+p_lastvalue+"&p_org_nodeid=&p_transpose="+p_transpose+"&p_hidden_columns="+p_hidden_columns;
+	fullReportURL = fullReportURL+"/openReportHtmlApi.do?reportUrl="+reportUrl+"&reportId="+reportId+"&reportName="+reportName+"&filter=true&p_rowgroup="+p_rowgroup+"&p_disag="+p_disag+"&p_lastvalue="+p_lastvalue+"&p_org_nodeid="+p_org_nodeid+"&p_transpose="+p_transpose+"&p_hidden_columns="+p_hidden_columns;
 	console.log("fullReportURL: "+fullReportURL);
 	location.href = fullReportURL;
 }
