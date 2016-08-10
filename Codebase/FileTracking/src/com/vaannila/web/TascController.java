@@ -25,6 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
+import com.vaannila.TO.ErrorDetailsWinTO;
+import com.vaannila.TO.ErrorWinJsonObject;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
 import com.vaannila.TO.StudentDetailsWinTO;
@@ -1142,6 +1144,89 @@ public class TascController {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	/**
+	 * This method is to show searched records page wise
+	 * @author Abir
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/searchError.htm")
+	public ModelAndView searchError(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: searchError()");
+		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
+		try {
+			if(!UserController.checkLogin(request)) return modelAndView;
+			SearchProcess process = new SearchProcess();
+			process.setDRCStudentId(request.getParameter("DRCStudentID"));
+			process.setDRCDocumentId(request.getParameter("DRCDocumentID"));
+			process.setErrorDateFrom(request.getParameter("errorDateFrom"));
+			process.setErrorDateTo(request.getParameter("errorDateTo"));
+		
+			request.getSession().setAttribute("errorTrackingTO", process);
+			modelAndView = new ModelAndView("trackErrorResult", "message", jsonStr);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
+	
+	
+	/**
+	 * This method is for paging
+	 * @author Abir
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/process/errorResult.htm", method = RequestMethod.GET)
+	public @ResponseBody String errorResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		System.out.println("Enter: coCheckResult()");
+		long t1 = System.currentTimeMillis();
+		TascDAOImpl stageDao = new TascDAOImpl();
+    	SearchProcess process = (SearchProcess)request.getSession().getAttribute("errorTrackingTO");
+    	String searchParameter = request.getParameter("sSearch");
+    	if(searchParameter != null){
+    		process.setSearchParam(searchParameter);
+    	}
+    	long totalRecordCount = stageDao.getTotalRecordCountWin(process);
+    	
+    	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
+    	long pageNumber = 0;
+    	if (null != request.getParameter("iDisplayStart")){
+    		pageNumber = (Long.parseLong(request.getParameter("iDisplayStart"))/pageDisplayLength)+1;
+    	}
+    	
+    	process.setPageNumber(pageNumber);
+    	process.setPageDisplayLength(pageDisplayLength);
+    	
+    	String sortEcho = request.getParameter("sEcho");
+        String sortCol = request.getParameter("iSortCol_0");
+        String sortDir = request.getParameter("sSortDir_0");
+        process.setSortCol(sortCol);
+        process.setSortDir(sortDir);
+		
+        //TO DO
+		List<ErrorDetailsWinTO> errorDetailsWinTOList = null;//stageDao.getResultWin(process);
+    	
+		ErrorWinJsonObject errorJsonObject = new ErrorWinJsonObject();
+		errorJsonObject.setiTotalDisplayRecords(totalRecordCount);
+		errorJsonObject.setiTotalRecords(totalRecordCount);
+		errorJsonObject.setAaData(errorDetailsWinTOList);
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String jsonStr = gson.toJson(errorJsonObject);
+		response.setContentType("application/json");
+		response.getWriter().write(jsonStr);
+		long t2 = System.currentTimeMillis();
+		System.out.println("Exit: coCheckResult() took time: " + String.valueOf(t2 - t1) + "ms");
+		return null;			
 	}
 	
 }

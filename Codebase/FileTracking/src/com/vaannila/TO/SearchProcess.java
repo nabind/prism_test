@@ -54,7 +54,35 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String status;
 	private String studentBioId;
 	private String subtestId;
+	private String DRCStudentId;
+	private String DRCDocumentId;
+	private String errorDateFrom;
+	private String errorDateTo;
 	
+	public String getDRCStudentId() {
+		return DRCStudentId;
+	}
+	public void setDRCStudentId(String dRCStudentId) {
+		DRCStudentId = dRCStudentId;
+	}
+	public String getDRCDocumentId() {
+		return DRCDocumentId;
+	}
+	public void setDRCDocumentId(String dRCDocumentId) {
+		DRCDocumentId = dRCDocumentId;
+	}
+	public String getErrorDateFrom() {
+		return errorDateFrom;
+	}
+	public void setErrorDateFrom(String errorDateFrom) {
+		this.errorDateFrom = errorDateFrom;
+	}
+	public String getErrorDateTo() {
+		return errorDateTo;
+	}
+	public void setErrorDateTo(String errorDateTo) {
+		this.errorDateTo = errorDateTo;
+	}
 	public String getStudentBioId() {
 		return studentBioId;
 	}
