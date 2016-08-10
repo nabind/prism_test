@@ -254,50 +254,61 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     
       -- Storing the Org & Student Information
       -- Into a Object Array
-      SELECT ORG_DETAILS_OBJ(STUDENT_BIO_ID,
-                             A.CUSTOMERID,
-                             OND.ORG_NODE_NAME,
-                             (SELECT DISTINCT ORG_LABEL
-                                FROM ORG_TP_STRUCTURE A, TEST_PROGRAM B
-                               WHERE A.TP_ID = B.TP_ID
-                                 AND B.CUSTOMERID = P_CUSTOMERID
-                                 AND A.ORG_LEVEL = OND.ORG_NODE_LEVEL),
-                             OND.ORG_NODE_LEVEL,
-                             OND.ORG_NODEID,
-                             OLNK.ORG_LSTNODEID,
-                             ORG_NODE_CODE,
-                             INT_STUDENT_ID,
-                             TEST_ELEMENT_ID,
-                             A.BARCODE,
-                             (SELECT DISTINCT FORMID
-                                FROM SUBTEST_SCORE_FACT SCR
-                               WHERE SCR.STUDENT_BIO_ID = A.STUDENT_BIO_ID),
-                             LITHOCODE,
-                             EXT_STUDENT_ID,
-                             LAST_NAME,
-                             FIRST_NAME,
-                             MIDDLE_NAME,
-                             BIRTHDATE,
-                             (SELECT GENDER_CODE
-                                FROM GENDER_DIM F
-                               WHERE A.GENDERID = F.GENDERID),
-                             COUNT(1) OVER(PARTITION BY ORG_LSTNODEID),
-                             TO_CHAR(A.CREATED_DATE_TIME, 'YYYYMMDDHH24MISS'),
-                             TO_CHAR(A.UPDATED_DATE_TIME, 'YYYYMMDDHH24MISS')) BULK COLLECT
-        INTO LV_ORGDETAILS_ARR
-        FROM STUDENT_BIO_DIM A, ORG_NODE_DIM OND, ORG_LSTNODE_LINK OLNK
-       WHERE A.ORG_NODEID = OLNK.ORG_LSTNODEID
-         AND OLNK.ORG_NODEID = OND.ORG_NODEID
-            --AND TRUNC(A.UPDATED_DATE_TIME) >= TRUNC(SYSDATE - P_DATE_OFFSET)
-         AND COALESCE(TRUNC(A.UPDATED_DATE_TIME),
-                      TRUNC(A.CREATED_DATE_TIME)) >=
-             TRUNC(LV_EXTRACT_START_DATE)
-         AND COALESCE(TRUNC(A.UPDATED_DATE_TIME),
-                      TRUNC(A.CREATED_DATE_TIME)) <=
-             TRUNC(LV_EXTRACT_END_DATE)
-         AND A.CUSTOMERID = P_CUSTOMERID
-      
-       ORDER BY STUDENT_BIO_ID, ORG_NODE_LEVEL;
+      -- Added State code
+          SELECT ORG_DETAILS_OBJ(A.STUDENT_BIO_ID,
+                           A.CUSTOMERID,
+                           OND.ORG_NODE_NAME,
+                           (SELECT DISTINCT ORG_LABEL
+                              FROM ORG_TP_STRUCTURE A, TEST_PROGRAM B
+                             WHERE A.TP_ID = B.TP_ID
+                               AND B.CUSTOMERID = P_CUSTOMERID
+                               AND A.ORG_LEVEL = OND.ORG_NODE_LEVEL),
+                           OND.ORG_NODE_LEVEL,
+                           OND.ORG_NODEID,
+                           OLNK.ORG_LSTNODEID,
+                           ORG_NODE_CODE,
+                           INT_STUDENT_ID,
+                           TEST_ELEMENT_ID,
+                           A.BARCODE,
+                           (SELECT DISTINCT FORMID
+                              FROM SUBTEST_SCORE_FACT SCR
+                             WHERE SCR.STUDENT_BIO_ID = A.STUDENT_BIO_ID),
+                           A.LITHOCODE,
+                           EXT_STUDENT_ID,
+                           A.LAST_NAME,
+                           A.FIRST_NAME,
+                           A.MIDDLE_NAME,
+                           A.BIRTHDATE,
+                           (SELECT GENDER_CODE
+                              FROM GENDER_DIM F
+                             WHERE A.GENDERID = F.GENDERID),
+                           COUNT(1) OVER(PARTITION BY ORG_LSTNODEID),
+                           TO_CHAR(A.CREATED_DATE_TIME, 'YYYYMMDDHH24MISS'),
+                           TO_CHAR(A.UPDATED_DATE_TIME, 'YYYYMMDDHH24MISS'),
+                           (SELECT CUSTOMER_CODE
+                              FROM CUSTOMER_INFO C
+                             WHERE C.CUSTOMERID = A.CUSTOMERID),
+                           NVL(RI.STUDENT_REGID,''),
+                           NVL(DI.STUDENT_DOCID,''),
+                           NVL(DI.TCA_SCHEDULED_DATE,'')) BULK COLLECT
+      INTO LV_ORGDETAILS_ARR
+      FROM STUDENT_BIO_DIM  A,
+           ORG_NODE_DIM     OND,
+           ORG_LSTNODE_LINK OLNK,
+           STUDENT_REG_INFO RI,
+           STUDENT_DOC_INFO DI
+     WHERE A.ORG_NODEID = OLNK.ORG_LSTNODEID
+       AND OLNK.ORG_NODEID = OND.ORG_NODEID
+          --AND TRUNC(A.UPDATED_DATE_TIME) >= TRUNC(SYSDATE - P_DATE_OFFSET)
+       AND COALESCE(TRUNC(A.UPDATED_DATE_TIME), TRUNC(A.CREATED_DATE_TIME)) >=
+           TRUNC(LV_EXTRACT_START_DATE)
+       AND COALESCE(TRUNC(A.UPDATED_DATE_TIME), TRUNC(A.CREATED_DATE_TIME)) <=
+           TRUNC(LV_EXTRACT_END_DATE)
+       AND A.CUSTOMERID = DI.CUSTOMERID(+)
+       AND DI.STUDENT_BIO_ID(+) = A.STUDENT_BIO_ID
+       AND DI.STUDENT_REGID = RI.STUDENT_REGID(+)
+       AND A.CUSTOMERID = P_CUSTOMERID      
+       ORDER BY A.STUDENT_BIO_ID, ORG_NODE_LEVEL;
     
       LV_XML := LV_XML || '<Org_List>' || CHR(13) || CHR(10);
     
@@ -621,16 +632,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                   ORG_TYPE,
                                   ORG_LEVEL,
                                   ORG_NODEID,
-                                  ORG_CODE
+                                  ORG_CODE,
+                                  STATECODE
                     FROM TABLE(LV_ORGDETAILS_ARR) A
                    WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID
                      AND CUSTOMERID = P_CUSTOMERID
                    ORDER BY ORG_LEVEL) LOOP
           LV_XML := LV_XML || '<Org_Node Org_Name="' || J.ORG_NAME ||
-                    '" Org_Type="' || J.ORG_TYPE || '" Org_Level="' ||
-                    TO_CHAR(J.ORG_LEVEL) || '" Org_Node_Id="' ||
-                    TO_CHAR(J.ORG_NODEID) || '" Org_Code="' || J.ORG_CODE ||
-                    '"/>' || CHR(13) || CHR(10);
+                    '" Org_Type="'  || J.ORG_TYPE || 
+                    '" Org_Level="' || TO_CHAR(J.ORG_LEVEL) || 
+                    '" Org_Node_Id="' || TO_CHAR(J.ORG_NODEID) || 
+                    '" Org_Code="' || J.ORG_CODE || 
+                    '" StateCode="' || J.STATECODE || '"/>' 
+                    || CHR(13) || CHR(10);
         END LOOP;
       
         LV_XML := LV_XML || '<Student_List>';
@@ -651,7 +665,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                   BIRTHDATE,
                                   GENDER,
                                   CREATED_DATE_TIME,
-                                  LAST_UPDATE_DATE_TIME
+                                  LAST_UPDATE_DATE_TIME,
+                                  DRCSTUDENT_ID,
+                                  DRCDocument_ID,
+                                  TCASCHEDULEDATE
                     FROM TABLE(LV_ORGDETAILS_ARR) A
                    WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID) LOOP
           CNT := CNT + 1;
@@ -671,18 +688,20 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
           CHR(13) || CHR(10);*/
         
           LV_XML := LV_XML || CHR(13) || CHR(10) ||
-                    '<Student_Details Test_ElementID="' ||
-                    K.TEST_ELEMENT_ID || '" ' || 'CTB_STDID="' ||
-                    TO_CHAR(K.STUDENT_BIO_ID) || '" ' || 'Intrnl_StdntID="' ||
-                    K.INT_STUDENT_ID || '" ' || 'Litho_Code="' ||
-                    K.LITHOCODE || '" ' || 'Examinee_Id="' ||
-                    K.EXT_STUDENT_ID || '" ' || 'Last_Name="' ||
-                    K.LAST_NAME || '" ' || 'First_Name="' || K.FIRST_NAME || '" ' ||
-                    'Middle_Initial="' || K.MIDDLE_NAME || '" ' ||
-                    'Birth_Date="' || K.BIRTHDATE || '" ' || 'Gender="' ||
-                    K.GENDER || '" ' || 'Created_Date_Time="' ||
-                    K.CREATED_DATE_TIME || '" ' ||
-                    'Last_Updated_Date_Time="' || K.LAST_UPDATE_DATE_TIME || '" ' || '>' ||
+                    '<Student_Details Test_ElementID="' ||  K.TEST_ELEMENT_ID || 
+                    '" ' || 'CTB_STDID="' || TO_CHAR(K.STUDENT_BIO_ID) ||
+                    '" ' || 'DRCStudent_ID="' || K.DRCSTUDENT_ID ||
+                    '" ' || 'Intrnl_StdntID="' || K.INT_STUDENT_ID ||
+                    '" ' || 'Litho_Code="' || K.LITHOCODE ||
+                    '" ' || 'Examinee_Id="' || K.EXT_STUDENT_ID ||
+                    '" ' || 'Last_Name="' ||  K.LAST_NAME ||
+                    '" ' || 'First_Name="' || K.FIRST_NAME || 
+                    '" ' || 'Middle_Initial="' || K.MIDDLE_NAME || 
+                    '" ' || 'Birth_Date="' || K.BIRTHDATE || 
+                    '" ' || 'Gender="' || K.GENDER ||
+                    '" ' || 'Created_Date_Time="' || K.CREATED_DATE_TIME || 
+                    '" ' || 'Last_Updated_Date_Time="' || K.LAST_UPDATE_DATE_TIME || 
+                    '" ' || '>' ||
                     CHR(13) || CHR(10);
         
           LV_XML := LV_XML || '<Student_Demo_Details>' || CHR(13) ||
@@ -766,9 +785,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
             IF CONTENT_DET.SUBTEST_CODE IN (3, 7) THEN
             
               LV_XML := LV_XML || '<Content_Details Content_Name="' ||
-                        CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
-                        CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
-                        CONTENT_DET.TEST_DATE || '">' || CHR(13) || CHR(10);
+                                              CONTENT_DET.SUBTEST_NAME || 
+                        '" Content_Code="' ||  CONTENT_DET.SUBTEST_CODE || 
+                        '" DateTestTaken="' || CONTENT_DET.TEST_DATE ||
+                        '" DRCDocument_ID="' || K.DRCDocument_ID ||
+                        '" TCAScheduleDate="' || K.TCASCHEDULEDATE ||                          
+                        '">' || CHR(13) || CHR(10);
             ELSE
               LV_ER_XML := NULL;
             
@@ -785,9 +807,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
               END LOOP;
             
               LV_XML := LV_XML || '<Content_Details Content_Name="' ||
-                        CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
-                        CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
-                        CONTENT_DET.TEST_DATE || LV_ER_XML || '">' ||
+                               CONTENT_DET.SUBTEST_NAME || 
+                        '" Content_Code="' || CONTENT_DET.SUBTEST_CODE || 
+                        '" DateTestTaken="' || CONTENT_DET.TEST_DATE || 
+                        LV_ER_XML || 
+                        '" DRCDocument_ID="' || K.DRCDocument_ID ||
+                        '" TCAScheduleDate="' || K.TCASCHEDULEDATE ||
+                        '">' ||
                         CHR(13) || CHR(10);
             END IF;
           
