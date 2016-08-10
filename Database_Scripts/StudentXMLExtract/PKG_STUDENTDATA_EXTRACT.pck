@@ -1,12 +1,13 @@
 CREATE OR REPLACE PACKAGE PKG_STUDENTDATA_EXTRACT IS
 
-  TYPE REF_CURSOR IS REF CURSOR;  
+  TYPE REF_CURSOR IS REF CURSOR;
 
   PROCEDURE SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  IN NUMBER,
                                        P_DATE_OFFSET IN NUMBER DEFAULT 0,
                                        P_START_DATE  IN VARCHAR2,
                                        P_END_DATE    IN VARCHAR2,
-                                       P_FTP_MODE    IN VARCHAR2);
+                                       P_FTP_MODE    IN VARCHAR2,
+                                       P_USERID      IN NUMBER);
 
   PROCEDURE SP_STUDENTDATA_EXTRACT_WRAPPER;
 
@@ -17,20 +18,23 @@ CREATE OR REPLACE PACKAGE PKG_STUDENTDATA_EXTRACT IS
                                           IN_DATE_OFFSET IN NUMBER,
                                           IN_START_DATE  IN VARCHAR2,
                                           IN_END_DATE    IN VARCHAR2);
-  
+
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_ONLINE(IN_CUSTOMERID  IN NUMBER,
-                                          IN_DATE_OFFSET IN NUMBER,
-                                          IN_START_DATE  IN VARCHAR2,
-                                          IN_END_DATE    IN VARCHAR2);                                          
+                                           IN_DATE_OFFSET IN NUMBER,
+                                           IN_START_DATE  IN VARCHAR2,
+                                           IN_END_DATE    IN VARCHAR2,
+                                           IN_USERID      IN NUMBER);
 
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_WEEKLY;
-  
-  PROCEDURE SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID IN NUMBER, IN_CUSTOMERID NUMBER , lv_ER_demo_CODE_det_typ IN OUT NOCOPY ER_demo_CODE_det_typ )  ; 
-  
-  PROCEDURE SP_GET_CLOB_XML_FILE( P_IN_JOB             IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
-                                  P_IN_CUSTOMERID      IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
-                                  P_OUT_REF_CURSOR     OUT REF_CURSOR,
-                                  P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
+
+  PROCEDURE SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID       IN NUMBER,
+                                       IN_CUSTOMERID           NUMBER,
+                                       LV_ER_DEMO_CODE_DET_TYP IN OUT NOCOPY ER_DEMO_CODE_DET_TYP);
+
+  PROCEDURE SP_GET_CLOB_XML_FILE(P_IN_JOB            IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
+                                 P_IN_CUSTOMERID     IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
+                                 P_OUT_REF_CURSOR    OUT REF_CURSOR,
+                                 P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 END PKG_STUDENTDATA_EXTRACT;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
@@ -39,7 +43,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                        P_DATE_OFFSET NUMBER DEFAULT 0,
                                        P_START_DATE  IN VARCHAR2,
                                        P_END_DATE    IN VARCHAR2,
-                                       P_FTP_MODE    IN VARCHAR2) IS
+                                       P_FTP_MODE    IN VARCHAR2,
+                                       P_USERID      IN NUMBER) IS
     LV_XML           CLOB := NULL;
     LV_XML1          CLOB := NULL;
     LV_CUSTOMER_NAME VARCHAR2(30);
@@ -63,22 +68,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     LV_STUDENT_DEMO_DET_ARR     STUDENT_DEMO_DET_TYP := STUDENT_DEMO_DET_TYP();
     LV_SUBOBJITM_SCR_DET_ARR    SUBOBJITM_SCR_DETAILS_TYP := SUBOBJITM_SCR_DETAILS_TYP();
     LV_SUBOBJITM_SCR_DET_ARR_CS SUBOBJITM_SCR_DETAILS_TYP := SUBOBJITM_SCR_DETAILS_TYP();
-    
-   -- lv_democode VARCHAR2(40);
+  
+    -- lv_democode VARCHAR2(40);
     --lv_demoval  VARCHAR2(40);
-    LV_ER_XML VARCHAR2(4000);
-    lv_barcode STUDENT_BIO_DIM.BARCODE%TYPE; 
-    lv_formname FORM_DIM.FORM_NAME%TYPE; 
-    
-     LV_ER_demo_CODE_det_typ_Arr ER_demo_CODE_det_typ:= ER_demo_CODE_det_typ(); 
+    LV_ER_XML   VARCHAR2(4000);
+    LV_BARCODE  STUDENT_BIO_DIM.BARCODE%TYPE;
+    LV_FORMNAME FORM_DIM.FORM_NAME%TYPE;
+  
+    LV_ER_DEMO_CODE_DET_TYP_ARR ER_DEMO_CODE_DET_TYP := ER_DEMO_CODE_DET_TYP();
     --cnt NUMBER:=0  ;
   BEGIN
+   ---DELETE THE DUPLICATE RECORDS FROM DEMO TABLES
+    SP_CLEAN_DUPLICATE_DEMO;
+  
     DBMS_OUTPUT.PUT_LINE('1');
     SELECT CUST.CUSTOMER_CODE
       INTO LV_CUSTOMER_CODE
       FROM CUSTOMER_INFO CUST
      WHERE CUST.CUSTOMERID = P_CUSTOMERID;
   
+   
     SELECT U.USERID
       INTO LV_USERID
       FROM USERS U, ORG_USERS OU, ORG_NODE_DIM ORG, USER_ROLE UR
@@ -90,6 +99,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
        AND ORG.CUSTOMERID = P_CUSTOMERID
        AND ORG.ORG_NODE_LEVEL = 1
        AND ROWNUM = 1;
+       
+    IF  P_FTP_MODE = 'OL' THEN   
+       LV_USERID := P_USERID;
+    END IF;   
     /*
     SELECT USERID
             INTO LV_USERID
@@ -103,7 +116,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
      WHERE DIRECTORY_NAME = LV_DIRECTORY_NAME;
   
     IF (P_DATE_OFFSET >= 0 AND P_START_DATE = 'NA' AND P_END_DATE = 'NA' AND
-       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O'  OR P_FTP_MODE = 'OL')) THEN
+       (P_FTP_MODE = 'D' OR P_FTP_MODE = 'O' OR P_FTP_MODE = 'OL')) THEN
     
       LV_EXTRACT_START_DATE := TRUNC(SYSDATE - P_DATE_OFFSET);
       LV_EXTRACT_END_DATE   := TRUNC(SYSDATE);
@@ -148,18 +161,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
   
     LV_JOB_ID := JOB_SEQ.NEXTVAL;
     DBMS_OUTPUT.PUT_LINE('LV_JOB_ID' || LV_JOB_ID);
-    
+  
     IF (P_FTP_MODE = 'W') THEN
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCWEEKLY_STUDENTDATAFILE_' ||
                       TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
     ELSIF (P_FTP_MODE = 'OL') THEN
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCONLINE_STUDENTDATAFILE_' ||
-                      TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') || '.xml';    
+                      TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') || '.xml';
     ELSE
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASC_STUDENTDATAFILE_' ||
                       TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
     END IF;
-    
+  
     INSERT INTO JOB_TRACKING
       (JOB_ID,
        USERID,
@@ -254,10 +267,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                              OLNK.ORG_LSTNODEID,
                              ORG_NODE_CODE,
                              INT_STUDENT_ID,
-                             TEST_ELEMENT_ID, 
-                             a.barcode, 
-                             (SELECT DISTINCT formid FROM subtest_score_fact scr 
-                             WHERE scr.student_bio_id  = a.student_bio_id), 
+                             TEST_ELEMENT_ID,
+                             A.BARCODE,
+                             (SELECT DISTINCT FORMID
+                                FROM SUBTEST_SCORE_FACT SCR
+                               WHERE SCR.STUDENT_BIO_ID = A.STUDENT_BIO_ID),
                              LITHOCODE,
                              EXT_STUDENT_ID,
                              LAST_NAME,
@@ -334,8 +348,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                    AND D.DEMO_CODE NOT IN
                        ('Exmne_Progrs', 'Addi_Qstn', 'Race_Native',
                         'Race_Asian', 'Race_Black', 'Race_Pacific',
-                        'Race_White','Test_Form','Fld_Tst_Form','Ethnicity',
-                        'Stdnt_Tasc_Rd')
+                        'Race_White', 'Test_Form', 'Fld_Tst_Form',
+                        'Ethnicity', 'Stdnt_Tasc_Rd')
                    AND SDV.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
                    AND STD.CUSTOMERID = P_CUSTOMERID
                    AND STD.CUSTOMERID = D.CUSTOMERID
@@ -370,9 +384,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                    AND SSDV.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
                    AND STD.CUSTOMERID = P_CUSTOMERID
                    AND STD.CUSTOMERID = D.CUSTOMERID
-                   AND d.demo_code NOT IN ('Cont_Tst_Cd_Math','Cont_Tst_Cd_Sci','Cont_Tst_Cd_Read',
-'Cont_Tst_Cd_Sc' ,
-'Cont_Tst_Cd_Wrt')
+                   AND D.DEMO_CODE NOT IN
+                       ('Cont_Tst_Cd_Math', 'Cont_Tst_Cd_Sci',
+                        'Cont_Tst_Cd_Read', 'Cont_Tst_Cd_Sc',
+                        'Cont_Tst_Cd_Wrt')
                    AND STD.STUDENT_BIO_ID IN
                        (SELECT DISTINCT STUDENT_BIO_ID
                           FROM TABLE(LV_ORGDETAILS_ARR) A
@@ -399,13 +414,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                          OBJ_VW.SCORE_TYPE,
                                          OBJ_VW.SCORE_VALUE,
                                          OBJ_VW.NT_ALL_ATTMPT,
-                                          /* ITM_VW.ITEM_TYPE,
-                                         ITM_VW.ITEM_CODE,
-                                          ITM_VW.SCORE_VALUES
-                                          Commented out by Debashis for TD81091*/
-                                          NULL,
-                                          NULL,
-                                          NULL) BULK COLLECT
+                                         /* ITM_VW.ITEM_TYPE,
+                                                                                  ITM_VW.ITEM_CODE,
+                                                                                   ITM_VW.SCORE_VALUES
+                                                                                   Commented out by Debashis for TD81091*/
+                                         NULL,
+                                         NULL,
+                                         NULL) BULK COLLECT
           INTO LV_SUBOBJITM_SCR_DET_ARR
           FROM (SELECT SCR.STUDENT_BIO_ID,
                        SD.SUBTESTID,
@@ -463,7 +478,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                               '6',
                               'SUP',
                               '8',
-                             'SIP',
+                              'SIP',
                               NCE) AS SCR_STR
                 
                   FROM SUBTEST_DIM        SD,
@@ -492,29 +507,29 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                  WHERE OS.OBJECTIVEID = O.OBJECTIVEID
                    AND OS.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
                    AND OS.ORG_NODEID = STD.ORG_NODEID
-                 ORDER BY O.OBJECTIVE_CODE) OBJ_VW/*,
-               
-               (SELECT ISF.STUDENT_BIO_ID,
-                       ISF.SUBTESTID,
-                       STD.CUSTOMERID,
-                       I.ITEM_TYPE,
-                       I.ITEM_CODE,
-                       ISF.SCORE_VALUES
-                  FROM ITEM_SCORE_FACT ISF,
-                       ITEMSET_DIM     I,
-                       STUDENT_BIO_DIM STD
-                 WHERE ISF.ITEMSETID = I.ITEMSETID
-                   AND ISF.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                   AND ISF.ORG_NODEID = STD.ORG_NODEID) ITM_VW-- 
-                   Commented out by Debashis for TD81091*/
+                 ORDER BY O.OBJECTIVE_CODE) OBJ_VW /*,
+                       
+                       (SELECT ISF.STUDENT_BIO_ID,
+                               ISF.SUBTESTID,
+                               STD.CUSTOMERID,
+                               I.ITEM_TYPE,
+                               I.ITEM_CODE,
+                               ISF.SCORE_VALUES
+                          FROM ITEM_SCORE_FACT ISF,
+                               ITEMSET_DIM     I,
+                               STUDENT_BIO_DIM STD
+                         WHERE ISF.ITEMSETID = I.ITEMSETID
+                           AND ISF.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
+                           AND ISF.ORG_NODEID = STD.ORG_NODEID) ITM_VW-- 
+                           Commented out by Debashis for TD81091*/
         
          WHERE SUBTEST_VW.STUDENT_BIO_ID = OBJ_VW.STUDENT_BIO_ID
            AND SUBTEST_VW.SUBTESTID = OBJ_VW.SUBTESTID
            AND SUBTEST_VW.CUSTOMERID = OBJ_VW.CUSTOMERID
-           /* AND SUBTEST_VW.STUDENT_BIO_ID = ITM_VW.STUDENT_BIO_ID
-           AND SUBTEST_VW.SUBTESTID = ITM_VW.SUBTESTID
-           AND SUBTEST_VW.CUSTOMERID = ITM_VW.CUSTOMERID 
-           Commented out by Debashis for TD 81091*/
+              /* AND SUBTEST_VW.STUDENT_BIO_ID = ITM_VW.STUDENT_BIO_ID
+                         AND SUBTEST_VW.SUBTESTID = ITM_VW.SUBTESTID
+                         AND SUBTEST_VW.CUSTOMERID = ITM_VW.CUSTOMERID 
+                         Commented out by Debashis for TD 81091*/
            AND SUBTEST_VW.STUDENT_BIO_ID IN
                (SELECT DISTINCT STUDENT_BIO_ID
                   FROM TABLE(LV_ORGDETAILS_ARR) A
@@ -523,83 +538,83 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
         --Added by Indranil for ELA & OVC 
         --Removed by debashis on 12/02/2015 as this is not required  
       
-       /* SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
-                                         SUBTEST_VW.SUBTESTID,
-                                         SUBTEST_VW.CUSTOMERID,
-                                         SUBTEST_VW.SUBTEST_NAME,
-                                         SUBTEST_VW.SUBTEST_CODE,
-                                         SUBTEST_VW.TEST_DATE,
-                                         SUBTEST_VW.SCR_STR,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         NULL) BULK COLLECT
-          INTO LV_SUBOBJITM_SCR_DET_ARR_CS
-          FROM (SELECT SCR.STUDENT_BIO_ID,
-                       SD.SUBTESTID,
-                       STD.CUSTOMERID,
-                       (SELECT CONTENT_NAME
-                          FROM CONTENT_DIM CD
-                         WHERE CD.CONTENTID = SD.CONTENTID) AS SUBTEST_NAME,
-                       SUBTEST_CODE,
-                       TO_CHAR(TEST_DATE, 'MMDDYY') TEST_DATE,
-                       'SS:' || DECODE(SCR.STATUS_CODE,
-                                       '3',
-                                       'OM',
-                                       '5',
-                                       'INV',
-                                       '6',
-                                       'SUP',
-                                       '7',
-                                       'NA',
-                                       SS) || '|' || 'HSE:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '7',
-                              'NA',
-                              HSE) || '|' || 'PR:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '7',
-                              'NA',
-                              PR) || '|' || 'NCE:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '7',
-                              'NA',
-                              NCE) AS SCR_STR
-                
-                  FROM SUBTEST_DIM        SD,
-                       SUBTEST_SCORE_FACT SCR,
-                       STUDENT_BIO_DIM    STD
-                 WHERE SD.SUBTESTID = SCR.SUBTESTID
-                   AND SCR.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                 --  AND SD.SUBTESTID IN (2003, 2007) THis Ids will change in SCB 
-                 AND sd.subtestid IN (SELECT subtestid FROM subtest_dim WHERE subtest_code IN ('3','7'))
-                   AND SCR.ORG_NODEID = STD.ORG_NODEID
-                   AND STD.STUDENT_BIO_ID IN
-                       (SELECT DISTINCT STUDENT_BIO_ID
-                          FROM TABLE(LV_ORGDETAILS_ARR) A
-                         WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID)) SUBTEST_VW;*/
+        /* SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
+                                       SUBTEST_VW.SUBTESTID,
+                                       SUBTEST_VW.CUSTOMERID,
+                                       SUBTEST_VW.SUBTEST_NAME,
+                                       SUBTEST_VW.SUBTEST_CODE,
+                                       SUBTEST_VW.TEST_DATE,
+                                       SUBTEST_VW.SCR_STR,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       NULL) BULK COLLECT
+        INTO LV_SUBOBJITM_SCR_DET_ARR_CS
+        FROM (SELECT SCR.STUDENT_BIO_ID,
+                     SD.SUBTESTID,
+                     STD.CUSTOMERID,
+                     (SELECT CONTENT_NAME
+                        FROM CONTENT_DIM CD
+                       WHERE CD.CONTENTID = SD.CONTENTID) AS SUBTEST_NAME,
+                     SUBTEST_CODE,
+                     TO_CHAR(TEST_DATE, 'MMDDYY') TEST_DATE,
+                     'SS:' || DECODE(SCR.STATUS_CODE,
+                                     '3',
+                                     'OM',
+                                     '5',
+                                     'INV',
+                                     '6',
+                                     'SUP',
+                                     '7',
+                                     'NA',
+                                     SS) || '|' || 'HSE:' ||
+                     DECODE(SCR.STATUS_CODE,
+                            '3',
+                            'OM',
+                            '5',
+                            'INV',
+                            '6',
+                            'SUP',
+                            '7',
+                            'NA',
+                            HSE) || '|' || 'PR:' ||
+                     DECODE(SCR.STATUS_CODE,
+                            '3',
+                            'OM',
+                            '5',
+                            'INV',
+                            '6',
+                            'SUP',
+                            '7',
+                            'NA',
+                            PR) || '|' || 'NCE:' ||
+                     DECODE(SCR.STATUS_CODE,
+                            '3',
+                            'OM',
+                            '5',
+                            'INV',
+                            '6',
+                            'SUP',
+                            '7',
+                            'NA',
+                            NCE) AS SCR_STR
+              
+                FROM SUBTEST_DIM        SD,
+                     SUBTEST_SCORE_FACT SCR,
+                     STUDENT_BIO_DIM    STD
+               WHERE SD.SUBTESTID = SCR.SUBTESTID
+                 AND SCR.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
+               --  AND SD.SUBTESTID IN (2003, 2007) THis Ids will change in SCB 
+               AND sd.subtestid IN (SELECT subtestid FROM subtest_dim WHERE subtest_code IN ('3','7'))
+                 AND SCR.ORG_NODEID = STD.ORG_NODEID
+                 AND STD.STUDENT_BIO_ID IN
+                     (SELECT DISTINCT STUDENT_BIO_ID
+                        FROM TABLE(LV_ORGDETAILS_ARR) A
+                       WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID)) SUBTEST_VW;*/
       
         -- Org Node Details
         FOR J IN (SELECT DISTINCT ORG_NAME,
@@ -620,9 +635,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
       
         LV_XML := LV_XML || '<Student_List>';
         --Student Details --
-
-        FOR K IN (SELECT DISTINCT STUDENT_BIO_ID AS STUDENT_BIO_ID,TEST_ELEMENT_ID,barcode, 
-               (SELECT form_name FROM form_dim b WHERE a.formid = b.formid) form_name,  
+      
+        FOR K IN (SELECT DISTINCT STUDENT_BIO_ID AS STUDENT_BIO_ID,
+                                  TEST_ELEMENT_ID,
+                                  BARCODE,
+                                  (SELECT FORM_NAME
+                                     FROM FORM_DIM B
+                                    WHERE A.FORMID = B.FORMID) FORM_NAME,
                                   INT_STUDENT_ID,
                                   LITHOCODE,
                                   EXT_STUDENT_ID,
@@ -631,14 +650,29 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                   MIDDLE_NAME,
                                   BIRTHDATE,
                                   GENDER,
-                                  Created_Date_Time,
-                                  Last_Update_Date_Time
+                                  CREATED_DATE_TIME,
+                                  LAST_UPDATE_DATE_TIME
                     FROM TABLE(LV_ORGDETAILS_ARR) A
                    WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID) LOOP
           CNT := CNT + 1;
-
-     /*     LV_XML := LV_XML || CHR(13) || CHR(10) ||
+        
+          /*     LV_XML := LV_XML || CHR(13) || CHR(10) ||
+          '<Student_Details Test_ElementID="' ||
+          TO_CHAR(K.STUDENT_BIO_ID) || '" ' || 'Intrnl_StdntID="' ||
+          K.INT_STUDENT_ID || '" ' || 'Litho_Code="' ||
+          K.LITHOCODE || '" ' || 'Examinee_Id="' ||
+          K.EXT_STUDENT_ID || '" ' || 'Last_Name="' ||
+          K.LAST_NAME || '" ' || 'First_Name="' || K.FIRST_NAME || '" ' ||
+          'Middle_Initial="' || K.MIDDLE_NAME || '" ' ||
+          'Birth_Date="' || K.BIRTHDATE || '" ' || 'Gender="' ||
+          K.GENDER || '" ' || 'Created_Date_Time="' ||
+          K.Created_Date_Time || '" ' ||
+          'Last_Updated_Date_Time="' || K.Last_Update_Date_Time || '" ' || '>' ||
+          CHR(13) || CHR(10);*/
+        
+          LV_XML := LV_XML || CHR(13) || CHR(10) ||
                     '<Student_Details Test_ElementID="' ||
+                    K.TEST_ELEMENT_ID || '" ' || 'CTB_STDID="' ||
                     TO_CHAR(K.STUDENT_BIO_ID) || '" ' || 'Intrnl_StdntID="' ||
                     K.INT_STUDENT_ID || '" ' || 'Litho_Code="' ||
                     K.LITHOCODE || '" ' || 'Examinee_Id="' ||
@@ -647,46 +681,32 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                     'Middle_Initial="' || K.MIDDLE_NAME || '" ' ||
                     'Birth_Date="' || K.BIRTHDATE || '" ' || 'Gender="' ||
                     K.GENDER || '" ' || 'Created_Date_Time="' ||
-                    K.Created_Date_Time || '" ' ||
-                    'Last_Updated_Date_Time="' || K.Last_Update_Date_Time || '" ' || '>' ||
-                    CHR(13) || CHR(10);*/
-                    
-            LV_XML := LV_XML || CHR(13) || CHR(10) ||
-                    '<Student_Details Test_ElementID="' ||K.TEST_ELEMENT_ID || '" ' 
-                    || 'CTB_STDID="' || to_char(K.STUDENT_BIO_ID)  || '" '||'Intrnl_StdntID="' ||
-                    K.INT_STUDENT_ID || '" ' || 'Litho_Code="' ||
-                    K.LITHOCODE || '" ' || 'Examinee_Id="' ||
-                    K.EXT_STUDENT_ID || '" ' || 'Last_Name="' ||
-                    K.LAST_NAME || '" ' || 'First_Name="' || K.FIRST_NAME || '" ' ||
-                    'Middle_Initial="' || K.MIDDLE_NAME || '" ' ||
-                    'Birth_Date="' || K.BIRTHDATE || '" ' || 'Gender="' ||
-                    K.GENDER || '" ' || 'Created_Date_Time="' ||
-                    K.Created_Date_Time || '" ' ||
-                    'Last_Updated_Date_Time="' || K.Last_Update_Date_Time || '" ' || '>' ||
+                    K.CREATED_DATE_TIME || '" ' ||
+                    'Last_Updated_Date_Time="' || K.LAST_UPDATE_DATE_TIME || '" ' || '>' ||
                     CHR(13) || CHR(10);
         
           LV_XML := LV_XML || '<Student_Demo_Details>' || CHR(13) ||
                     CHR(10);
-                    
+        
           ---Getting the Barcodeid and the form name -- 
-          
-/*          SELECT DISTINCT BARCODE,
-                          (SELECT FORM_NAME
-                             FROM FORM_DIM F_DIM
-                            WHERE F_DIM.FORMID = B.FORMID) FORM_NAME
-            INTO lv_barcode , lv_formname                
-            FROM STUDENT_BIO_DIM A, SUBTEST_SCORE_FACT B
-           WHERE A.STUDENT_BIO_ID = B.STUDENT_BIO_ID
-             AND A.STUDENT_BIO_ID = K.STUDENT_BIO_ID;*/
-          
-           LV_XML := LV_XML || '<Student_Demo Demo_Name= "Barcode_id' ||
-                        '" Demo_Value="' ||k.barcode||'"/>'||CHR(13) ||CHR(10); 
-                        
-            LV_XML := LV_XML || '<Student_Demo Demo_Name= "Test_Form' ||
-                        '" Demo_Value="' ||k.form_name||'"/>'||CHR(13)||CHR(10) ;              
-                        
-                              
-
+        
+          /*          SELECT DISTINCT BARCODE,
+                         (SELECT FORM_NAME
+                            FROM FORM_DIM F_DIM
+                           WHERE F_DIM.FORMID = B.FORMID) FORM_NAME
+           INTO lv_barcode , lv_formname                
+           FROM STUDENT_BIO_DIM A, SUBTEST_SCORE_FACT B
+          WHERE A.STUDENT_BIO_ID = B.STUDENT_BIO_ID
+            AND A.STUDENT_BIO_ID = K.STUDENT_BIO_ID;*/
+        
+          LV_XML := LV_XML || '<Student_Demo Demo_Name= "Barcode_id' ||
+                    '" Demo_Value="' || K.BARCODE || '"/>' || CHR(13) ||
+                    CHR(10);
+        
+          LV_XML := LV_XML || '<Student_Demo Demo_Name= "Test_Form' ||
+                    '" Demo_Value="' || K.FORM_NAME || '"/>' || CHR(13) ||
+                    CHR(10);
+        
           -- dbms_output.put_line('Start7   '||to_char(SYSDATE,'dd/mm/yyyy hh:mi:ss'));
           -- Student Demo Loop
           FOR DEMO_DET IN (SELECT DEMOCODE, DEMOVAL
@@ -698,17 +718,17 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                       REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(DEMO_DET.DEMOVAL,
                                                                       '<BLANK>',
                                                                       NULL),
-                                                              chr(38),
-                                                              chr(38) ||
+                                                              CHR(38),
+                                                              CHR(38) ||
                                                               'amp;'),
                                                       '<',
-                                                      chr(38) || 'lt;'),
+                                                      CHR(38) || 'lt;'),
                                               '>',
-                                              chr(38) || 'gt;'),
+                                              CHR(38) || 'gt;'),
                                       '"',
-                                      chr(38) || 'quot;'),
-                              chr(39),
-                              chr(38) || 'apos;') /*REPLACE(DEMO_DET.DEMOVAL, '<BLANK>', NULL)*/
+                                      CHR(38) || 'quot;'),
+                              CHR(39),
+                              CHR(38) || 'apos;') /*REPLACE(DEMO_DET.DEMOVAL, '<BLANK>', NULL)*/
                       || '"/>' || CHR(13) || CHR(10);
           END LOOP;
         
@@ -716,13 +736,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                     CHR(10);
         
           -------Till here it is working fine2 -----------------
-          
+        
           -- Added by Debashis for TD - 94 -- 
-          
-            SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID=> K.STUDENT_BIO_ID, IN_CUSTOMERID =>P_CUSTOMERID, 
-            lv_ER_demo_CODE_det_typ=> LV_ER_demo_CODE_det_typ_Arr) ;
-          
-
+        
+          SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID       => K.STUDENT_BIO_ID,
+                                     IN_CUSTOMERID           => P_CUSTOMERID,
+                                     LV_ER_DEMO_CODE_DET_TYP => LV_ER_DEMO_CODE_DET_TYP_ARR);
+        
           LV_XML := LV_XML || '<Content_List>' || CHR(13) || CHR(10);
         
           -- Content Loop with Subtest Score
@@ -742,38 +762,35 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                 FROM TABLE(LV_SUBOBJITM_SCR_DET_ARR_CS) B
                                WHERE B.STUDENT_BIO_ID = K.STUDENT_BIO_ID
                                ORDER BY SUBTEST_CODE) LOOP
-     
-      IF CONTENT_DET.SUBTEST_CODE IN (3,7) THEN 
-    
-            LV_XML := LV_XML || '<Content_Details Content_Name="' ||
-                      CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
-                      CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
-                      CONTENT_DET.TEST_DATE || '">' || CHR(13) || CHR(10); 
-      ELSE 
-          LV_ER_XML := NULL;  
           
+            IF CONTENT_DET.SUBTEST_CODE IN (3, 7) THEN
+            
+              LV_XML := LV_XML || '<Content_Details Content_Name="' ||
+                        CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
+                        CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
+                        CONTENT_DET.TEST_DATE || '">' || CHR(13) || CHR(10);
+            ELSE
+              LV_ER_XML := NULL;
+            
+              FOR ER_DEMO_VAL IN (SELECT ARR_TAB.DEMOCODE, ARR_TAB.DEMOVAL
+                                  -- INTO lv_democode , lv_demoval         
+                                    FROM TABLE(LV_ER_DEMO_CODE_DET_TYP_ARR) ARR_TAB
+                                   WHERE ARR_TAB.STUDENT_BIO_ID =
+                                         K.STUDENT_BIO_ID
+                                     AND ARR_TAB.SUBTESTID =
+                                         CONTENT_DET.SUBTESTID) LOOP
+                LV_ER_XML := LV_ER_XML || '" ' || ER_DEMO_VAL.DEMOCODE || '="' ||
+                             ER_DEMO_VAL.DEMOVAL;
+              
+              END LOOP;
+            
+              LV_XML := LV_XML || '<Content_Details Content_Name="' ||
+                        CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
+                        CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
+                        CONTENT_DET.TEST_DATE || LV_ER_XML || '">' ||
+                        CHR(13) || CHR(10);
+            END IF;
           
-          
-           FOR er_demo_val IN (  SELECT arr_tab.democode , 
-                   arr_tab.demoval 
-           -- INTO lv_democode , lv_demoval         
-            FROM table(LV_ER_demo_CODE_det_typ_Arr) arr_tab 
-            WHERE arr_tab.student_bio_id = K.STUDENT_BIO_ID 
-            AND  arr_tab.subtestid =  CONTENT_DET.subtestid ) 
-            LOOP 
-             LV_ER_XML:=LV_ER_XML|| '" '|| er_demo_val.democode||'="'||
-                       er_demo_val.demoval ; 
-                       
-                       
-            END LOOP ;  
-         
-      
-           LV_XML := LV_XML || '<Content_Details Content_Name="' ||
-                      CONTENT_DET.SUBTEST_NAME || '" Content_Code="' ||
-                      CONTENT_DET.SUBTEST_CODE || '" DateTestTaken="' ||
-                      CONTENT_DET.TEST_DATE ||LV_ER_XML|| '">' || CHR(13) || CHR(10);  
-      END IF ;                  
-
             LV_XML := LV_XML || '<Subtest_Accommodations>';
           
             -- Content Demo Accomodation Loop
@@ -850,28 +867,27 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                       CHR(10);
           
             -- Item Scrore Loop --
-            FOR ITEM_DET IN (/*SELECT DISTINCT ITEM_TYPE,
-                                             ITEM_CODE,
-                                             SCORE_VALUES
-                               FROM TABLE(LV_SUBOBJITM_SCR_DET_ARR) A
-                              WHERE A.STUDENT_BIO_ID = K.STUDENT_BIO_ID
-                                   --and ISF.SUBTESTID = content_det.subtestid
-                                AND A.SUBTESTID = CONTENT_DET.SUBTESTID*/
-                                SELECT ISF.STUDENT_BIO_ID,
-                       ISF.SUBTESTID,
-                       STD.CUSTOMERID,
-                       I.ITEM_TYPE,
-                       I.ITEM_CODE,
-                       ISF.SCORE_VALUES
-                  FROM ITEM_SCORE_FACT ISF,
-                       ITEMSET_DIM     I,
-                       STUDENT_BIO_DIM STD
-                 WHERE ISF.ITEMSETID = I.ITEMSETID
-                   AND ISF.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                   AND ISF.ORG_NODEID = STD.ORG_NODEID
-                   AND STD.STUDENT_BIO_ID = K.STUDENT_BIO_ID 
-                   AND ISF.SUBTESTID = CONTENT_DET.SUBTESTID) 
-                                LOOP
+            FOR ITEM_DET IN ( /*SELECT DISTINCT ITEM_TYPE,
+                                                                          ITEM_CODE,
+                                                                          SCORE_VALUES
+                                                            FROM TABLE(LV_SUBOBJITM_SCR_DET_ARR) A
+                                                           WHERE A.STUDENT_BIO_ID = K.STUDENT_BIO_ID
+                                                                --and ISF.SUBTESTID = content_det.subtestid
+                                                             AND A.SUBTESTID = CONTENT_DET.SUBTESTID*/
+                             SELECT ISF.STUDENT_BIO_ID,
+                                     ISF.SUBTESTID,
+                                     STD.CUSTOMERID,
+                                     I.ITEM_TYPE,
+                                     I.ITEM_CODE,
+                                     ISF.SCORE_VALUES
+                               FROM ITEM_SCORE_FACT ISF,
+                                     ITEMSET_DIM     I,
+                                     STUDENT_BIO_DIM STD
+                              WHERE ISF.ITEMSETID = I.ITEMSETID
+                                AND ISF.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
+                                AND ISF.ORG_NODEID = STD.ORG_NODEID
+                                AND STD.STUDENT_BIO_ID = K.STUDENT_BIO_ID
+                                AND ISF.SUBTESTID = CONTENT_DET.SUBTESTID) LOOP
               LV_XML := LV_XML || '<Item_Response Item_Set_Type = "' ||
                         ITEM_DET.ITEM_TYPE || '" Item_Code="' ||
                         ITEM_DET.ITEM_CODE || '" Value="' ||
@@ -907,7 +923,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     
     END IF;
   
-/*    IF (P_FTP_MODE = 'W') THEN
+    /*    IF (P_FTP_MODE = 'W') THEN
       LV_FILE_NAME := LV_CUSTOMER_CODE || 'TASCWEEKLY_STUDENTDATAFILE_' ||
                       TO_CHAR(SYSDATE, 'YYYYMMDD') || '.xml';
     ELSIF (P_FTP_MODE = 'OL') THEN
@@ -919,15 +935,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     END IF;*/
   
     IF (P_FTP_MODE <> 'OL') THEN
-       DBMS_XSLPROCESSOR.CLOB2FILE(LV_XML1, LV_DIRECTORY_NAME, LV_FILE_NAME);
-    END IF;       
+      DBMS_XSLPROCESSOR.CLOB2FILE(LV_XML1, LV_DIRECTORY_NAME, LV_FILE_NAME);
+    END IF;
   
     UPDATE JOB_TRACKING A
        SET --A.EXTRACT_ENDDATE   = SYSDATE,
-                    A.JOB_LOG = JOB_LOG || CHR(10) || CHR(13) ||
-                                TO_CHAR(SYSDATE, 'mm/dd/yyyy hh:mi:ss') ||
-                                '***TASC PRISM XML STUDENT DOWNLOAD IS COMPLETED *** ',
-           A.JOB_STATUS        = 'CO',
+             A.JOB_LOG = JOB_LOG || CHR(10) || CHR(13) ||
+                         TO_CHAR(SYSDATE, 'mm/dd/yyyy hh:mi:ss') ||
+                         '***TASC PRISM XML STUDENT DOWNLOAD IS COMPLETED *** ',
+           A.JOB_STATUS = 'CO',
            --A.REQUEST_FILENAME  = LV_FILE_NAME,
            A.UPDATED_DATE_TIME = SYSDATE
      WHERE JOB_ID = LV_JOB_ID;
@@ -991,7 +1007,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
          SYSDATE);
       COMMIT;
     WHEN OTHERS THEN
-      LV_XML1    := 'There are Errors in XML: Error id --> '||dbms_utility.format_error_backtrace;
+      LV_XML1    := 'There are Errors in XML: Error id --> ' ||
+                    DBMS_UTILITY.FORMAT_ERROR_BACKTRACE;
       LV_ERR_MSG := SQLERRM || ' : Backtrace : ' ||
                     DBMS_UTILITY.FORMAT_ERROR_BACKTRACE;
     
@@ -1041,19 +1058,21 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                  P_DATE_OFFSET => 1,
                                  P_START_DATE  => 'NA',
                                  P_END_DATE    => 'NA',
-                                 P_FTP_MODE    => 'D');
+                                 P_FTP_MODE    => 'D',
+                                 P_USERID      => 0);
     END LOOP;
   END;
 
   PROCEDURE SP_CUSTOMER_STUDENT_EXTRACT(IN_CUSTOMERID  IN NUMBER,
                                         IN_DATE_OFFSET IN NUMBER) IS
   BEGIN
-
+  
     SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  => IN_CUSTOMERID,
                                P_DATE_OFFSET => IN_DATE_OFFSET,
                                P_START_DATE  => 'NA',
                                P_END_DATE    => 'NA',
-                               P_FTP_MODE    => 'O');
+                               P_FTP_MODE    => 'O',
+                               P_USERID      => 0);
   END;
 
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_RANGE(IN_CUSTOMERID  IN NUMBER,
@@ -1063,30 +1082,32 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
   BEGIN
     /* insert into temp (abc) values (IN_START_DATE);
     commit; */
-
+  
     SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  => IN_CUSTOMERID,
                                P_DATE_OFFSET => -1,
                                P_START_DATE  => IN_START_DATE,
                                P_END_DATE    => IN_END_DATE,
-                               P_FTP_MODE    => 'R');
+                               P_FTP_MODE    => 'R',
+                               P_USERID      => 0);
     /*    insert into temp (abc) values (IN_END_DATE);
     commit; */
   END;
-  
-  
+
   PROCEDURE SP_CUSTOMER_STD_EXTRACT_ONLINE(IN_CUSTOMERID  IN NUMBER,
-                                          IN_DATE_OFFSET IN NUMBER,
-                                          IN_START_DATE  IN VARCHAR2,
-                                          IN_END_DATE    IN VARCHAR2) IS
+                                           IN_DATE_OFFSET IN NUMBER,
+                                           IN_START_DATE  IN VARCHAR2,
+                                           IN_END_DATE    IN VARCHAR2,
+                                           IN_USERID      IN NUMBER) IS
   BEGIN
     /* insert into temp (abc) values (IN_START_DATE);
     commit; */
-
+  
     SP_STUDENTDATA_EXTRACT_XML(P_CUSTOMERID  => IN_CUSTOMERID,
                                P_DATE_OFFSET => IN_DATE_OFFSET,
                                P_START_DATE  => IN_START_DATE,
                                P_END_DATE    => IN_END_DATE,
-                               P_FTP_MODE    => 'OL');
+                               P_FTP_MODE    => 'OL',
+                               P_USERID      => IN_USERID);
     /*    insert into temp (abc) values (IN_END_DATE);
     commit; */
   END;
@@ -1103,109 +1124,111 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                  P_DATE_OFFSET => -1,
                                  P_START_DATE  => 'NA',
                                  P_END_DATE    => 'NA',
-                                 P_FTP_MODE    => 'W');
+                                 P_FTP_MODE    => 'W',
+                                 P_USERID      => 0);
       /*    insert into temp (abc) values (IN_END_DATE);
       commit; */
     END LOOP;
   END;
-  
-  PROCEDURE SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID IN NUMBER, IN_CUSTOMERID NUMBER , 
-   lv_ER_demo_CODE_det_typ IN OUT NOCOPY ER_demo_CODE_det_typ )   
-  IS  
-  
-  BEGIN 
-SELECT ER_DEMO_CODE_DET_OBJ(STUDENT_BIO_ID,
-                            SUBTESTID,
-                            (SELECT DEMO_NAME
-                               FROM DEMOGRAPHIC DEMG
-                              WHERE DEMG.DEMOID = A.DEMOID),
-                            DEMO_VALUE,
-                            DATE_TEST_TAKEN) BULK COLLECT
-  INTO LV_ER_DEMO_CODE_DET_TYP
-  FROM STU_SUBTEST_DEMO_VALUES A
- WHERE DEMOID IN
-       (SELECT DEMOID
-          FROM DEMOGRAPHIC
-         WHERE CUSTOMERID = IN_CUSTOMERID
-           AND DEMO_CODE IN
-               ('Cont_Sch_Tp_Cd_Read', 'Cont_Sch_Tp_Cd_Wrt',
-                'Cont_Sch_Tp_Cd_Math', 'Cont_Sch_Tp_Cd_Sci',
-                'Cont_Sch_Tp_Cd_Sc', 'Cont_Tc_Cd_Read', 'Cont_Tc_Cd_Wrt',
-                'Cont_Tc_Cd_Math', 'Cont_Tc_Cd_Sci', 'Cont_Tc_Cd_Sc',
-                'Cont_Ecc_Read', 'Cont_Ecc_Wrt', 'Cont_Ecc_Math',
-                'Cont_Ecc_Sci', 'Cont_Ecc_Sc', 'Cont_Schld_Id_Read',
-                'Cont_Schld_Id_Wrt', 'Cont_Schld_Id_Math',
-                'Cont_Schld_Id_Sci', 'Cont_Schld_Id_Sc'/*,
-               
-                'Cont_Dt_Schld_Read', 'Cont_Dt_Schld_Wrt',
-                'Cont_Dt_Schld_Math', 'Cont_Dt_Schld_Sci', 'Cont_Dt_Schld_Sc'*/))
-   AND STUDENT_BIO_ID = IN_STUDENT_BIO_ID; 
-   
-   dbms_output.put_line('Outside '||LV_ER_DEMO_CODE_DET_TYP.count); 
-   
- /* IF    LV_ER_DEMO_CODE_DET_TYP.count = 0 THEN  
-  
-  dbms_output.put_line('Inside'); 
-  
-        SELECT ER_DEMO_CODE_DET_OBJ(STUDENT_BIO_ID,
-                                  SUBTESTID,
-                                  DEMO_NAME,
-                                  DEMO_VALUE,
-                                  DATE_TEST_TAKEN)
-             BULK COLLECT
-        INTO LV_ER_DEMO_CODE_DET_TYP
-        FROM (                     
-              SELECT IN_STUDENT_BIO_ID AS student_bio_id ,
-                     SUBTESTID,
-                     'Sched_ECC' AS DEMO_NAME,
-                     NULL DEMO_VALUE,
-                     NULL DATE_TEST_TAKEN
-                FROM SUBTEST_DIM
-              UNION ALL
-              SELECT IN_STUDENT_BIO_ID,
-                     SUBTESTID,
-                     'Sched_TC_Ctr_Cd' AS DEMO_NAME,
-                     NULL DEMO_VALUE,
-                     NULL DATE_TEST_TAKEN
-                FROM SUBTEST_DIM
-              UNION ALL
-              SELECT IN_STUDENT_BIO_ID,
-                     SUBTESTID,
-                     'Sched_TC_CountyParishCode' AS DEMO_NAME,
-                     NULL DEMO_VALUE,
-                     NULL DATE_TEST_TAKEN
-                FROM SUBTEST_DIM
-              UNION ALL
-              SELECT IN_STUDENT_BIO_ID,
-                     SUBTESTID,
-                     'Schedule_ID' AS DEMO_NAME,
-                     NULL DEMO_VALUE,
-                     NULL DATE_TEST_TAKEN
-                FROM SUBTEST_DIM
-            ); 
-        
-     END IF ; */
-   
-  END ;  
- 
- PROCEDURE SP_GET_CLOB_XML_FILE( P_IN_JOB             IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
-                                 P_IN_CUSTOMERID      IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
-                                 P_OUT_REF_CURSOR     OUT REF_CURSOR,
-                                 P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
 
+  PROCEDURE SP_GET_SUBTEST_DEMO_VAL_ER(IN_STUDENT_BIO_ID       IN NUMBER,
+                                       IN_CUSTOMERID           NUMBER,
+                                       LV_ER_DEMO_CODE_DET_TYP IN OUT NOCOPY ER_DEMO_CODE_DET_TYP) IS
+  
   BEGIN
+    SELECT ER_DEMO_CODE_DET_OBJ(STUDENT_BIO_ID,
+                                SUBTESTID,
+                                (SELECT DEMO_NAME
+                                   FROM DEMOGRAPHIC DEMG
+                                  WHERE DEMG.DEMOID = A.DEMOID),
+                                DEMO_VALUE,
+                                DATE_TEST_TAKEN) BULK COLLECT
+      INTO LV_ER_DEMO_CODE_DET_TYP
+      FROM STU_SUBTEST_DEMO_VALUES A
+     WHERE DEMOID IN
+           (SELECT DEMOID
+              FROM DEMOGRAPHIC
+             WHERE CUSTOMERID = IN_CUSTOMERID
+               AND DEMO_CODE IN
+                   ('Cont_Sch_Tp_Cd_Read', 'Cont_Sch_Tp_Cd_Wrt',
+                    'Cont_Sch_Tp_Cd_Math', 'Cont_Sch_Tp_Cd_Sci',
+                    'Cont_Sch_Tp_Cd_Sc', 'Cont_Tc_Cd_Read', 'Cont_Tc_Cd_Wrt',
+                    'Cont_Tc_Cd_Math', 'Cont_Tc_Cd_Sci', 'Cont_Tc_Cd_Sc',
+                    'Cont_Ecc_Read', 'Cont_Ecc_Wrt', 'Cont_Ecc_Math',
+                    'Cont_Ecc_Sci', 'Cont_Ecc_Sc', 'Cont_Schld_Id_Read',
+                    'Cont_Schld_Id_Wrt', 'Cont_Schld_Id_Math',
+                    'Cont_Schld_Id_Sci', 'Cont_Schld_Id_Sc' /*,
+                                  
+                                   'Cont_Dt_Schld_Read', 'Cont_Dt_Schld_Wrt',
+                                   'Cont_Dt_Schld_Math', 'Cont_Dt_Schld_Sci', 'Cont_Dt_Schld_Sc'*/
+                   ))
+       AND STUDENT_BIO_ID = IN_STUDENT_BIO_ID;
+  
+    DBMS_OUTPUT.PUT_LINE('Outside ' || LV_ER_DEMO_CODE_DET_TYP.COUNT);
+  
+    /* IF    LV_ER_DEMO_CODE_DET_TYP.count = 0 THEN  
+    
+    dbms_output.put_line('Inside'); 
+    
+          SELECT ER_DEMO_CODE_DET_OBJ(STUDENT_BIO_ID,
+                                    SUBTESTID,
+                                    DEMO_NAME,
+                                    DEMO_VALUE,
+                                    DATE_TEST_TAKEN)
+               BULK COLLECT
+          INTO LV_ER_DEMO_CODE_DET_TYP
+          FROM (                     
+                SELECT IN_STUDENT_BIO_ID AS student_bio_id ,
+                       SUBTESTID,
+                       'Sched_ECC' AS DEMO_NAME,
+                       NULL DEMO_VALUE,
+                       NULL DATE_TEST_TAKEN
+                  FROM SUBTEST_DIM
+                UNION ALL
+                SELECT IN_STUDENT_BIO_ID,
+                       SUBTESTID,
+                       'Sched_TC_Ctr_Cd' AS DEMO_NAME,
+                       NULL DEMO_VALUE,
+                       NULL DATE_TEST_TAKEN
+                  FROM SUBTEST_DIM
+                UNION ALL
+                SELECT IN_STUDENT_BIO_ID,
+                       SUBTESTID,
+                       'Sched_TC_CountyParishCode' AS DEMO_NAME,
+                       NULL DEMO_VALUE,
+                       NULL DATE_TEST_TAKEN
+                  FROM SUBTEST_DIM
+                UNION ALL
+                SELECT IN_STUDENT_BIO_ID,
+                       SUBTESTID,
+                       'Schedule_ID' AS DEMO_NAME,
+                       NULL DEMO_VALUE,
+                       NULL DATE_TEST_TAKEN
+                  FROM SUBTEST_DIM
+              ); 
+          
+       END IF ; */
+  
+  END;
 
+  PROCEDURE SP_GET_CLOB_XML_FILE(P_IN_JOB            IN STUDENTDATA_EXTRACT.JOB_ID%TYPE,
+                                 P_IN_CUSTOMERID     IN STUDENTDATA_EXTRACT.CUSTOMERID%TYPE,
+                                 P_OUT_REF_CURSOR    OUT REF_CURSOR,
+                                 P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  
+  BEGIN
+  
     OPEN P_OUT_REF_CURSOR FOR
-      SELECT JOB_ID,CUSTOMERID,STUDENTDATA_XML
-        FROM  STUDENTDATA_EXTRACT  
-       WHERE JOB_ID = P_IN_JOB AND CUSTOMERID = P_IN_CUSTOMERID;
-
+      SELECT JOB_ID, CUSTOMERID, STUDENTDATA_XML
+        FROM STUDENTDATA_EXTRACT
+       WHERE JOB_ID = P_IN_JOB
+         AND CUSTOMERID = P_IN_CUSTOMERID;
+  
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 0, 255));
-
+    
   END SP_GET_CLOB_XML_FILE;
-
 
 END PKG_STUDENTDATA_EXTRACT;
 /
