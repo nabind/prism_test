@@ -245,16 +245,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
     ELSE
     
       LV_XML := '<?xml version="1.0" encoding="UTF-8"?>';
-      LV_XML := LV_XML || CHR(13) || '<Customer_Details Customer_Name="' ||
-                LV_CUSTOMER_NAME || '" Customer_Id="' || LV_CUSTOMER_ID ||
-                '" Case_Count="' || LV_CUST_STD_CNT || '" Date_Time="' ||
-                TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') ||
+      --Added StateCode by Abir
+      LV_XML := LV_XML || CHR(13) || '<Customer_Details Customer_Name="' || LV_CUSTOMER_NAME || 
+                '" Customer_Id="' || LV_CUSTOMER_ID ||
+                '" StateCode="' || LV_CUSTOMER_CODE ||
+                '" Case_Count="' || LV_CUST_STD_CNT ||
+                '" Date_Time="' ||  TO_CHAR(SYSDATE, 'YYYYMMDDHHMISS') ||
                 '" xsi:noNamespaceSchemaLocation="ctb_prism_student_data.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' ||
                 CHR(10);
     
       -- Storing the Org & Student Information
       -- Into a Object Array
-      -- Added State code
+      
           SELECT ORG_DETAILS_OBJ(A.STUDENT_BIO_ID,
                            A.CUSTOMERID,
                            OND.ORG_NODE_NAME,
@@ -284,19 +286,11 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                              WHERE A.GENDERID = F.GENDERID),
                            COUNT(1) OVER(PARTITION BY ORG_LSTNODEID),
                            TO_CHAR(A.CREATED_DATE_TIME, 'YYYYMMDDHH24MISS'),
-                           TO_CHAR(A.UPDATED_DATE_TIME, 'YYYYMMDDHH24MISS'),
-                           (SELECT CUSTOMER_CODE
-                              FROM CUSTOMER_INFO C
-                             WHERE C.CUSTOMERID = A.CUSTOMERID),
-                           NVL(RI.STUDENT_REGID,''),
-                           NVL(DI.STUDENT_DOCID,''),
-                           NVL(DI.TCA_SCHEDULED_DATE,'')) BULK COLLECT
+                           TO_CHAR(A.UPDATED_DATE_TIME, 'YYYYMMDDHH24MISS')) BULK COLLECT
       INTO LV_ORGDETAILS_ARR
       FROM STUDENT_BIO_DIM  A,
            ORG_NODE_DIM     OND,
-           ORG_LSTNODE_LINK OLNK,
-           STUDENT_REG_INFO RI,
-           STUDENT_DOC_INFO DI
+           ORG_LSTNODE_LINK OLNK
      WHERE A.ORG_NODEID = OLNK.ORG_LSTNODEID
        AND OLNK.ORG_NODEID = OND.ORG_NODEID
           --AND TRUNC(A.UPDATED_DATE_TIME) >= TRUNC(SYSDATE - P_DATE_OFFSET)
@@ -304,9 +298,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
            TRUNC(LV_EXTRACT_START_DATE)
        AND COALESCE(TRUNC(A.UPDATED_DATE_TIME), TRUNC(A.CREATED_DATE_TIME)) <=
            TRUNC(LV_EXTRACT_END_DATE)
-       AND A.CUSTOMERID = DI.CUSTOMERID(+)
-       AND DI.STUDENT_BIO_ID(+) = A.STUDENT_BIO_ID
-       AND DI.STUDENT_REGID = RI.STUDENT_REGID(+)
        AND A.CUSTOMERID = P_CUSTOMERID      
        ORDER BY A.STUDENT_BIO_ID, ORG_NODE_LEVEL;
     
@@ -412,139 +403,104 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
          ORDER BY A_VW.DEMO_NAME;
       
         -- Bulk Collect the Subtest, Objective & Item Score
-      
-        SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
-                                         SUBTEST_VW.SUBTESTID,
-                                         SUBTEST_VW.CUSTOMERID,
-                                         SUBTEST_VW.SUBTEST_NAME,
-                                         SUBTEST_VW.SUBTEST_CODE,
-                                         SUBTEST_VW.TEST_DATE,
-                                         SUBTEST_VW.SCR_STR,
-                                         OBJ_VW.OBJECTIVE_CODE,
-                                         OBJ_VW.OBJECTIVE_NAME,
-                                         OBJ_VW.SCORE_TYPE,
-                                         OBJ_VW.SCORE_VALUE,
-                                         OBJ_VW.NT_ALL_ATTMPT,
-                                         /* ITM_VW.ITEM_TYPE,
-                                                                                  ITM_VW.ITEM_CODE,
-                                                                                   ITM_VW.SCORE_VALUES
-                                                                                   Commented out by Debashis for TD81091*/
-                                         NULL,
-                                         NULL,
-                                         NULL) BULK COLLECT
-          INTO LV_SUBOBJITM_SCR_DET_ARR
-          FROM (SELECT SCR.STUDENT_BIO_ID,
-                       SD.SUBTESTID,
-                       STD.CUSTOMERID,
-                       (SELECT CONTENT_NAME
-                          FROM CONTENT_DIM CD
-                         WHERE CD.CONTENTID = SD.CONTENTID) AS SUBTEST_NAME,
-                       SUBTEST_CODE,
-                       TO_CHAR(TEST_DATE, 'MMDDYY') TEST_DATE,
-                       'NC:' || DECODE(SCR.STATUS_CODE,
-                                       '3',
-                                       'OM',
-                                       '5',
-                                       'INV',
-                                       '6',
-                                       'SUP',
-                                       '8',
-                                       'SIP',
-                                       NCR) || '|' || 'SS:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '8',
-                              'SIP',
-                              SS) || '|' || 'HSE:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '8',
-                              'SIP',
-                              HSE) || '|' || 'PR:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '8',
-                              'SIP',
-                              PR) || '|' || 'NCE:' ||
-                       DECODE(SCR.STATUS_CODE,
-                              '3',
-                              'OM',
-                              '5',
-                              'INV',
-                              '6',
-                              'SUP',
-                              '8',
-                              'SIP',
-                              NCE) AS SCR_STR
-                
-                  FROM SUBTEST_DIM        SD,
-                       SUBTEST_SCORE_FACT SCR,
-                       STUDENT_BIO_DIM    STD
-                 WHERE SD.SUBTESTID = SCR.SUBTESTID
-                   AND SCR.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                   AND SCR.ORG_NODEID = STD.ORG_NODEID) SUBTEST_VW,
-               
-               (SELECT OS.STUDENT_BIO_ID,
-                       O.SUBTESTID,
-                       STD.CUSTOMERID,
-                       O.OBJECTIVE_CODE,
-                       O.OBJECTIVE_NAME,
-                       'MA' AS SCORE_TYPE,
-                       TO_CHAR(OS.PL) AS SCORE_VALUE,
-                       DECODE(INRC, '-', NULL, INRC) AS NT_ALL_ATTMPT
-                  FROM OBJECTIVE_SCORE_FACT OS,
-                       STUDENT_BIO_DIM STD,
-                       (SELECT DISTINCT OBJECTIVE_CODE,
-                                        OBJECTIVE_NAME,
-                                        OD.OBJECTIVEID,
-                                        SUBTESTID
-                          FROM SUBTEST_OBJECTIVE_MAP SOM, OBJECTIVE_DIM OD
-                         WHERE SOM.OBJECTIVEID = OD.OBJECTIVEID) O
-                 WHERE OS.OBJECTIVEID = O.OBJECTIVEID
-                   AND OS.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                   AND OS.ORG_NODEID = STD.ORG_NODEID
-                 ORDER BY O.OBJECTIVE_CODE) OBJ_VW /*,
-                       
-                       (SELECT ISF.STUDENT_BIO_ID,
-                               ISF.SUBTESTID,
-                               STD.CUSTOMERID,
-                               I.ITEM_TYPE,
-                               I.ITEM_CODE,
-                               ISF.SCORE_VALUES
-                          FROM ITEM_SCORE_FACT ISF,
-                               ITEMSET_DIM     I,
-                               STUDENT_BIO_DIM STD
-                         WHERE ISF.ITEMSETID = I.ITEMSETID
-                           AND ISF.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
-                           AND ISF.ORG_NODEID = STD.ORG_NODEID) ITM_VW-- 
-                           Commented out by Debashis for TD81091*/
-        
-         WHERE SUBTEST_VW.STUDENT_BIO_ID = OBJ_VW.STUDENT_BIO_ID
-           AND SUBTEST_VW.SUBTESTID = OBJ_VW.SUBTESTID
-           AND SUBTEST_VW.CUSTOMERID = OBJ_VW.CUSTOMERID
-              /* AND SUBTEST_VW.STUDENT_BIO_ID = ITM_VW.STUDENT_BIO_ID
-                         AND SUBTEST_VW.SUBTESTID = ITM_VW.SUBTESTID
-                         AND SUBTEST_VW.CUSTOMERID = ITM_VW.CUSTOMERID 
-                         Commented out by Debashis for TD 81091*/
-           AND SUBTEST_VW.STUDENT_BIO_ID IN
-               (SELECT DISTINCT STUDENT_BIO_ID
-                  FROM TABLE(LV_ORGDETAILS_ARR) A
-                 WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID);
+       -- Modified by Abir for Doc info
+         SELECT SUBOBJITM_SCR_DETAILS_OBJ(SUBTEST_VW.STUDENT_BIO_ID,
+                                   SUBTEST_VW.SUBTESTID,
+                                   SUBTEST_VW.CUSTOMERID,
+                                   SUBTEST_VW.SUBTEST_NAME,
+                                   SUBTEST_VW.SUBTEST_CODE,
+                                   SUBTEST_VW.TEST_DATE,
+                                   SUBTEST_VW.SCR_STR,
+                                   OBJ_VW.OBJECTIVE_CODE,
+                                   OBJ_VW.OBJECTIVE_NAME,
+                                   OBJ_VW.SCORE_TYPE,
+                                   OBJ_VW.SCORE_VALUE,
+                                   OBJ_VW.NT_ALL_ATTMPT,
+                                  /* ITM_VW.ITEM_TYPE,
+                                     ITM_VW.ITEM_CODE,
+                                     ITM_VW.SCORE_VALUES
+                                   Commented out by Debashis for TD81091*/
+                                   NULL,
+                                   NULL,
+                                   NULL,
+                                   NVL(SDI.DOCUMENTID ,''),
+                                   NVL(SDI.TCA_SCHEDULED_DATE,'')) BULK COLLECT
+    INTO LV_SUBOBJITM_SCR_DET_ARR
+    FROM (SELECT SCR.STUDENT_BIO_ID,
+                 SD.SUBTESTID,
+                 STD.CUSTOMERID,
+                 (SELECT CONTENT_NAME
+                    FROM CONTENT_DIM CD
+                   WHERE CD.CONTENTID = SD.CONTENTID) AS SUBTEST_NAME,
+                 SUBTEST_CODE,
+                 TO_CHAR(TEST_DATE, 'MMDDYY') TEST_DATE,
+                 'NC:' || DECODE(SCR.STATUS_CODE,
+                                 '3','OM',
+                                 '5','INV',
+                                 '6','SUP',
+                                 '8','SIP',
+                                 NCR) || '|' || 'SS:' ||
+                 DECODE(SCR.STATUS_CODE,
+                        '3','OM',
+                        '5','INV',
+                        '6','SUP',
+                        '8','SIP',
+                        SS) || '|' || 'HSE:' ||
+                 DECODE(SCR.STATUS_CODE,
+                        '3','OM',
+                        '5','INV',
+                        '6','SUP',
+                        '8','SIP',
+                        HSE) || '|' || 'PR:' ||
+                 DECODE(SCR.STATUS_CODE,
+                        '3','OM',
+                        '5','INV',
+                        '6','SUP',
+                        '8','SIP',
+                        PR) || '|' || 'NCE:' ||
+                 DECODE(SCR.STATUS_CODE,
+                        '3','OM',
+                        '5','INV',
+                        '6','SUP',
+                        '8','SIP',
+                        NCE) AS SCR_STR          
+            FROM SUBTEST_DIM SD, SUBTEST_SCORE_FACT SCR, STUDENT_BIO_DIM STD
+           WHERE SD.SUBTESTID = SCR.SUBTESTID
+             AND SCR.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
+             AND SCR.ORG_NODEID = STD.ORG_NODEID) SUBTEST_VW,
+         
+         (SELECT OS.STUDENT_BIO_ID,
+                 O.SUBTESTID,
+                 STD.CUSTOMERID,
+                 O.OBJECTIVE_CODE,
+                 O.OBJECTIVE_NAME,
+                 'MA' AS SCORE_TYPE,
+                 TO_CHAR(OS.PL) AS SCORE_VALUE,
+                 DECODE(INRC, '-', NULL, INRC) AS NT_ALL_ATTMPT
+            FROM OBJECTIVE_SCORE_FACT OS,
+                 STUDENT_BIO_DIM STD,
+                 (SELECT DISTINCT OBJECTIVE_CODE,
+                                  OBJECTIVE_NAME,
+                                  OD.OBJECTIVEID,
+                                  SUBTESTID
+                    FROM SUBTEST_OBJECTIVE_MAP SOM, OBJECTIVE_DIM OD
+                   WHERE SOM.OBJECTIVEID = OD.OBJECTIVEID) O
+           WHERE OS.OBJECTIVEID = O.OBJECTIVEID
+             AND OS.STUDENT_BIO_ID = STD.STUDENT_BIO_ID
+             AND OS.ORG_NODEID = STD.ORG_NODEID
+           ORDER BY O.OBJECTIVE_CODE) OBJ_VW,
+           
+           STUDENT_DOC_INFO SDI
+           
+   WHERE SUBTEST_VW.STUDENT_BIO_ID = OBJ_VW.STUDENT_BIO_ID
+     AND SUBTEST_VW.SUBTESTID = OBJ_VW.SUBTESTID
+     AND SUBTEST_VW.CUSTOMERID = OBJ_VW.CUSTOMERID
+     AND SUBTEST_VW.STUDENT_BIO_ID = SDI.STUDENT_BIO_ID(+)
+     AND SUBTEST_VW.STUDENT_BIO_ID IN
+         (SELECT DISTINCT STUDENT_BIO_ID
+            FROM TABLE(LV_ORGDETAILS_ARR) A
+           WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID);
+
       
         --Added by Indranil for ELA & OVC 
         --Removed by debashis on 12/02/2015 as this is not required  
@@ -632,8 +588,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                   ORG_TYPE,
                                   ORG_LEVEL,
                                   ORG_NODEID,
-                                  ORG_CODE,
-                                  STATECODE
+                                  ORG_CODE
                     FROM TABLE(LV_ORGDETAILS_ARR) A
                    WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID
                      AND CUSTOMERID = P_CUSTOMERID
@@ -642,9 +597,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                     '" Org_Type="'  || J.ORG_TYPE || 
                     '" Org_Level="' || TO_CHAR(J.ORG_LEVEL) || 
                     '" Org_Node_Id="' || TO_CHAR(J.ORG_NODEID) || 
-                    '" Org_Code="' || J.ORG_CODE || 
-                    '" StateCode="' || J.STATECODE || '"/>' 
+                    '" Org_Code="' || J.ORG_CODE || '"/>' 
                     || CHR(13) || CHR(10);
+                    
         END LOOP;
       
         LV_XML := LV_XML || '<Student_List>';
@@ -665,10 +620,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                   BIRTHDATE,
                                   GENDER,
                                   CREATED_DATE_TIME,
-                                  LAST_UPDATE_DATE_TIME,
-                                  DRCSTUDENT_ID,
-                                  DRCDocument_ID,
-                                  TCASCHEDULEDATE
+                                  LAST_UPDATE_DATE_TIME
                     FROM TABLE(LV_ORGDETAILS_ARR) A
                    WHERE A.OG_LOWESTNODEID = ORGNODE_DET.ORG_NODEID) LOOP
           CNT := CNT + 1;
@@ -690,7 +642,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
           LV_XML := LV_XML || CHR(13) || CHR(10) ||
                     '<Student_Details Test_ElementID="' ||  K.TEST_ELEMENT_ID || 
                     '" ' || 'CTB_STDID="' || TO_CHAR(K.STUDENT_BIO_ID) ||
-                    '" ' || 'DRCStudent_ID="' || K.DRCSTUDENT_ID ||
                     '" ' || 'Intrnl_StdntID="' || K.INT_STUDENT_ID ||
                     '" ' || 'Litho_Code="' || K.LITHOCODE ||
                     '" ' || 'Examinee_Id="' || K.EXT_STUDENT_ID ||
@@ -769,7 +720,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                               SUBTEST_NAME,
                                               SUBTEST_CODE,
                                               TEST_DATE,
-                                              SCR_STR
+                                              SCR_STR,
+                                              DRCDOCUMENT_ID,
+                                              TCASCHEDULEDATE
                                 FROM TABLE(LV_SUBOBJITM_SCR_DET_ARR) A
                                WHERE A.STUDENT_BIO_ID = K.STUDENT_BIO_ID
                               UNION
@@ -777,7 +730,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                               SUBTEST_NAME,
                                               SUBTEST_CODE,
                                               TEST_DATE,
-                                              SCR_STR
+                                              SCR_STR,
+                                              DRCDOCUMENT_ID,
+                                              TCASCHEDULEDATE
                                 FROM TABLE(LV_SUBOBJITM_SCR_DET_ARR_CS) B
                                WHERE B.STUDENT_BIO_ID = K.STUDENT_BIO_ID
                                ORDER BY SUBTEST_CODE) LOOP
@@ -788,8 +743,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                               CONTENT_DET.SUBTEST_NAME || 
                         '" Content_Code="' ||  CONTENT_DET.SUBTEST_CODE || 
                         '" DateTestTaken="' || CONTENT_DET.TEST_DATE ||
-                        '" DRCDocument_ID="' || K.DRCDocument_ID ||
-                        '" TCAScheduleDate="' || K.TCASCHEDULEDATE ||                          
+                        '" DRCDocument_ID="' || CONTENT_DET.DRCDOCUMENT_ID ||
+                        '" TCAScheduleDate="' || CONTENT_DET.TCASCHEDULEDATE ||                          
                         '">' || CHR(13) || CHR(10);
             ELSE
               LV_ER_XML := NULL;
@@ -811,8 +766,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                         '" Content_Code="' || CONTENT_DET.SUBTEST_CODE || 
                         '" DateTestTaken="' || CONTENT_DET.TEST_DATE || 
                         LV_ER_XML || 
-                        '" DRCDocument_ID="' || K.DRCDocument_ID ||
-                        '" TCAScheduleDate="' || K.TCASCHEDULEDATE ||
+                        '" DRCDocument_ID="' || CONTENT_DET.DRCDOCUMENT_ID ||
+                        '" TCAScheduleDate="' || CONTENT_DET.TCASCHEDULEDATE ||
                         '">' ||
                         CHR(13) || CHR(10);
             END IF;
