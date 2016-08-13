@@ -1146,6 +1146,21 @@ public class TascController {
 		return null;
 	}
 	
+	/**
+	 * This method is to collect search criteria
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/trackErrorSearch.htm")
+	public ModelAndView trackErrorSearch(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: trackErrorSearch()");
+		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+		return new ModelAndView("trackErrorSearch", "message", "");
+	}
 	
 	/**
 	 * This method is to show searched records page wise

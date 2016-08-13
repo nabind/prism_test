@@ -14,20 +14,22 @@
 <div id="heromaskarticle">
 	<div id="articlecontent">
 	     
-		<h1>Search Error</h1>
+		<h1>Track Error for GHI forms</h1>
 				
 				<div class="container" >
 					<div class="content">
 						<form name="errorForm" method="post" action="searchError.htm" id="errorForm">
 							<table width="100%">
 								<tr>
-									<td>DRC Student ID:</td>
-									<td><input type="text" name="DRCStudentID" id="DRCStudentID"></td>
+									<td>Status:</td>
+									<td>
+										<select name="trackErrorStatus" id="trackErrorStatus">
+											<option value="-1">All</option>
+											<option value="ER">Error</option>
+											<option value="CO">Completed</option>
+										</select>
+									</td>
 								</tr>
-								<tr>
-									<td>DRCDocumentID:</td>
-									<td><input type="text" name="DRCDocumentID" id="DRCDocumentID"></td>
-								</tr>								
 								<tr>
 									<td>Prism Process Date From:</td>
 									<td>
@@ -37,6 +39,38 @@
 								<tr>
 									<td>Prism Process Date To:</td>
 									<td><input type="text" name="errorDateTo" id="errorDateTo"></td>
+								</tr>
+								<tr>
+									<td>DRC Student ID:</td>
+									<td><input type="text" name="DRCStudentID" id="DRCStudentID"></td>
+								</tr>
+								<tr>
+									<td>DRCDocumentID:</td>
+									<td><input type="text" name="DRCDocumentID" id="DRCDocumentID"></td>
+								</tr>
+								<tr>
+									<td>UUID:</td>
+									<td><input type="text" name="uuid" id="uuid"></td>
+								</tr>
+								<tr>
+									<td>Last Name:</td>
+									<td><input type="text" name="lastName" id="lastName"></td>
+								</tr>
+								<tr>
+									<td>State Code:</td>
+									<td><input type="text" name="stateCode" id="stateCode"></td>
+								</tr>
+								<tr>
+									<td>Form:</td>
+									<td><input type="text" name="form" id="form"></td>
+								</tr>
+								<tr>
+									<td>Test Element ID:</td>
+									<td><input type="text" name="testElementId" id="testElementId"></td>
+								</tr>
+								<tr>
+									<td>Barcode:</td>
+									<td><input type="text" name="barcode" id="barcode"></td>
 								</tr>
 								<tr>
 									<td></td>
