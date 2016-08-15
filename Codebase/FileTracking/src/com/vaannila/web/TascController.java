@@ -25,8 +25,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.vaannila.DAO.TascDAOImpl;
-import com.vaannila.TO.ErrorDetailsWinTO;
-import com.vaannila.TO.ErrorWinJsonObject;
+import com.vaannila.TO.StudentDetailsGhiTO;
+import com.vaannila.TO.StudentGhiJsonObject;
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
 import com.vaannila.TO.StudentDetailsWinTO;
@@ -1178,10 +1178,25 @@ public class TascController {
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;
 			SearchProcess process = new SearchProcess();
-			process.setDRCStudentId(request.getParameter("DRCStudentID"));
-			process.setDRCDocumentId(request.getParameter("DRCDocumentID"));
+			process.setProcessStatus(request.getParameter("trackErrorStatus"));
 			process.setErrorDateFrom(request.getParameter("errorDateFrom"));
 			process.setErrorDateTo(request.getParameter("errorDateTo"));
+			process.setDRCStudentId(request.getParameter("DRCStudentID"));
+			process.setDRCDocumentId(request.getParameter("DRCDocumentID"));
+			process.setUuid(request.getParameter("uuid"));
+			process.setLastName(request.getParameter("lastName"));
+			process.setStateCode(request.getParameter("stateCode"));
+			process.setForm(request.getParameter("form"));
+			process.setTestElementId(request.getParameter("testElementId"));
+			process.setBarcode(request.getParameter("barcode"));
+			
+			if("-1".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("All");
+			}else if("ER".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Error");
+			}else if("CO".equals(process.getProcessStatus())){
+				process.setProcessStatusDesc("Completed");
+			}
 		
 			request.getSession().setAttribute("errorTrackingTO", process);
 			modelAndView = new ModelAndView("trackErrorResult", "message", jsonStr);
@@ -1202,7 +1217,7 @@ public class TascController {
 	 */
 	@RequestMapping(value = "/process/errorResult.htm", method = RequestMethod.GET)
 	public @ResponseBody String errorResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: coCheckResult()");
+		System.out.println("Enter: errorResult()");
 		long t1 = System.currentTimeMillis();
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("errorTrackingTO");
@@ -1210,7 +1225,7 @@ public class TascController {
     	if(searchParameter != null){
     		process.setSearchParam(searchParameter);
     	}
-    	long totalRecordCount = stageDao.getTotalRecordCountWin(process);
+    	long totalRecordCount = stageDao.getTotalRecordCountGhi(process);
     	
     	long pageDisplayLength = Long.parseLong(request.getParameter("iDisplayLength"));
     	long pageNumber = 0;
@@ -1227,20 +1242,19 @@ public class TascController {
         process.setSortCol(sortCol);
         process.setSortDir(sortDir);
 		
-        //TO DO
-		List<ErrorDetailsWinTO> errorDetailsWinTOList = null;//stageDao.getResultWin(process);
+        List<StudentDetailsGhiTO> studentDetailsTOList = stageDao.getResultGhi(process);
     	
-		ErrorWinJsonObject errorJsonObject = new ErrorWinJsonObject();
-		errorJsonObject.setiTotalDisplayRecords(totalRecordCount);
-		errorJsonObject.setiTotalRecords(totalRecordCount);
-		errorJsonObject.setAaData(errorDetailsWinTOList);
+		StudentGhiJsonObject studentGhiJsonObject = new StudentGhiJsonObject();
+		studentGhiJsonObject.setiTotalDisplayRecords(totalRecordCount);
+		studentGhiJsonObject.setiTotalRecords(totalRecordCount);
+		studentGhiJsonObject.setAaData(studentDetailsTOList);
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String jsonStr = gson.toJson(errorJsonObject);
+		String jsonStr = gson.toJson(studentGhiJsonObject);
 		response.setContentType("application/json");
 		response.getWriter().write(jsonStr);
 		long t2 = System.currentTimeMillis();
-		System.out.println("Exit: coCheckResult() took time: " + String.valueOf(t2 - t1) + "ms");
+		System.out.println("Exit: errorResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		return null;			
 	}
 	

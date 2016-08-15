@@ -18,7 +18,7 @@
 				
 				<div class="container" >
 					<div class="content">
-						<form name="errorForm" method="post" action="searchError.htm" id="errorForm">
+						<form name="trackErrorForm" method="post" action="searchError.htm" id="trackErrorForm">
 							<table width="100%">
 								<tr>
 									<td>Status:</td>
@@ -45,7 +45,7 @@
 									<td><input type="text" name="DRCStudentID" id="DRCStudentID"></td>
 								</tr>
 								<tr>
-									<td>DRCDocumentID:</td>
+									<td>DRC DocumentID:</td>
 									<td><input type="text" name="DRCDocumentID" id="DRCDocumentID"></td>
 								</tr>
 								<tr>
@@ -74,7 +74,7 @@
 								</tr>
 								<tr>
 									<td></td>
-									<td><input type="button" value="Search" id=errorSearchButton"></td>
+									<td><input type="submit" value="Search" id=errorSearchButton"></td>
 								</tr>
 							</table>
 						</form>

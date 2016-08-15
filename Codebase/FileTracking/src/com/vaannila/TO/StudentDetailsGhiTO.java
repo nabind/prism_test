@@ -2,9 +2,10 @@ package com.vaannila.TO;
 
 import java.io.Serializable;
 
-public class ErrorDetailsWinTO implements Serializable {
+public class StudentDetailsGhiTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private String recordId;
 	private String fileName;
 	private String fileGenDateTime;
 	private String OrgIDTP;
@@ -29,6 +30,14 @@ public class ErrorDetailsWinTO implements Serializable {
 	private String dateTestTaken;
 	private String barcodeID;
 	private String contentScore;
+	private String testCenterCode;
+	private String testCenterName;
+	private String contentName;
+	private String scaleScore;
+	private String scannedProcessDate;
+	private String statusCodeContentArea;
+	private String contentTestCode;
+	private String prismProcessStatus;
 	
 	public String getFileName() {
 		return fileName;
@@ -173,6 +182,60 @@ public class ErrorDetailsWinTO implements Serializable {
 	}
 	public void setContentScore(String contentScore) {
 		this.contentScore = contentScore;
+	}
+	public String getRecordId() {
+		return recordId;
+	}
+	public void setRecordId(String recordId) {
+		this.recordId = recordId;
+	}
+	public String getTestCenterCode() {
+		return testCenterCode;
+	}
+	public void setTestCenterCode(String testCenterCode) {
+		this.testCenterCode = testCenterCode;
+	}
+	public String getTestCenterName() {
+		return testCenterName;
+	}
+	public void setTestCenterName(String testCenterName) {
+		this.testCenterName = testCenterName;
+	}
+	public String getContentName() {
+		return contentName;
+	}
+	public void setContentName(String contentName) {
+		this.contentName = contentName;
+	}
+	public String getScaleScore() {
+		return scaleScore;
+	}
+	public void setScaleScore(String scaleScore) {
+		this.scaleScore = scaleScore;
+	}
+	public String getScannedProcessDate() {
+		return scannedProcessDate;
+	}
+	public void setScannedProcessDate(String scannedProcessDate) {
+		this.scannedProcessDate = scannedProcessDate;
+	}
+	public String getStatusCodeContentArea() {
+		return statusCodeContentArea;
+	}
+	public void setStatusCodeContentArea(String statusCodeContentArea) {
+		this.statusCodeContentArea = statusCodeContentArea;
+	}
+	public String getContentTestCode() {
+		return contentTestCode;
+	}
+	public void setContentTestCode(String contentTestCode) {
+		this.contentTestCode = contentTestCode;
+	}
+	public String getPrismProcessStatus() {
+		return prismProcessStatus;
+	}
+	public void setPrismProcessStatus(String prismProcessStatus) {
+		this.prismProcessStatus = prismProcessStatus;
 	}  
 	
 }

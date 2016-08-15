@@ -58,6 +58,7 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String DRCDocumentId;
 	private String errorDateFrom;
 	private String errorDateTo;
+	private String trackErrorStatus;
 	
 	public String getDRCStudentId() {
 		return DRCStudentId;
@@ -476,5 +477,11 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	}
 	public void setImagingId(String imagingId) {
 		this.imagingId = imagingId;
+	}
+	public String getTrackErrorStatus() {
+		return trackErrorStatus;
+	}
+	public void setTrackErrorStatus(String trackErrorStatus) {
+		this.trackErrorStatus = trackErrorStatus;
 	}
 }
