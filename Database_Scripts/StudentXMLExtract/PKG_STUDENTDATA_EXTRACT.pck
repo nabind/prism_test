@@ -298,7 +298,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
            TRUNC(LV_EXTRACT_START_DATE)
        AND COALESCE(TRUNC(A.UPDATED_DATE_TIME), TRUNC(A.CREATED_DATE_TIME)) <=
            TRUNC(LV_EXTRACT_END_DATE)
-       AND A.CUSTOMERID = P_CUSTOMERID      
+       AND A.CUSTOMERID = P_CUSTOMERID
+       AND A.ACTIVATION_STATUS = 'AC'      
        ORDER BY A.STUDENT_BIO_ID, ORG_NODE_LEVEL;
     
       LV_XML := LV_XML || '<Org_List>' || CHR(13) || CHR(10);
@@ -424,9 +425,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                    NULL,
                                    NULL,
                                    NVL(SDI.DOCUMENTID ,''),
-                                   NVL(SDI.TCA_SCHEDULED_DATE,'')) BULK COLLECT
+                                   SDI.TCA_SCHEDULED_DATE/*NVL(SDI.TCA_SCHEDULED_DATE,'')*/) BULK COLLECT
     INTO LV_SUBOBJITM_SCR_DET_ARR
     FROM (SELECT SCR.STUDENT_BIO_ID,
+                 SCR.STUDENT_DOCID,
                  SD.SUBTESTID,
                  STD.CUSTOMERID,
                  (SELECT CONTENT_NAME
@@ -496,6 +498,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
      AND SUBTEST_VW.SUBTESTID = OBJ_VW.SUBTESTID
      AND SUBTEST_VW.CUSTOMERID = OBJ_VW.CUSTOMERID
      AND SUBTEST_VW.STUDENT_BIO_ID = SDI.STUDENT_BIO_ID(+)
+     AND SUBTEST_VW.STUDENT_DOCID = SDI.STUDENT_DOCID(+)
      AND SUBTEST_VW.STUDENT_BIO_ID IN
          (SELECT DISTINCT STUDENT_BIO_ID
             FROM TABLE(LV_ORGDETAILS_ARR) A
@@ -742,10 +745,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
               LV_XML := LV_XML || '<Content_Details Content_Name="' ||
                                               CONTENT_DET.SUBTEST_NAME || 
                         '" Content_Code="' ||  CONTENT_DET.SUBTEST_CODE || 
-                        '" DateTestTaken="' || CONTENT_DET.TEST_DATE ||
-                        '" DRCDocument_ID="' || CONTENT_DET.DRCDOCUMENT_ID ||
-                        '" TCAScheduleDate="' || CONTENT_DET.TCASCHEDULEDATE ||                          
-                        '">' || CHR(13) || CHR(10);
+                        '" DateTestTaken="' || CONTENT_DET.TEST_DATE || 
+                        '" DRCDOCUMENT_ID="' || nvl(TO_CHAR(CONTENT_DET.DRCDOCUMENT_ID),'') ||
+                        '" TCASCHEDULEDATE="' || nvl(TO_CHAR(CONTENT_DET.TCASCHEDULEDATE,'MMDDRRRR'),'') ||
+                        '">' ||
+                        CHR(13) || CHR(10);
+                         
+                        
+                        
             ELSE
               LV_ER_XML := NULL;
             
@@ -765,11 +772,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
                                CONTENT_DET.SUBTEST_NAME || 
                         '" Content_Code="' || CONTENT_DET.SUBTEST_CODE || 
                         '" DateTestTaken="' || CONTENT_DET.TEST_DATE || 
-                        LV_ER_XML || 
-                        '" DRCDocument_ID="' || CONTENT_DET.DRCDOCUMENT_ID ||
-                        '" TCAScheduleDate="' || CONTENT_DET.TCASCHEDULEDATE ||
+                         LV_ER_XML || 
+                        '" DRCDOCUMENT_ID="' || nvl(TO_CHAR(CONTENT_DET.DRCDOCUMENT_ID),'') ||
+                        '" TCASCHEDULEDATE="' || nvl(TO_CHAR(CONTENT_DET.TCASCHEDULEDATE,'MMDDRRRR'),'') ||
                         '">' ||
                         CHR(13) || CHR(10);
+                        
             END IF;
           
             LV_XML := LV_XML || '<Subtest_Accommodations>';
@@ -988,6 +996,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_STUDENTDATA_EXTRACT IS
          SYSDATE);
       COMMIT;
     WHEN OTHERS THEN
+      --RAISE;
       LV_XML1    := 'There are Errors in XML: Error id --> ' ||
                     DBMS_UTILITY.FORMAT_ERROR_BACKTRACE;
       LV_ERR_MSG := SQLERRM || ' : Backtrace : ' ||
