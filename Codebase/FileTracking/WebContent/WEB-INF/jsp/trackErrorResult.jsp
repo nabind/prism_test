@@ -22,7 +22,7 @@
 				SearchProcess searchError = (SearchProcess) request.getSession().getAttribute("errorTrackingTO");
 				%>
 				<div style="float: right">
-					<a href='downloadCsvWin.htm' class='noteLink ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover' 
+					<a href='downloadCsvGhi.htm' class='noteLink ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover' 
 						style='padding:5px;top:5px;color:#00329B;text-decoration:underline' target="_blank">
 						Download CSV
 					</a>
@@ -60,31 +60,33 @@
 							<th>Gender</th>
 							<th>Prism Process Date</th>
 							<th>Org Code Path</th>
-							<th>Prism Process Date</th>
-							<th>Org Code Path</th>
-							<th>DocumentID</th>
-							<th>ScheduleID</th>
+							<th>Test Center Code</th>
+							<th>Test Center Name</th>
+							<th>Document ID</th>
+							<th>Schedule ID</th>
 							<th>TCA Schedule Date</th>
 							<th>ImagingID</th>
 							<th>Litho Code</th>
 							<th>Test Mode</th>
 							<th>Test Language/th>
-							<th>Content Code</th>
+							<th>Content Name</th>
 							<th>Form</th>
 							<th>Date Test Taken</th>
 							<th>BarcodeID</th>
 							<th>Content Score (NC)</th>
+							<th>Content Test Code</th>
+							<th>Scale Score</th>
+							<th>Scanned Process Date</th>
+							<th>Status Code for Content Area</th>
 						</tr>
 					</thead>
 				</table>
 			
 				<p><p>
 					<b>Overall Status:</b><br/>
-					<span class="error legend legend2 legend3" title="Completed" style="margin-left: -34px;"></span> = Error (Record received by Prism, but there is an error) (ER)</br>
+					<span class="completed legend" title="Completed"></span> = Completed/Success (CO) <br/>
+					<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error (Record received by Prism, but there is an error) (ER)</br>
 				</p>
-				<div id='errorLogDialog' title='Loading' style='display:none; font-size:10px'>
-					<p id="errorLog"><img src="css/ajax-loader.gif"></img><p>
-				</div>
 		</div>
 	</div>
 </div>

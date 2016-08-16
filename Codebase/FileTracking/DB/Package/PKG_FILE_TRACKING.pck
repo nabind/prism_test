@@ -60,6 +60,27 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                                  P_OUT_CUR_DATA           OUT GET_REFCURSOR,
                                  P_OUT_CUR_DATA_CSV       OUT GET_REFCURSOR,
                                  P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
+
+  PROCEDURE SP_GET_DATA_GHI(P_PROCESS_STATUS         IN VARCHAR2,
+                            P_DATE_FROM              IN VARCHAR2,
+                            P_DATE_TO                IN VARCHAR2,
+                            P_DRC_STUDENT_ID         IN VARCHAR2,
+                            P_DRC_DOCUMENT_ID        IN VARCHAR2,
+                            P_UUID                   IN VARCHAR2,
+                            P_LAST_NAME              IN VARCHAR2,
+                            P_STATE_CODE             IN VARCHAR2,
+                            P_FORM                   IN VARCHAR2,
+                            P_TEST_ELEMENT_ID        IN VARCHAR2,
+                            P_BARCODE                IN VARCHAR2,
+                            P_SEARCH_PARAM           IN VARCHAR2,
+                            P_ORDERED_COLUMN         IN VARCHAR2,
+                            P_ORDER                  IN VARCHAR2,
+                            P_ROWNUM_FROM            IN NUMBER,
+                            P_ROWNUM_TO              IN NUMBER,
+                            P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                            P_OUT_CUR_DATA           OUT GET_REFCURSOR,
+                            P_OUT_CUR_DATA_CSV       OUT GET_REFCURSOR,
+                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2);
 END PKG_FILE_TRACKING;
 /
 CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
@@ -824,6 +845,326 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_WINSCORE;
+
+  PROCEDURE SP_GET_DATA_GHI(P_PROCESS_STATUS         IN VARCHAR2,
+                            P_DATE_FROM              IN VARCHAR2,
+                            P_DATE_TO                IN VARCHAR2,
+                            P_DRC_STUDENT_ID         IN VARCHAR2,
+                            P_DRC_DOCUMENT_ID        IN VARCHAR2,
+                            P_UUID                   IN VARCHAR2,
+                            P_LAST_NAME              IN VARCHAR2,
+                            P_STATE_CODE             IN VARCHAR2,
+                            P_FORM                   IN VARCHAR2,
+                            P_TEST_ELEMENT_ID        IN VARCHAR2,
+                            P_BARCODE                IN VARCHAR2,
+                            P_SEARCH_PARAM           IN VARCHAR2,
+                            P_ORDERED_COLUMN         IN VARCHAR2,
+                            P_ORDER                  IN VARCHAR2,
+                            P_ROWNUM_FROM            IN NUMBER,
+                            P_ROWNUM_TO              IN NUMBER,
+                            P_OUT_TOTAL_RECORD_COUNT OUT NUMBER,
+                            P_OUT_CUR_DATA           OUT GET_REFCURSOR,
+                            P_OUT_CUR_DATA_CSV       OUT GET_REFCURSOR,
+                            P_OUT_EXCEP_ERR_MSG      OUT VARCHAR2) IS
+  
+    V_QUERY_PAGING             CLOB := '';
+    V_QUERY_ACTUAL             CLOB := '';
+    V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
+    V_EXCEPTION_STATUS         VARCHAR2(100) := '';
+    V_SEARCH_PARAM             VARCHAR2(100);
+    V_SEARCH_PARAM_COUNT       NUMBER := 0;
+    V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
+  
+  BEGIN
+  
+    V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                      ' SELECT TS.PROCESS_ID RECORD_ID,
+       TS.FILE_NAME FILE_NAME,
+       DI.DOC_CREATED_DATE FILE_GENERATION_DATE_TIME,
+       (SELECT DISTINCT TP.TP_CODE
+          FROM TEST_PROGRAM TP
+         WHERE TP.CUSTOMERID = RI.CUSTOMERID
+           AND TP.ADMINID = RI.ADMINID
+           AND TP_MODE = DI.TEST_MODE) ORGID_TP,
+       RI.DRC_STUDENTID,
+       (SELECT C.CUSTOMER_CODE
+          FROM CUSTOMER_INFO C
+         WHERE C.CUSTOMERID = RI.CUSTOMERID) STATE_CODE,
+       RI.EXAMINEE_ID EXAMINEEID,
+       DI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
+       RI.LAST_NAME || '', '' || RI.FIRST_NAME || '', '' || RI.MIDDLE_NAME STUDENT_NAME,
+       RI.BIRTHDATE DOB,
+       (SELECT GENDER_CODE FROM GENDER_DIM G WHERE G.GENDERID = RI.GENDERID) GENDER,
+       DI.DATETIMESTAMP PRISM_PROCESS_DATE,
+       (SELECT SUBSTR(ORG_NODE_CODE_PATH, 3)
+          FROM ORG_NODE_DIM O
+         WHERE O.ORG_NODEID = RI.ORG_NODEID) ORGPATH,
+       DI.SCHED_EDU_CENTER_CODE TEST_CENTER_CODE,
+       DI.SCHED_EDU_CENTER_CODE TEST_CENTER_NAME,
+       DI.DOCUMENTID DOCUMENTID,
+       DI.SCHEDULE_ID SCHEDULEID,
+       DI.TCA_SCHEDULED_DATE TCASCHEDULEDATE,
+       DI.IMAGING_ID IMAGINGID,
+       DI.LITHOCODE LITHOCODE,
+       DI.TEST_MODE TESTMODE,
+       DI.TEST_LANGUAGE TESTLANGUAGE,
+       (SELECT SUBTEST_NAME
+          FROM SUBTEST_DIM
+         WHERE SUBTEST_CODE = DI.CONTENT_CODE) CONTENTNAME,
+       DI.FORM FORM,
+       ''SF.DATE_TEST_TAKEN'' DATETESTTAKEN,
+       DI.BARCODE_ID BARCODEID,
+       ''SF.NCR'' CONTENT_SCORE,
+       ''SF.SS'' SCALE_SCORE,
+       DECODE(''SF.STATUS_CODE'',
+              ''3'',
+              ''OM'',
+              ''5'',
+              ''INV'',
+              ''6'',
+              ''SUP'',
+              ''7'',
+              ''NA'',
+              ''8'',
+              ''SIP'') STATUS_CODE_CONTENT,
+       ''CONTENT_TEST_CODE'' CONTENT_TEST_CODE,
+       ''scannedProcessDate'' SCANNED_PROCESS_DATE,
+       ''ER'' PRISM_PROCESS_STATUS
+  FROM STG_TASK_STATUS TS, STG_STUDENT_DOC_INFO DI, STG_STUDENT_REG_INFO RI';
+  
+    IF P_PROCESS_STATUS <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.EXCEPTION_STATUS =  ''' ||
+                        P_PROCESS_STATUS || '''';
+    END IF;
+  
+    IF P_DATE_FROM <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                        ' AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(''' ||
+                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_DATE_TO <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                        ' AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(''' ||
+                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_UUID <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.ER_UUID LIKE ''%' ||
+                        P_UUID || '%''';
+    END IF;
+  
+    IF P_LAST_NAME <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
+                        ' AND UPPER(EED.LAST_NAME) LIKE UPPER(''%' ||
+                        P_LAST_NAME || '%'')';
+    END IF;
+  
+    IF P_STATE_CODE <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.STATE_CODE =  ''' ||
+                        P_STATE_CODE || '''';
+    END IF;
+  
+    IF P_FORM <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.FORM =  ''' || P_FORM || '''';
+    END IF;
+  
+    IF P_TEST_ELEMENT_ID <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.TEST_ELEMENT_ID =  ''' ||
+                        P_TEST_ELEMENT_ID || '''';
+    END IF;
+  
+    IF P_BARCODE <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.BARCODE =  ''' ||
+                        P_BARCODE || '''';
+    END IF;
+  
+    IF P_SEARCH_PARAM <> '-1' THEN
+      V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
+                        ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(PROCESS_ID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(EXCEPTION_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DATE_SCHEDULED) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(STATE_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(FORM) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(ER_EXCDID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(PROCESSED_DATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SUBTEST) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM || '%'')';
+    
+      V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
+    
+      SELECT COUNT(TAB.EXCEPTION_STATUS)
+        INTO V_SEARCH_PARAM_COUNT
+        FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                           FROM DUAL)
+               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                 FROM T
+               CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
+    
+    
+      IF V_SEARCH_PARAM_COUNT <> 0 THEN
+        IF V_SEARCH_PARAM_COUNT = 3 THEN
+          V_EXCEPTION_STATUS := '''ER''' || ',' || '''CO''' || ',' ||
+                                '''IN''';
+        ELSE
+          V_EXCEPTION_STATUS := '';
+          FOR REC IN (SELECT TAB.EXCEPTION_STATUS ES
+                        FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
+                                           FROM DUAL)
+                               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
+                                 FROM T
+                               CONNECT BY LEVEL <=
+                                          LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
+                                WHERE TAB.EXCEPTION_STATUS LIKE
+                                      UPPER(V_SEARCH_PARAM)
+                      ) LOOP
+            V_SEARCH_PARAM := REC.ES;
+            IF V_SEARCH_PARAM = 'ERROR' THEN
+              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''ER''' || ',';
+            ELSIF V_SEARCH_PARAM = 'COMPLETED' THEN
+              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''CO''' || ',';
+            ELSIF V_SEARCH_PARAM = 'INVALIDATED' THEN
+              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''IN''' || ',';
+            END IF;
+          END LOOP;
+          V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''''';
+        END IF;
+      
+        /*DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);*/
+      
+        IF V_SEARCH_PARAM_COUNT <> 0 THEN
+          V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' OR EXCEPTION_STATUS IN ( ' ||
+                            V_EXCEPTION_STATUS || ')';
+        END IF;
+      END IF;
+    END IF;
+  
+    V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
+                                  'SELECT COUNT(1) FROM (' ||
+                                  V_QUERY_ACTUAL || ') TAB';
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
+                         V_QUERY_TOTAL_RECORD_COUNT);*/
+  
+    OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
+    IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
+      LOOP
+        FETCH V_CUR_TOTAL_RECORD_COUNT
+          INTO P_OUT_TOTAL_RECORD_COUNT;
+        EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
+        /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
+                             P_OUT_TOTAL_RECORD_COUNT);*/
+      END LOOP;
+      CLOSE V_CUR_TOTAL_RECORD_COUNT;
+    END IF;
+  
+    IF P_ORDERED_COLUMN <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORDER BY ';
+    END IF;
+  
+    IF P_ORDERED_COLUMN = '1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' RECORD_ID ';
+    ELSIF P_ORDERED_COLUMN = '2' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FILE_NAME ';
+    ELSIF P_ORDERED_COLUMN = '3' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FILE_GENERATION_DATE_TIME ';
+    ELSIF P_ORDERED_COLUMN = '4' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORGID_TP ';
+    ELSIF P_ORDERED_COLUMN = '5' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DRC_STUDENTID ';
+    ELSIF P_ORDERED_COLUMN = '6' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' STATE_CODE ';
+    ELSIF P_ORDERED_COLUMN = '7' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' EXAMINEEID ';
+    ELSIF P_ORDERED_COLUMN = '8' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ERROR_CODE_ERROR_DESCRIPTION ';
+    ELSIF P_ORDERED_COLUMN = '9' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' STUDENT_NAME ';
+    ELSIF P_ORDERED_COLUMN = '10' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DOB ';
+    ELSIF P_ORDERED_COLUMN = '11' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' GENDER ';
+    ELSIF P_ORDERED_COLUMN = '12' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' PRISM_PROCESS_DATE ';
+    ELSIF P_ORDERED_COLUMN = '13' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ORGPATH ';
+    ELSIF P_ORDERED_COLUMN = '14' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TEST_CENTER_CODE ';
+    ELSIF P_ORDERED_COLUMN = '15' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TEST_CENTER_NAME ';
+    ELSIF P_ORDERED_COLUMN = '16' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DOCUMENTID ';
+    ELSIF P_ORDERED_COLUMN = '17' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SCHEDULEID ';
+    ELSIF P_ORDERED_COLUMN = '18' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TCASCHEDULEDATE ';
+    ELSIF P_ORDERED_COLUMN = '19' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' IMAGINGID ';
+    ELSIF P_ORDERED_COLUMN = '20' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' LITHOCODE ';
+    ELSIF P_ORDERED_COLUMN = '21' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TESTMODE ';
+    ELSIF P_ORDERED_COLUMN = '22' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' TESTLANGUAGE ';
+    ELSIF P_ORDERED_COLUMN = '23' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' CONTENTNAME ';
+    ELSIF P_ORDERED_COLUMN = '24' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' FORM ';
+    ELSIF P_ORDERED_COLUMN = '25' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DATETESTTAKEN ';
+    ELSIF P_ORDERED_COLUMN = '26' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' BARCODEID ';
+    ELSIF P_ORDERED_COLUMN = '27' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' CONTENT_SCORE ';
+    ELSIF P_ORDERED_COLUMN = '28' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' CONTENT_TEST_CODE ';
+    ELSIF P_ORDERED_COLUMN = '29' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SCALE_SCORE ';
+    ELSIF P_ORDERED_COLUMN = '30' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SCANNED_PROCESS_DATE ';
+    ELSIF P_ORDERED_COLUMN = '31' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' STATUS_CODE_CONTENT ';
+    END IF;
+  
+    IF P_ORDER = 'asc' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' ASC ';
+    ELSIF P_ORDER = 'desc' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' DESC ';
+    END IF;
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL: ' || V_QUERY_ACTUAL);*/
+    OPEN P_OUT_CUR_DATA_CSV FOR V_QUERY_ACTUAL;
+  
+    V_QUERY_PAGING := V_QUERY_PAGING ||
+                      'SELECT *
+        FROM (SELECT ROWNUM RNUM, A.* FROM (' ||
+                      V_QUERY_ACTUAL || ') A) WHERE RNUM <= ' ||
+                      P_ROWNUM_TO || '
+       AND RNUM >= ' || P_ROWNUM_FROM;
+  
+    /*DBMS_OUTPUT.PUT_LINE('V_QUERY_PAGING: ' || V_QUERY_PAGING);*/
+    OPEN P_OUT_CUR_DATA FOR V_QUERY_PAGING;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_DATA_GHI;
 
 END PKG_FILE_TRACKING; --END OF PACKAGE
 /

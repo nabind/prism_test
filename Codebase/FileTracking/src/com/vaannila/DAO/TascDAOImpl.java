@@ -14,6 +14,7 @@ import oracle.jdbc.OracleTypes;
 
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsWinTO;
+import com.vaannila.TO.StudentDetailsGhiTO;
 import com.vaannila.TO.TASCProcessTO;
 import com.vaannila.util.JDCConnectionDriver;
 import com.vaannila.TO.StudentDetailsTO;
@@ -1005,7 +1006,6 @@ public class TascDAOImpl {
 		return totalRecordCount;
 	}
 	
-	
 	public List<StudentDetailsTO> getCombinedProcess(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getCombinedProcess()");
 		Connection conn = null;
@@ -1515,6 +1515,278 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			System.out.println("Exit: saveReviewScore() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return message;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get Searched records page wise
+	 * @throws Exception
+	 */
+	public List<StudentDetailsGhiTO> getResultGhi(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getResultGhi()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		StudentDetailsGhiTO studentDetailsTO = null;
+		List<StudentDetailsGhiTO> studentDetailsTOList = new ArrayList<StudentDetailsGhiTO>();
+		
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderDataCsv = 0;
+			int placeHolderErrorMsg = 0;
+			String query = "{call PKG_FILE_TRACKING.SP_GET_DATA_GHI(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			System.out.println("query: "+query);
+			cs = conn.prepareCall(query);
+			
+			cs.setString(++count, searchProcess.getProcessStatus());
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getDRCStudentId() != null && searchProcess.getDRCStudentId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getDRCStudentId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getDRCDocumentId() != null && searchProcess.getDRCDocumentId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getDRCDocumentId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStateCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				cs.setString(++count, searchProcess.getForm());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getTestElementId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, searchProcess.getSortCol());
+			cs.setString(++count, searchProcess.getSortDir());
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderDataCsv = ++count;
+			cs.registerOutParameter(placeHolderDataCsv, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+		
+			cs.execute();
+			String errorMessage = cs.getString(placeHolderErrorMsg);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				if("CSV".equals(searchProcess.getMode())){
+					System.out.println("Fetching data for CSV");
+					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
+				}else{
+					rs = (ResultSet) cs.getObject(placeHolderData);
+					System.out.println("Fetching data for Online Display");
+				}
+				while(rs.next()) {
+					studentDetailsTO = new StudentDetailsGhiTO();
+					studentDetailsTO.setPrismProcessStatus(rs.getString("PRISM_PROCESS_STATUS")!=null ? rs.getString("PRISM_PROCESS_STATUS") : "");
+					studentDetailsTO.setRecordId(rs.getString("RECORD_ID")!=null ? rs.getString("RECORD_ID") : "");
+					studentDetailsTO.setFileName(rs.getString("FILE_NAME")!=null ? rs.getString("FILE_NAME") : "");
+					studentDetailsTO.setFileGenDateTime(rs.getString("FILE_GENERATION_DATE_TIME")!=null ? rs.getString("FILE_GENERATION_DATE_TIME") : "");
+					studentDetailsTO.setOrgIDTP(rs.getString("ORGID_TP")!=null ? rs.getString("ORGID_TP") : "");
+					studentDetailsTO.setDrcStudentID(rs.getString("DRC_STUDENTID")!=null ? rs.getString("DRC_STUDENTID") : "");
+					studentDetailsTO.setStateCode(rs.getString("STATE_CODE")!=null ? rs.getString("STATE_CODE") : "");
+					studentDetailsTO.setExamineeID(rs.getString("EXAMINEEID")!=null ? rs.getString("EXAMINEEID") : "");
+					studentDetailsTO.setErrCodeErrDesc(rs.getString("ERROR_CODE_ERROR_DESCRIPTION")!=null ? rs.getString("ERROR_CODE_ERROR_DESCRIPTION") : "");
+					studentDetailsTO.setStudentName(rs.getString("STUDENT_NAME")!=null ? rs.getString("STUDENT_NAME") : "");
+					studentDetailsTO.setDob(rs.getString("DOB")!=null ? rs.getString("DOB") : "");
+					studentDetailsTO.setGender(rs.getString("GENDER")!=null ? rs.getString("GENDER") : "");
+					studentDetailsTO.setProcesDate(rs.getString("PRISM_PROCESS_DATE")!=null ? rs.getString("PRISM_PROCESS_DATE") : "");
+					studentDetailsTO.setOrgCodePath(rs.getString("ORGPATH")!=null ? rs.getString("ORGPATH") : "");
+					studentDetailsTO.setTestCenterCode(rs.getString("TEST_CENTER_CODE")!=null ? rs.getString("TEST_CENTER_CODE") : "");
+					studentDetailsTO.setTestCenterName(rs.getString("TEST_CENTER_NAME")!=null ? rs.getString("TEST_CENTER_NAME") : "");
+					studentDetailsTO.setDocumentID(rs.getString("DOCUMENTID")!=null ? rs.getString("DOCUMENTID") : "");
+					studentDetailsTO.setScheduleID(rs.getString("SCHEDULEID")!=null ? rs.getString("SCHEDULEID") : "");
+					studentDetailsTO.setTcaScheduleDate(rs.getString("TCASCHEDULEDATE")!=null ? rs.getString("TCASCHEDULEDATE") : "");
+					studentDetailsTO.setImagingID(rs.getString("IMAGINGID")!=null ? rs.getString("IMAGINGID") : "");
+					studentDetailsTO.setLithoCode(rs.getString("LITHOCODE")!=null ? rs.getString("LITHOCODE") : "");
+					studentDetailsTO.setTestMode(rs.getString("TESTMODE")!=null ? rs.getString("TESTMODE") : "");
+					studentDetailsTO.setTestLanguage(rs.getString("TESTLANGUAGE")!=null ? rs.getString("TESTLANGUAGE") : "");
+					studentDetailsTO.setContentName(rs.getString("CONTENTNAME")!=null ? rs.getString("CONTENTNAME") : "");
+					studentDetailsTO.setForm(rs.getString("FORM")!=null ? rs.getString("FORM") : "");
+					studentDetailsTO.setDateTestTaken(rs.getString("DATETESTTAKEN")!=null ? rs.getString("DATETESTTAKEN") : "");
+					studentDetailsTO.setBarcodeID(rs.getString("BARCODEID")!=null ? rs.getString("BARCODEID") : "");
+					studentDetailsTO.setContentScore(rs.getString("CONTENT_SCORE")!=null ? rs.getString("CONTENT_SCORE") : "");
+					studentDetailsTO.setScaleScore(rs.getString("SCALE_SCORE")!=null ? rs.getString("SCALE_SCORE") : "");
+					studentDetailsTO.setStatusCodeContentArea(rs.getString("STATUS_CODE_CONTENT")!=null ? rs.getString("STATUS_CODE_CONTENT") : "");
+					studentDetailsTO.setScannedProcessDate(rs.getString("SCANNED_PROCESS_DATE")!=null ? rs.getString("SCANNED_PROCESS_DATE") : "");
+					studentDetailsTO.setContentTestCode(rs.getString("CONTENT_TEST_CODE")!=null ? rs.getString("CONTENT_TEST_CODE") : "");
+						
+					studentDetailsTOList.add(studentDetailsTO);
+				}
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getResultGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return studentDetailsTOList;
+	}
+	
+	/**
+	 * @author Joy
+	 * Get total record count for given search criteria
+	 * @throws Exception
+	 */
+	public long getTotalRecordCountGhi(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getTotalRecordCountGhi()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		long totalRecordCount = 0;
+		
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			int placeHolderTotalRecCount = 0;
+			int placeHolderData = 0;
+			int placeHolderDataCsv = 0;
+			int placeHolderErrorMsg = 0;
+			String query = "";
+			query = "{call PKG_FILE_TRACKING.SP_GET_DATA_GHI(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			System.out.println("COUNT query: "+query);
+			cs = conn.prepareCall(query);
+			
+			cs.setString(++count, searchProcess.getProcessStatus());
+			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getProcessedDateTo());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getDRCStudentId() != null && searchProcess.getDRCStudentId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getDRCStudentId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getDRCDocumentId() != null && searchProcess.getDRCDocumentId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getDRCDocumentId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getLastName() != null && searchProcess.getLastName().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getLastName()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStateCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){
+				cs.setString(++count, searchProcess.getForm());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getTestElementId() != null && searchProcess.getTestElementId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getTestElementId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getBarcode() != null && searchProcess.getBarcode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getBarcode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getSearchParam() != null && searchProcess.getSearchParam().trim().length() > 0){
+				cs.setString(++count, searchProcess.getSearchParam());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.setString(++count, "-1");
+			cs.setString(++count, "-1");
+			cs.setLong(++count, searchProcess.getFromRowNum());
+			cs.setLong(++count, searchProcess.getToRowNum());				
+			placeHolderTotalRecCount = ++count;
+			cs.registerOutParameter(placeHolderTotalRecCount, OracleTypes.NUMBER);
+			placeHolderData = ++count;
+			cs.registerOutParameter(placeHolderData, OracleTypes.CURSOR);
+			placeHolderDataCsv = ++count;
+			cs.registerOutParameter(placeHolderDataCsv, OracleTypes.CURSOR);
+			placeHolderErrorMsg = ++count;
+			cs.registerOutParameter(placeHolderErrorMsg, OracleTypes.VARCHAR);
+			
+			cs.execute();
+			String errorMessage = cs.getString(placeHolderErrorMsg);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
+				System.out.println("totalRecordCount: "+totalRecordCount);
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getTotalRecordCountGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return totalRecordCount;
 	}
 
 }

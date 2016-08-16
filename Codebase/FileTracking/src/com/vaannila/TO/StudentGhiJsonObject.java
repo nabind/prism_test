@@ -2,7 +2,7 @@ package com.vaannila.TO;
 
 import java.util.List;
 
-public class ErrorWinJsonObject {
+public class StudentGhiJsonObject {
 	
 	long iTotalRecords;
 
@@ -12,7 +12,7 @@ public class ErrorWinJsonObject {
 
     String sColumns;
 
-    List<ErrorDetailsWinTO> aaData;
+    List<StudentDetailsGhiTO> aaData;
 
     public long getiTotalRecords() {
     	return iTotalRecords;
@@ -46,11 +46,11 @@ public class ErrorWinJsonObject {
     	this.sColumns = sColumns;
     }
 
-    public List<ErrorDetailsWinTO> getAaData() {
+    public List<StudentDetailsGhiTO> getAaData() {
         return aaData;
     }
 
-    public void setAaData(List<ErrorDetailsWinTO> aaData) {
+    public void setAaData(List<StudentDetailsGhiTO> aaData) {
         this.aaData = aaData;
     }
 	
