@@ -33,14 +33,32 @@
 					, Error tracking Date From: <%=searchError.getErrorDateFrom()%>
 				<%}%>
 				<%if(searchError.getErrorDateTo() != null && searchError.getErrorDateTo().trim().length() > 0){%>
-					, Winscore Export Date To: <%=searchError.getErrorDateTo()%>
+					, Error tracking Date To: <%=searchError.getErrorDateTo()%>
 				<%}%>
 				<%if(searchError.getDRCStudentId() != null && searchError.getDRCStudentId().trim().length() > 0){%>
 					, DRC Student ID: <%=searchError.getDRCStudentId()%>
 				<%}%>
 				<%if(searchError.getDRCDocumentId() != null && searchError.getDRCDocumentId().trim().length() > 0){%>
 					, DRC Document ID: <%=searchError.getDRCDocumentId()%>
-				<%}%>				
+				<%}%>
+				<%if(searchError.getUuid() != null && searchError.getUuid().trim().length() > 0){%>
+					, UUID: <%=searchError.getUuid()%>
+				<%}%>		
+				<%if(searchError.getLastName() != null && searchError.getLastName().trim().length() > 0){%>
+					, Last Name: <%=searchError.getLastName()%>
+				<%}%>
+				<%if(searchError.getStateCode() != null && searchError.getStateCode().trim().length() > 0){%>
+					, State Code: <%=searchError.getStateCode()%>
+				<%}%>
+				<%if(searchError.getForm() != null && searchError.getForm().trim().length() > 0){%>
+					, Form: <%=searchError.getForm()%>
+				<%}%>
+				<%if(searchError.getTestElementId() != null && searchError.getTestElementId().trim().length() > 0){%>
+					, Test Element ID: <%=searchError.getTestElementId()%>
+				<%}%>
+				<%if(searchError.getBarcode() != null && searchError.getBarcode().trim().length() > 0){%>
+					, Barcode: <%=searchError.getBarcode()%>
+				<%}%>		
 				</div>
 				
 				<table id="errorResultTable" width="100%">
@@ -68,7 +86,7 @@
 							<th>ImagingID</th>
 							<th>Litho Code</th>
 							<th>Test Mode</th>
-							<th>Test Language/th>
+							<th>Test Language</th>
 							<th>Content Name</th>
 							<th>Form</th>
 							<th>Date Test Taken</th>

@@ -877,111 +877,205 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
   BEGIN
   
-    V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                      ' SELECT TS.PROCESS_ID RECORD_ID,
-       TS.FILE_NAME FILE_NAME,
-       DI.DOC_CREATED_DATE FILE_GENERATION_DATE_TIME,
-       (SELECT DISTINCT TP.TP_CODE
-          FROM TEST_PROGRAM TP
-         WHERE TP.CUSTOMERID = RI.CUSTOMERID
-           AND TP.ADMINID = RI.ADMINID
-           AND TP_MODE = DI.TEST_MODE) ORGID_TP,
-       RI.DRC_STUDENTID,
-       (SELECT C.CUSTOMER_CODE
-          FROM CUSTOMER_INFO C
-         WHERE C.CUSTOMERID = RI.CUSTOMERID) STATE_CODE,
-       RI.EXAMINEE_ID EXAMINEEID,
-       DI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
-       RI.LAST_NAME || '', '' || RI.FIRST_NAME || '', '' || RI.MIDDLE_NAME STUDENT_NAME,
-       RI.BIRTHDATE DOB,
-       (SELECT GENDER_CODE FROM GENDER_DIM G WHERE G.GENDERID = RI.GENDERID) GENDER,
-       DI.DATETIMESTAMP PRISM_PROCESS_DATE,
-       (SELECT SUBSTR(ORG_NODE_CODE_PATH, 3)
-          FROM ORG_NODE_DIM O
-         WHERE O.ORG_NODEID = RI.ORG_NODEID) ORGPATH,
-       DI.SCHED_EDU_CENTER_CODE TEST_CENTER_CODE,
-       DI.SCHED_EDU_CENTER_CODE TEST_CENTER_NAME,
-       DI.DOCUMENTID DOCUMENTID,
-       DI.SCHEDULE_ID SCHEDULEID,
-       DI.TCA_SCHEDULED_DATE TCASCHEDULEDATE,
-       DI.IMAGING_ID IMAGINGID,
-       DI.LITHOCODE LITHOCODE,
-       DI.TEST_MODE TESTMODE,
-       DI.TEST_LANGUAGE TESTLANGUAGE,
-       (SELECT SUBTEST_NAME
-          FROM SUBTEST_DIM
-         WHERE SUBTEST_CODE = DI.CONTENT_CODE) CONTENTNAME,
-       DI.FORM FORM,
-       ''SF.DATE_TEST_TAKEN'' DATETESTTAKEN,
-       DI.BARCODE_ID BARCODEID,
-       ''SF.NCR'' CONTENT_SCORE,
-       ''SF.SS'' SCALE_SCORE,
-       DECODE(''SF.STATUS_CODE'',
-              ''3'',
-              ''OM'',
-              ''5'',
-              ''INV'',
-              ''6'',
-              ''SUP'',
-              ''7'',
-              ''NA'',
-              ''8'',
-              ''SIP'') STATUS_CODE_CONTENT,
-       ''CONTENT_TEST_CODE'' CONTENT_TEST_CODE,
-       ''scannedProcessDate'' SCANNED_PROCESS_DATE,
-       ''ER'' PRISM_PROCESS_STATUS
-  FROM STG_TASK_STATUS TS, STG_STUDENT_DOC_INFO DI, STG_STUDENT_REG_INFO RI';
+    V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' SELECT *
+  FROM (SELECT ESRIH.PROCESS_ID RECORD_ID,
+               ESRIH.FILENAME FILE_NAME,
+               ESRIH.STUDENT_CREATED_DATE FILE_GENERATION_DATE_TIME,
+               ''-'' ORGID_TP,
+               ESRIH.DRC_STUDENTID DRC_STUDENTID,
+               (SELECT C.CUSTOMER_CODE
+                  FROM CUSTOMER_INFO C
+                 WHERE C.CUSTOMERID = ESRIH.CUSTOMERID) STATE_CODE,
+               ESRIH.EXAMINEE_ID EXAMINEEID,
+               ESRI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
+               ESRI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
+               ESRIH.LAST_NAME LAST_NAME,
+               ESRIH.LAST_NAME || '',
+                      '' || ESRIH.FIRST_NAME || '', '' ||
+               ESRIH.MIDDLE_NAME STUDENT_NAME,
+               ESRIH.BIRTHDATE DOB,
+               (SELECT GENDER_CODE
+                  FROM GENDER_DIM G
+                 WHERE G.GENDERID = ESRIH.GENDERID) GENDER,
+               TO_CHAR(ESRI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
+               ESRIH.ORG_NODE_CODE_PATH ORGPATH,
+               (SELECT ORG_NODE_CODE
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESRIH.ORG_NODEID) TEST_CENTER_CODE,
+               (SELECT ORG_NODE_NAME
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESRIH.ORG_NODEID) TEST_CENTER_NAME,
+               ''-'' DOCUMENTID,
+               ''-'' SCHEDULEID,
+               ''-'' TCASCHEDULEDATE,
+               ''-'' IMAGINGID,
+               ''-'' LITHOCODE,
+               ''-'' TESTMODE,
+               ''-'' TESTLANGUAGE,
+               ''-'' CONTENTNAME,
+               ''-'' FORM,
+               ''-'' BARCODEID,
+               ''-'' DATETESTTAKEN,
+               ''-'' CONTENT_SCORE,
+               ''-'' SCALE_SCORE,
+               ''-'' STATUS_CODE_CONTENT,
+               ''-'' CONTENT_TEST_CODE,
+               ''-'' SCANNED_PROCESS_DATE,
+               ''-'' TEST_ELEMENT_ID,
+               ''-'' BARCODE
+          FROM ERR_STUDENT_REG_INFO ESRI, ERR_STUDENT_REG_INFO_HIST ESRIH
+         WHERE ESRI.STG_REG_INFO_ID = ESRIH.STG_REG_INFO_ID
+        UNION ALL
+        SELECT ESDIH.PROCESS_ID RECORD_ID,
+               ESDIH.FILENAME FILE_NAME,
+               ESDIH.DOC_CREATED_DATE FILE_GENERATION_DATE_TIME,
+               (SELECT DISTINCT TP.TP_CODE
+                  FROM TEST_PROGRAM TP
+                 WHERE TP.CUSTOMERID = ESDIH.CUSTOMERID
+                   AND TP.ADMINID = ESDIH.ADMINID
+                   AND TP_MODE = ESDIH.TEST_MODE) ORGID_TP,
+               ESDIH.DRC_STUDENTID DRC_STUDENTID,
+               (SELECT C.CUSTOMER_CODE
+                  FROM CUSTOMER_INFO C
+                 WHERE C.CUSTOMERID = ESDIH.CUSTOMERID) STATE_CODE,
+               ESBDH.EXT_STUDENT_ID EXAMINEEID,
+               ESDI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
+               ESDI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
+               ESBDH.LAST_NAME LAST_NAME,
+               ESBDH.LAST_NAME || '',
+                      '' || ESBDH.FIRST_NAME || '', '' ||
+               ESBDH.MIDDLE_NAME STUDENT_NAME,
+               ESBDH.BIRTHDATE DOB,
+               (SELECT GENDER_CODE
+                  FROM GENDER_DIM G
+                 WHERE G.GENDERID = ESBDH.GENDERID) GENDER,
+               TO_CHAR(ESDI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
+               (SELECT ORG_NODE_CODE_PATH
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) ORGPATH,
+               (SELECT ORG_NODE_CODE
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) TEST_CENTER_CODE,
+               (SELECT ORG_NODE_NAME
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) TEST_CENTER_NAME,
+               TO_CHAR(ESDIH.DOCUMENTID) DOCUMENTID,
+               ESDIH.SCHEDULE_ID SCHEDULEID,
+               ESDIH.TCA_SCHEDULED_DATE TCASCHEDULEDATE,
+               ESDIH.IMAGING_ID IMAGINGID,
+               ESDIH.LITHOCODE LITHOCODE,
+               ESDIH.TEST_MODE TESTMODE,
+               ESDIH.TEST_LANGUAGE TESTLANGUAGE,
+               (SELECT SUBTEST_NAME
+                  FROM SUBTEST_DIM
+                 WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE) CONTENTNAME,
+               ESDIH.FORM FORM,
+               ESDIH.BARCODE_ID BARCODEID,
+               (SELECT TO_CHAR(DATE_TEST_TAKEN)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) DATETESTTAKEN,
+               (SELECT TO_CHAR(NCR)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) CONTENT_SCORE,
+               (SELECT TO_CHAR(SS)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) SCALE_SCORE,
+               DECODE(ESDIH.STATUS_CODE,
+                      ''3'',
+                      ''OM'',
+                      ''5'',
+                      ''INV'',
+                      ''6'',
+                      ''SUP'',
+                      ''7'',
+                      ''NA'',
+                      ''8'',
+                      ''SIP'') STATUS_CODE_CONTENT,
+               (SELECT DEMO_VALUE
+                  FROM ERR_STUDENT_DEMO_HIST
+                 WHERE STG_STUDENT_BIO_ID = ESBDH.STG_STUDENT_BIO_ID
+                   AND SUBTESTID =
+                       (SELECT SUBTESTID
+                          FROM SUBTEST_DIM
+                         WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE)
+                   AND DEMOID =
+                       (SELECT DEMOID
+                          FROM DEMOGRAPHIC
+                         WHERE DEMO_CODE LIKE ''Cont_Tst_Cd%''
+                           AND CUSTOMERID = ESDIH.CUSTOMERID
+                           AND SUBTESTID =
+                               (SELECT SUBTESTID
+                                  FROM SUBTEST_DIM
+                                 WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE))) CONTENT_TEST_CODE,
+               ''-'' SCANNED_PROCESS_DATE,
+               ESBDH.TEST_ELEMENT_ID TEST_ELEMENT_ID,
+               ESDIH.BARCODE_ID BARCODE
+          FROM ERR_STUDENT_DOC_INFO      ESDI,
+               ERR_STUDENT_DOC_INFO_HIST ESDIH,
+               ERR_STUDENT_BIO_DIM_HIST  ESBDH
+         WHERE ESDI.STG_STUDENT_DOCID = ESDIH.STG_STUDENT_DOCID
+           AND ESDIH.STG_STUDENT_BIO_ID(+) = ESBDH.STG_STUDENT_BIO_ID)
+ WHERE 1 = 1';
   
     IF P_PROCESS_STATUS <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.EXCEPTION_STATUS =  ''' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND PRISM_PROCESS_STATUS =  ''' ||
                         P_PROCESS_STATUS || '''';
     END IF;
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(EED.CREATED_DATE_TIME) >= TO_DATE(''' ||
+                        ' AND TRUNC(PRISM_PROCESS_DATE) >= TO_DATE(''' ||
                         P_DATE_FROM || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_DATE_TO <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(EED.CREATED_DATE_TIME) <= TO_DATE(''' ||
+                        ' AND TRUNC(PRISM_PROCESS_DATE) <= TO_DATE(''' ||
                         P_DATE_TO || ''', ''MM/DD/YYYY'')';
     END IF;
   
+    IF P_DRC_STUDENT_ID <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND DRC_STUDENTID LIKE ''%' ||
+                        P_DRC_STUDENT_ID || '%''';
+    END IF;
+  
+    IF P_DRC_DOCUMENT_ID <> '-1' THEN
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND DOCUMENTID LIKE ''%' ||
+                        P_DRC_DOCUMENT_ID || '%''';
+    END IF;
+  
     IF P_UUID <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.ER_UUID LIKE ''%' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EXAMINEEID LIKE ''%' ||
                         P_UUID || '%''';
     END IF;
   
     IF P_LAST_NAME <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND UPPER(EED.LAST_NAME) LIKE UPPER(''%' ||
+                        ' AND UPPER(LAST_NAME) LIKE UPPER(''%' ||
                         P_LAST_NAME || '%'')';
     END IF;
   
     IF P_STATE_CODE <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.STATE_CODE =  ''' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND STATE_CODE =  ''' ||
                         P_STATE_CODE || '''';
     END IF;
   
     IF P_FORM <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.FORM =  ''' || P_FORM || '''';
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND FORM =  ''' || P_FORM || '''';
     END IF;
   
     IF P_TEST_ELEMENT_ID <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.TEST_ELEMENT_ID =  ''' ||
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND TEST_ELEMENT_ID =  ''' ||
                         P_TEST_ELEMENT_ID || '''';
     END IF;
   
     IF P_BARCODE <> '-1' THEN
-      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND EED.BARCODE =  ''' ||
-                        P_BARCODE || '''';
+      V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND BARCODE =  ''' || P_BARCODE || '''';
     END IF;
   
     IF P_SEARCH_PARAM <> '-1' THEN
       V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
-                        ') TAB_SEARCH WHERE UPPER(STUDENTNAME) LIKE UPPER(''%' ||
+                        ') TAB_SEARCH WHERE UPPER(STUDENT_NAME) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
                         '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
@@ -1016,43 +1110,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                  FROM T
                CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
                 WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
-    
-    
-      IF V_SEARCH_PARAM_COUNT <> 0 THEN
-        IF V_SEARCH_PARAM_COUNT = 3 THEN
-          V_EXCEPTION_STATUS := '''ER''' || ',' || '''CO''' || ',' ||
-                                '''IN''';
-        ELSE
-          V_EXCEPTION_STATUS := '';
-          FOR REC IN (SELECT TAB.EXCEPTION_STATUS ES
-                        FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
-                                           FROM DUAL)
-                               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
-                                 FROM T
-                               CONNECT BY LEVEL <=
-                                          LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
-                                WHERE TAB.EXCEPTION_STATUS LIKE
-                                      UPPER(V_SEARCH_PARAM)
-                      ) LOOP
-            V_SEARCH_PARAM := REC.ES;
-            IF V_SEARCH_PARAM = 'ERROR' THEN
-              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''ER''' || ',';
-            ELSIF V_SEARCH_PARAM = 'COMPLETED' THEN
-              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''CO''' || ',';
-            ELSIF V_SEARCH_PARAM = 'INVALIDATED' THEN
-              V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''IN''' || ',';
-            END IF;
-          END LOOP;
-          V_EXCEPTION_STATUS := V_EXCEPTION_STATUS || '''''';
-        END IF;
-      
-        /*DBMS_OUTPUT.PUT_LINE('V_EXCEPTION_STATUS: ' || V_EXCEPTION_STATUS);*/
-      
-        IF V_SEARCH_PARAM_COUNT <> 0 THEN
-          V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' OR EXCEPTION_STATUS IN ( ' ||
-                            V_EXCEPTION_STATUS || ')';
-        END IF;
-      END IF;
     END IF;
   
     V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||
@@ -1060,7 +1117,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                   V_QUERY_ACTUAL || ') TAB';
   
     /*DBMS_OUTPUT.PUT_LINE('V_QUERY_TOTAL_RECORD_COUNT: ' ||
-                         V_QUERY_TOTAL_RECORD_COUNT);*/
+    V_QUERY_TOTAL_RECORD_COUNT);*/
   
     OPEN V_CUR_TOTAL_RECORD_COUNT FOR V_QUERY_TOTAL_RECORD_COUNT;
     IF V_CUR_TOTAL_RECORD_COUNT%ISOPEN THEN
@@ -1069,7 +1126,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
           INTO P_OUT_TOTAL_RECORD_COUNT;
         EXIT WHEN V_CUR_TOTAL_RECORD_COUNT%NOTFOUND;
         /*DBMS_OUTPUT.PUT_LINE('P_OUT_TOTAL_RECORD_COUNT: ' ||
-                             P_OUT_TOTAL_RECORD_COUNT);*/
+        P_OUT_TOTAL_RECORD_COUNT);*/
       END LOOP;
       CLOSE V_CUR_TOTAL_RECORD_COUNT;
     END IF;
