@@ -46,6 +46,9 @@ function refreshList(adminid, url) {
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
 			<% } else if("TascAdmin".equals(request.getSession().getAttribute("userName"))) { %>
+			<span><a id="toproot1" class="off" href="trackErrorSearch.htm">&nbsp; Track Error - GHI&nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			
 			<span><a id="toproot2" class="off" href="tascSearch.htm">&nbsp;Search TASC Process&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
@@ -61,11 +64,8 @@ function refreshList(adminid, url) {
 			<span><a id="toproot1" class="off" href="completenessCheckSearch.htm">&nbsp; PBT Completeness Check&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
-			<span><a id="toproot1" class="off" href="trackErrorSearch.htm">&nbsp; Track Error - GHI&nbsp;</a></span>
-			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
-			
 			<span><a id="toproot1" class="off" href="scoreReview.htm">&nbsp; Score Change Review&nbsp;</a></span>
-			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			<!-- <img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3"> -->
 			
 			<% } else if("MapAdmin".equals(request.getSession().getAttribute("userName"))) { %>
 			<span><a id="toproot2" class="off" href="mapSearch.htm">&nbsp;Search MAP Process&nbsp;</a></span>

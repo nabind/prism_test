@@ -18,6 +18,8 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String gender;
 	private String procesDate;
 	private String orgCodePath;
+	private String testCenterCode;
+	private String testCenterName;
 	private String documentID;
 	private String scheduleID;
 	private String tcaScheduleDate;
@@ -25,18 +27,16 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String lithoCode;
 	private String testMode;
 	private String testLanguage;
-	private String contentCode;
+	private String contentName;
 	private String form;
 	private String dateTestTaken;
 	private String barcodeID;
 	private String contentScore;
-	private String testCenterCode;
-	private String testCenterName;
-	private String contentName;
+	private String contentTestCode;
 	private String scaleScore;
 	private String scannedProcessDate;
 	private String statusCodeContentArea;
-	private String contentTestCode;
+	
 	private String prismProcessStatus;
 	
 	public String getFileName() {
@@ -153,12 +153,6 @@ public class StudentDetailsGhiTO implements Serializable {
 	public void setTestLanguage(String testLanguage) {
 		this.testLanguage = testLanguage;
 	}
-	public String getContentCode() {
-		return contentCode;
-	}
-	public void setContentCode(String contentCode) {
-		this.contentCode = contentCode;
-	}
 	public String getForm() {
 		return form;
 	}
@@ -236,6 +230,43 @@ public class StudentDetailsGhiTO implements Serializable {
 	}
 	public void setPrismProcessStatus(String prismProcessStatus) {
 		this.prismProcessStatus = prismProcessStatus;
-	}  
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("\"").append(recordId).append("\"")
+		.append(",").append("\"").append(fileName).append("\"")
+		.append(",").append("\"").append(fileGenDateTime).append("\"")
+		.append(",").append("\"").append(OrgIDTP).append("\"")
+		.append(",").append("\"").append(drcStudentID).append("\"")
+		.append(",").append("\"").append(stateCode).append("\"")
+		.append(",").append("\"").append(examineeID).append("\"")
+		.append(",").append("\"").append(errCodeErrDesc).append("\"")
+		.append(",").append("\"").append(studentName).append("\"")
+		.append(",").append("\"").append(dob).append("\"")
+		.append(",").append("\"").append(gender).append("\"")
+		.append(",").append("\"").append(procesDate).append("\"")
+		.append(",").append("\"").append(orgCodePath).append("\"")
+		.append(",").append("\"").append(testCenterCode).append("\"")
+		.append(",").append("\"").append(testCenterName).append("\"")
+		.append(",").append("\"").append(documentID).append("\"")
+		.append(",").append("\"").append(scheduleID).append("\"")
+		.append(",").append("\"").append(tcaScheduleDate).append("\"")
+		.append(",").append("\"").append(imagingID).append("\"")
+		.append(",").append("\"").append(lithoCode).append("\"")
+		.append(",").append("\"").append(testMode).append("\"")
+		.append(",").append("\"").append(testLanguage).append("\"")
+		.append(",").append("\"").append(contentName).append("\"")
+		.append(",").append("\"").append(form).append("\"")
+		.append(",").append("\"").append(dateTestTaken).append("\"")
+		.append(",").append("\"").append(barcodeID).append("\"")
+		.append(",").append("\"").append(contentScore).append("\"")
+		.append(",").append("\"").append(contentTestCode).append("\"")
+		.append(",").append("\"").append(scaleScore).append("\"")
+		.append(",").append("\"").append(scannedProcessDate).append("\"")
+		.append(",").append("\"").append(statusCodeContentArea).append("\"");
+		return buffer.toString();
+	}
 	
 }

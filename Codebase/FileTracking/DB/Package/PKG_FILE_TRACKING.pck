@@ -870,9 +870,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_PAGING             CLOB := '';
     V_QUERY_ACTUAL             CLOB := '';
     V_QUERY_TOTAL_RECORD_COUNT CLOB := '';
-    V_EXCEPTION_STATUS         VARCHAR2(100) := '';
-    V_SEARCH_PARAM             VARCHAR2(100);
-    V_SEARCH_PARAM_COUNT       NUMBER := 0;
     V_CUR_TOTAL_RECORD_COUNT   GET_REFCURSOR;
   
   BEGIN
@@ -881,7 +878,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   FROM (SELECT ESRIH.PROCESS_ID RECORD_ID,
                ESRIH.FILENAME FILE_NAME,
                ESRIH.STUDENT_CREATED_DATE FILE_GENERATION_DATE_TIME,
-               ''-'' ORGID_TP,
+               '''' ORGID_TP,
                ESRIH.DRC_STUDENTID DRC_STUDENTID,
                (SELECT C.CUSTOMER_CODE
                   FROM CUSTOMER_INFO C
@@ -905,24 +902,24 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                (SELECT ORG_NODE_NAME
                   FROM ORG_NODE_DIM
                  WHERE ORG_NODEID = ESRIH.ORG_NODEID) TEST_CENTER_NAME,
-               ''-'' DOCUMENTID,
-               ''-'' SCHEDULEID,
-               ''-'' TCASCHEDULEDATE,
-               ''-'' IMAGINGID,
-               ''-'' LITHOCODE,
-               ''-'' TESTMODE,
-               ''-'' TESTLANGUAGE,
-               ''-'' CONTENTNAME,
-               ''-'' FORM,
-               ''-'' BARCODEID,
-               ''-'' DATETESTTAKEN,
-               ''-'' CONTENT_SCORE,
-               ''-'' SCALE_SCORE,
-               ''-'' STATUS_CODE_CONTENT,
-               ''-'' CONTENT_TEST_CODE,
-               ''-'' SCANNED_PROCESS_DATE,
-               ''-'' TEST_ELEMENT_ID,
-               ''-'' BARCODE
+               '''' DOCUMENTID,
+               '''' SCHEDULEID,
+               '''' TCASCHEDULEDATE,
+               '''' IMAGINGID,
+               '''' LITHOCODE,
+               '''' TESTMODE,
+               '''' TESTLANGUAGE,
+               '''' CONTENTNAME,
+               '''' FORM,
+               '''' BARCODEID,
+               '''' DATETESTTAKEN,
+               '''' CONTENT_SCORE,
+               '''' SCALE_SCORE,
+               '''' STATUS_CODE_CONTENT,
+               '''' CONTENT_TEST_CODE,
+               '''' SCANNED_PROCESS_DATE,
+               '''' TEST_ELEMENT_ID,
+               '''' BARCODE
           FROM ERR_STUDENT_REG_INFO ESRI, ERR_STUDENT_REG_INFO_HIST ESRIH
          WHERE ESRI.STG_REG_INFO_ID = ESRIH.STG_REG_INFO_ID
         UNION ALL
@@ -1007,7 +1004,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                (SELECT SUBTESTID
                                   FROM SUBTEST_DIM
                                  WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE))) CONTENT_TEST_CODE,
-               ''-'' SCANNED_PROCESS_DATE,
+               '''' SCANNED_PROCESS_DATE,
                ESBDH.TEST_ELEMENT_ID TEST_ELEMENT_ID,
                ESDIH.BARCODE_ID BARCODE
           FROM ERR_STUDENT_DOC_INFO      ESDI,
@@ -1075,41 +1072,72 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     IF P_SEARCH_PARAM <> '-1' THEN
       V_QUERY_ACTUAL := 'SELECT * FROM (' || V_QUERY_ACTUAL ||
-                        ') TAB_SEARCH WHERE UPPER(STUDENT_NAME) LIKE UPPER(''%' ||
+                        ') TAB_SEARCH WHERE UPPER(RECORD_ID) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(UUID) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(FILE_NAME) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(FILE_GENERATION_DATE_TIME) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(PROCESS_ID) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(ORGID_TP) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(EXCEPTION_CODE) LIKE UPPER(''%' ||
-                        P_SEARCH_PARAM ||
-                        '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
-                        P_SEARCH_PARAM ||
-                        '%'') OR UPPER(DATE_SCHEDULED) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(DRC_STUDENTID) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
                         '%'') OR UPPER(STATE_CODE) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
+                        '%'') OR UPPER(EXAMINEEID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(ERROR_CODE_ERROR_DESCRIPTION) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(STUDENT_NAME) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DOB) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(GENDER) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(PRISM_PROCESS_DATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(ORGPATH) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_CENTER_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_CENTER_NAME) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(DOCUMENTID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SCHEDULEID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TCASCHEDULEDATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(IMAGINGID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(LITHOCODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TESTMODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TESTLANGUAGE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(CONTENTNAME) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
                         '%'') OR UPPER(FORM) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(ER_EXCDID) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(BARCODEID) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(PROCESSED_DATE) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(DATETESTTAKEN) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM ||
-                        '%'') OR UPPER(SUBTEST) LIKE UPPER(''%' ||
+                        '%'') OR UPPER(CONTENT_SCORE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SCALE_SCORE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(STATUS_CODE_CONTENT) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(CONTENT_TEST_CODE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(SCANNED_PROCESS_DATE) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(TEST_ELEMENT_ID) LIKE UPPER(''%' ||
+                        P_SEARCH_PARAM ||
+                        '%'') OR UPPER(BARCODE) LIKE UPPER(''%' ||
                         P_SEARCH_PARAM || '%'')';
-    
-      V_SEARCH_PARAM := '%' || P_SEARCH_PARAM || '%';
-    
-      SELECT COUNT(TAB.EXCEPTION_STATUS)
-        INTO V_SEARCH_PARAM_COUNT
-        FROM (WITH T AS (SELECT 'ERROR,COMPLETED,INVALIDATED' AS TXT
-                           FROM DUAL)
-               SELECT REGEXP_SUBSTR(TXT, '[^,]+', 1, LEVEL) AS EXCEPTION_STATUS
-                 FROM T
-               CONNECT BY LEVEL <= LENGTH(REGEXP_REPLACE(TXT, '[^,]*')) + 1) TAB
-                WHERE TAB.EXCEPTION_STATUS LIKE UPPER(V_SEARCH_PARAM);
     END IF;
   
     V_QUERY_TOTAL_RECORD_COUNT := V_QUERY_TOTAL_RECORD_COUNT ||

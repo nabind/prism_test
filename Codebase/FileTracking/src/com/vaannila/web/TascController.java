@@ -1258,4 +1258,78 @@ public class TascController {
 		return null;			
 	}
 	
+	/**
+	 * @author Joy
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/downloadCsvGhi.htm")
+	public void downloadCsvGhi(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: downloadCsvGhi()");
+		long t1 = System.currentTimeMillis();
+		String fileName = "dataGhi.csv";
+		String contentType = "application/octet-stream";
+		SearchProcess process = new SearchProcess();
+		List<StudentDetailsGhiTO> studentDetailsTOList = null;
+		try {
+			process = (SearchProcess)request.getSession().getAttribute("errorTrackingTO");
+			process.setMode("CSV");
+			process.setSortCol("12");
+			process.setSortDir("desc");
+			TascDAOImpl stageDao = new TascDAOImpl();
+			studentDetailsTOList = stageDao.getResultGhi(process);
+			process.setMode("");
+			process.setSortCol("");
+			process.setSortDir("");
+			
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("Record Id")
+			.append(",").append("File Name")
+			.append(",").append("File Generation Date-Time")
+			.append(",").append("OrgID~TP")
+			.append(",").append("DRC Student ID")
+			.append(",").append("State Code")
+			.append(",").append("Examinee ID")
+			.append(",").append("Error Code & Desc")
+			.append(",").append("Student Name")
+			.append(",").append("DOB")
+			.append(",").append("Gender")
+			.append(",").append("Prism Process Date")
+			.append(",").append("Org Code Path")
+			.append(",").append("Test Center Code")
+			.append(",").append("Test Center Name")
+			.append(",").append("Document ID")
+			.append(",").append("Schedule ID")
+			.append(",").append("TCA Schedule Date")
+			.append(",").append("ImagingID")
+			.append(",").append("Litho Code")
+			.append(",").append("Test Mode")
+			.append(",").append("Test Language")
+			.append(",").append("Content Name")
+			.append(",").append("Form")
+			.append(",").append("Date Test Taken")
+			.append(",").append("BarcodeID")
+			.append(",").append("Content Score (NC)")
+			.append(",").append("Content Test Code")
+			.append(",").append("Scale Score")
+			.append(",").append("Scanned Process Date")
+			.append(",").append("Status Code for Content Area")
+			.append("\n");
+			
+			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
+			buffer.append(data);
+			System.out.println("buffer: "+buffer);
+			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
+		} catch (Exception e) {
+			System.out.println("Failed to download the file");
+			e.printStackTrace();
+		}finally{
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: downloadCsvGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+	}
+	
 }
