@@ -100,11 +100,51 @@
 					</thead>
 				</table>
 			
-				<p><p>
+				<p>
 					<b>Overall Status:</b><br/>
 					<span class="completed legend" title="Completed"></span> = Completed/Success (CO) <br/>
 					<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error (Record received by Prism, but there is an error) (ER)</br>
 				</p>
+				
+				<div id="historyDialog" title="Loading ..." style='display:none; font-size:11px;'>
+					<p id="review"><p><p>
+					<table id="historyTable" width="100%">
+						<thead>
+							<tr>
+								<th>Record Id</th>
+								<th>File Name</th>
+								<th>File Generation Date-Time</th>
+								<th>OrgID~TP</th>
+								<th>State Code</th>
+								<th>Examinee ID</th>
+								<th>Error Code & Desc</th>
+								<th>Student Name</th>
+								<th>DOB</th>
+								<th>Gender</th>
+								<th>Prism Process Date</th>
+								<th>Org Code Path</th>
+								<th>Test Center Code</th>
+								<th>Test Center Name</th>
+								<th>Document ID</th>
+								<th>Schedule ID</th>
+								<th>TCA Schedule Date</th>
+								<th>ImagingID</th>
+								<th>Litho Code</th>
+								<th>Test Mode</th>
+								<th>Test Language</th>
+								<th>Content Name</th>
+								<th>Form</th>
+								<th>Date Test Taken</th>
+								<th>BarcodeID</th>
+								<th>Content Score (NC)</th>
+								<th>Content Test Code</th>
+								<th>Scale Score</th>
+								<th>Scanned Process Date</th>
+								<th>Status Code for Content Area</th>
+							</tr>
+						</thead>
+					</table>
+				</div>	
 		</div>
 	</div>
 </div>

@@ -1,11 +1,7 @@
+var oTable;
+
 $(document).ready(function(){
 	
-	/*$('#coCheckDateFrom').datepicker({maxDate: '0',onSelect: function(date) {
-		date = $(this).datepicker('getDate');
-        var maxDate = new Date(date.getTime());
-        maxDate.setDate(maxDate.getDate() + 365);
-        $('#coCheckDateTo').datepicker('option', {minDate: date, maxDate: maxDate});
-    }});*/
 	$('#errorDateFrom').datepicker();
 	$('#errorDateTo').datepicker();
 	
@@ -33,8 +29,7 @@ $(document).ready(function(){
         },         
         "sAjaxSource": "errorResult.htm",
         "aoColumnDefs": [ 
-						  { 'bSortable': false, 'aTargets': [ 0 ]},
-						  { 'bSortable': false, 'aTargets': [ 13 ]}
+						  { 'bSortable': false, 'aTargets': [ 0 ]}
 						],
         "aoColumns": [
 			{ 
@@ -51,7 +46,16 @@ $(document).ready(function(){
 			{ "mData": "fileName" },
 			{ "mData": "fileGenDateTime" },
 			{ "mData": "OrgIDTP" },
-			{ "mData": "drcStudentID" },
+			{
+				"mRender": function ( data, type, row ) {
+					var html = "<a href='#note' class='noteLink historyGhi' style='color:#00329B;text-decoration:underline'";
+					html = html + " drcStudentID='"+row.drcStudentID+"'"
+								+ ">";
+					html += row.drcStudentID;
+					html += "</a>";
+					return html;
+				}
+			},
 			{ "mData": "stateCode"},
 			{ "mData": "examineeID" },
 			{ "mData": "errCodeErrDesc"},
@@ -80,13 +84,88 @@ $(document).ready(function(){
 			{ "mData": "statusCodeContentArea" }
         ]
     });
-	
-	
-	
 });
+
+function getHistoryGhi(obj) {
+	jQuery("#historyDialog").dialog({
+		title: 'History for Student(DRC Student ID): '+ obj.attr('drcStudentID'),
+		width: 900,
+		height: 300,
+		draggable: true,
+		resizable: true,
+		modal: true
+	});
+	
+	var dataString = "drcStudentID="+obj.attr('drcStudentID');
+	oTable = $('#historyTable').DataTable({bJQueryUI : true});	
+	oTable.destroy();
+	var reviewDialog;
+	var bCount =0;
+	
+	$.ajax({
+		type: "POST",
+	    url: "getReviewResult.htm",
+	    data: dataString,
+	    success: function(data) {
+	    	oTable = $('#historyTable').dataTable({
+	    		bJQueryUI : true,
+				bPaginate : false,
+				bProcessing: true,
+				bFilter : false,
+				bInfo : false,
+				bSort : false,
+				"scrollX": true,
+				fnDrawCallback: function () {
+		        	dataTableCallBack();
+		        },
+				data : data.data,
+		        columns: [
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" },
+		            { data: "form" },
+		            { data: "ncr" },
+		            { data: "ss" },
+		            { data: "hse" },
+		            { data: "date" }
+		        ]
+			});
+	    	//$('input:radio');
+
+	      },
+	      error: function(data) {
+			  alert('Failed to get Student Details');
+		  }
+	});	
+}
 
 function dataTableCallBack(){
 	update_rows();
+	$('.historyGhi').on("click", function(){
+		getHistoryGhi($(this));
+	});
 }
 
 function update_rows(){
@@ -96,5 +175,6 @@ function update_rows(){
 
 function validateForm(){
 	//TODO validation if needed
+	$("#errorResultTable").destroy();
 	$('#trackErrorForm').submit();
 }
