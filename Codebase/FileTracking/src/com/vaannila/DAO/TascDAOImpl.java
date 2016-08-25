@@ -1788,6 +1788,62 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		}
 		return totalRecordCount;
 	}
+	
+	/**
+	 * @author Joy
+	 * Get History data depending upon given drcStudentID
+	 * @throws Exception
+	 */
+	public List<Map<String, String>> getHistoryResult(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getHistoryResult()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rs = null;
+		List<Map<String, String>> processList = new ArrayList<Map<String, String>>();
+		Map<String, String> processMap = null;
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_HISTORY(?,?,?)}");
+		String query = queryBuff.toString();
+		System.out.println(query + " drcStudentID:" + searchProcess.getDRCStudentId());
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			cs = conn.prepareCall(queryBuff.toString());
+			cs.setString(++count, searchProcess.getDRCStudentId());
+			cs.registerOutParameter(++count, OracleTypes.CURSOR);
+			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
+			cs.execute();
+			
+			String errorMessage = cs.getString(3);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				rs = (ResultSet) cs.getObject(2);
+				System.out.println("Fetching data for Online Display");
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+			while(rs.next()) {
+				processMap = new HashMap<String, String>();
+				processMap.put("recordId", rs.getString("RECORD_ID")!=null?rs.getString("RECORD_ID"):"");
+				processMap.put("documentID", rs.getString("DOCUMENTID")!=null?rs.getString("DOCUMENTID"):"");
+				processMap.put("prismProcessStatus", rs.getString("PRISM_PROCESS_STATUS")!=null?rs.getString("PRISM_PROCESS_STATUS"):"");
+				processMap.put("errCodeErrDesc", rs.getString("ERROR_CODE_ERROR_DESCRIPTION")!=null?rs.getString("ERROR_CODE_ERROR_DESCRIPTION"):"");
+				processMap.put("procesDate", rs.getString("PRISM_PROCESS_DATE")!=null?rs.getString("PRISM_PROCESS_DATE"):"");
+				processList.add(processMap);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rs.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getHistoryResult() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return processList;
+	}
 
 }
 

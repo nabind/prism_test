@@ -1106,6 +1106,7 @@ public class TascController {
 		try {
 			json_obj.put("student_bio_id", process.getStudentBioId());
 			json_obj.put("subtestid", process.getSubtestId());
+			json_obj.put("drcStudentID", process.getDRCStudentId());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -1330,6 +1331,30 @@ public class TascController {
 			long t2 = System.currentTimeMillis();
 			System.out.println("Exit: downloadCsvGhi() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
+	}
+	
+	/**
+	 * @author Joy
+	 * Get History data depending upon given drcStudentID
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/getHistoryResult.htm")
+	public @ResponseBody String getHistoryResult(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		try {
+			SearchProcess process = new SearchProcess();
+			process.setDRCStudentId(request.getParameter("drcStudentID"));
+			
+			TascDAOImpl stageDao = new TascDAOImpl();
+			List<Map<String, String>> historyData = stageDao.getHistoryResult(process);
+			System.out.println("result size: " + historyData!=null? historyData.size() : "null");
+			System.out.println(listmapToJsonString(historyData, process));
+			response.setContentType("application/json");
+			response.getWriter().write(listmapToJsonString(historyData, process));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }

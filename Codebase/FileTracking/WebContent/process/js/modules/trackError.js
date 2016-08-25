@@ -49,7 +49,7 @@ $(document).ready(function(){
 			{
 				"mRender": function ( data, type, row ) {
 					var html = "<a href='#note' class='noteLink historyGhi' style='color:#00329B;text-decoration:underline'";
-					html = html + " drcStudentID='"+row.drcStudentID+"'"
+					html = html + " drcStudentID='"+row.drcStudentID+"' studentName='"+row.studentName+"'"
 								+ ">";
 					html += row.drcStudentID;
 					html += "</a>";
@@ -88,9 +88,9 @@ $(document).ready(function(){
 
 function getHistoryGhi(obj) {
 	jQuery("#historyDialog").dialog({
-		title: 'History for Student(DRC Student ID): '+ obj.attr('drcStudentID'),
-		width: 900,
-		height: 300,
+		title: 'History for Student(DRC Student ID): '+obj.attr('drcStudentID')+" |  Student Name: "+obj.attr('studentName'),
+		width: 920,
+		height: 400,
 		draggable: true,
 		resizable: true,
 		modal: true
@@ -104,59 +104,45 @@ function getHistoryGhi(obj) {
 	
 	$.ajax({
 		type: "POST",
-	    url: "getReviewResult.htm",
+	    url: "getHistoryResult.htm",
 	    data: dataString,
 	    success: function(data) {
 	    	oTable = $('#historyTable').dataTable({
 	    		bJQueryUI : true,
-				bPaginate : false,
-				bProcessing: true,
-				bFilter : false,
-				bInfo : false,
-				bSort : false,
-				"scrollX": true,
+	    		"sPaginationType": "full_numbers",
+				"sort": "position",
+				"order": [[ 4, "desc" ]],
+				"bFilter": true,
+				"bInfo": false,
+				"bAutoWidth": false,
+				"bProcessing": true,
+				"aoColumnDefs": [ 
+								  { 'bSortable': false, 'aTargets': [ 0 ]}
+								],
 				fnDrawCallback: function () {
 		        	dataTableCallBack();
 		        },
 				data : data.data,
 		        columns: [
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" },
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" },
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" },
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" },
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" },
-		            { data: "form" },
-		            { data: "ncr" },
-		            { data: "ss" },
-		            { data: "hse" },
-		            { data: "date" }
+					{ 
+						"data": "prismProcessStatus",
+						"mRender": function (oObj) {
+							if(oObj == 'CO'){
+					    		return "<span class='completed' title='Completed'></span>";
+					    	}else if(oObj == 'ER'){
+					    		return "<span class='error' title='Error'></span>";
+					    	}
+					    }		
+					},
+		            { data: "recordId" },
+		            { data: "documentID" },
+		            { data: "errCodeErrDesc" },
+		            { data: "procesDate" }
 		        ]
 			});
-	    	//$('input:radio');
-
 	      },
 	      error: function(data) {
-			  alert('Failed to get Student Details');
+			  alert('Failed to get History Data');
 		  }
 	});	
 }

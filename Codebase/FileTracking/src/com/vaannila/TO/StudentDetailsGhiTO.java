@@ -36,7 +36,6 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String scaleScore;
 	private String scannedProcessDate;
 	private String statusCodeContentArea;
-	
 	private String prismProcessStatus;
 	
 	public String getFileName() {
