@@ -975,13 +975,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                ESDIH.BARCODE_ID BARCODEID,
                (SELECT TO_CHAR(DATE_TEST_TAKEN)
                   FROM ERR_SUBTEST_SCORE_FACT_HIST
-                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) DATETESTTAKEN,
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                 AND ROWNUM = 1) DATETESTTAKEN,
                (SELECT TO_CHAR(NCR)
                   FROM ERR_SUBTEST_SCORE_FACT_HIST
-                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) CONTENT_SCORE,
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                 AND ROWNUM = 1) CONTENT_SCORE,
                (SELECT TO_CHAR(SS)
                   FROM ERR_SUBTEST_SCORE_FACT_HIST
-                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID) SCALE_SCORE,
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                 AND ROWNUM = 1) SCALE_SCORE,
                DECODE(ESDIH.STATUS_CODE,
                       ''3'',
                       ''OM'',
@@ -1008,7 +1011,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            AND SUBTESTID =
                                (SELECT SUBTESTID
                                   FROM SUBTEST_DIM
-                                 WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE))) CONTENT_TEST_CODE,
+                                 WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE)) 
+                   AND ROWNUM = 1) CONTENT_TEST_CODE,
                '''' SCANNED_PROCESS_DATE,
                ESBDH.TEST_ELEMENT_ID TEST_ELEMENT_ID,
                ESDIH.BARCODE_ID BARCODE
