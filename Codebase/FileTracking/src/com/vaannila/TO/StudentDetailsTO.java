@@ -90,9 +90,16 @@ public class StudentDetailsTO implements Serializable {
 	private String scanStack = "";
 	private String scanSequence = "";
 	private String bioImages = "";
+	private String documentId = "";
+	private String level1OrgCode = "";
 	
 	
-	
+	public String getLevel1OrgCode() {
+		return level1OrgCode;
+	}
+	public void setLevel1OrgCode(String level1OrgCode) {
+		this.level1OrgCode = level1OrgCode;
+	}
 	public String getErTestSchId() {
 		return erTestSchId;
 	}
@@ -685,6 +692,12 @@ public class StudentDetailsTO implements Serializable {
 		.append(",").append("\"").append(processedDate).append("\"")
 		.append(",").append("\"").append(errorLog).append("\"");
 		return buffer.toString();
+	}
+	public String getDocumentId() {
+		return documentId;
+	}
+	public void setDocumentId(String documentId) {
+		this.documentId = documentId;
 	}
 	
 	

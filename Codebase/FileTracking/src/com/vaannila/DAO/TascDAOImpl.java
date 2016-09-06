@@ -1844,6 +1844,107 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		}
 		return processList;
 	}
+	
+	public Map<String,List<StudentDetailsTO>> getCombinedGhi(SearchProcess searchProcess) throws Exception {
+		System.out.println("Enter: getCombinedGhi()");
+		long t1 = System.currentTimeMillis();
+		Connection conn = null;
+		CallableStatement cs = null;
+		ResultSet rsOp = null;
+		ResultSet rsEr = null;
+		Map<String,List<StudentDetailsTO>> returnMap = new HashMap<String,List<StudentDetailsTO>>();
+		List<StudentDetailsTO> processListOp = new ArrayList<StudentDetailsTO>();
+		List<StudentDetailsTO> processListEr = new ArrayList<StudentDetailsTO>();
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?)}");
+		String query = queryBuff.toString();
+		System.out.println(" UUID:" + searchProcess.getUuid());
+		System.out.println(" State Code:" + searchProcess.getStateCode());
+		System.out.println(" drcStudentID:" + searchProcess.getDRCStudentId());
+		StudentDetailsTO processTO = null;
+		System.out.println(query);
+		try {
+			conn = BaseDAO.connect(DATA_SOURCE);
+			int count = 0;
+			cs = conn.prepareCall(query);
+			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
+				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStateCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(searchProcess.getDRCStudentId() != null && searchProcess.getDRCStudentId().trim().length() > 0){
+				cs.setString(++count, searchProcess.getDRCStudentId());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			cs.registerOutParameter(++count, OracleTypes.CURSOR);
+			cs.registerOutParameter(++count, OracleTypes.CURSOR);
+			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
+			cs.execute();
+			
+			String errorMessage = cs.getString(6);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				rsOp = (ResultSet) cs.getObject(4);
+				rsEr = (ResultSet) cs.getObject(5);
+				System.out.println("Fetching data for Online Display");
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}
+			while(rsOp.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setDrcStudentId(rsOp.getString("DRC_STUDENT_ID"));
+				processTO.setUuid(rsOp.getString("UUID"));
+				processTO.setStateCode(rsOp.getString("STATE_CODE"));
+				processTO.setSubtestName(rsOp.getString("SUBTEST_NAME"));
+				processTO.setForm(rsOp.getString("FORM"));
+				processTO.setBarcode(rsOp.getString("BARCODE"));
+				processTO.setStatusCode(rsOp.getString("STATUS_CODE_CONTENT"));
+				processTO.setSs(rsOp.getString("SS"));
+				processTO.setStudentBioId(rsOp.getString("BIO_ID"));
+				processTO.setTestElementId(rsOp.getString("TEST_ELEMENT_ID"));
+				processTO.setStudentName(rsOp.getString("STUDENT_NAME"));
+				processTO.setUpdatedDate(rsOp.getString("SCORE_DATE"));
+				processTO.setHse(rsOp.getString("HSE"));
+				processTO.setSourceSystem(rsOp.getString("STUDENT_MODE"));
+				processTO.setLevel1OrgCode(rsOp.getString("LEVEL1_ORG_CODE"));
+				processListOp.add(processTO);
+			}
+			
+			while(rsEr.next()) {
+				processTO = new StudentDetailsTO();
+				processTO.setSubtestName(rsEr.getString("CONTENTNAME"));
+				processTO.setForm(rsEr.getString("FORM"));
+				processTO.setBarcode(rsEr.getString("BARCODE"));
+				processTO.setTestElementId(rsEr.getString("TEST_ELEMENT_ID"));
+				processTO.setTestDate(rsEr.getString("DATETESTTAKEN"));
+				processTO.setErrorLog(rsEr.getString("ERROR_CODE_ERROR_DESCRIPTION"));
+				processTO.setCreatedDate(rsEr.getString("PRISM_PROCESS_DATE"));
+				processTO.setStudentName(rsEr.getString("LAST_NAME"));
+				processTO.setDocumentId(rsEr.getString("DOCUMENTID"));
+				processListEr.add(processTO);
+			}
+			returnMap.put("op", processListOp);
+			returnMap.put("er", processListEr);
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			try {rsOp.close();} catch (Exception e2) {}
+			try {rsEr.close();} catch (Exception e2) {}
+			try {cs.close();} catch (Exception e2) {}
+			try {conn.close();} catch (Exception e2) {}
+			long t2 = System.currentTimeMillis();
+			System.out.println("Exit: getCombinedGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+		}
+		return returnMap;
+	}
 
 }
 

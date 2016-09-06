@@ -1357,4 +1357,38 @@ public class TascController {
 		return null;
 	}
 	
+	/**
+	 * @author Joy
+	 * Get data for single student
+	 * @throws Exception
+	 */
+	@RequestMapping("/process/combinedGhi.htm")
+	public ModelAndView combinedGhi(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		System.out.println("Enter: combinedGhi()");
+		try {
+			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+			SearchProcess process = new SearchProcess();
+			process.setUuid(request.getParameter("uuid"));
+			process.setStateCode(request.getParameter("stateCode"));
+			process.setDRCStudentId(request.getParameter("drcStudentId"));
+			request.getSession().setAttribute("combinedGhiRequestTO", process);
+			
+			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getDRCStudentId() != null && process.getDRCStudentId().length() > 0) ) {
+				TascDAOImpl stageDao = new TascDAOImpl();
+				Map<String,List<StudentDetailsTO>> mapGhi = stageDao.getCombinedGhi(process);
+				request.setAttribute("combinedGhiList", (List<StudentDetailsTO>)mapGhi.get("op"));
+				request.setAttribute("errorGhi", (List<StudentDetailsTO>)mapGhi.get("er"));
+				
+				return new ModelAndView("combinedGhi", "message", "");
+			} else {
+				return new ModelAndView("combinedGhi", "message", "Please provide UUID or DRC Student ID");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ModelAndView("combinedGhi", "message","");
+	}
+	
 }
