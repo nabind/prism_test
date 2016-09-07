@@ -29,7 +29,7 @@ $(document).ready(function(){
         },         
         "sAjaxSource": "errorResult.htm",
         "aoColumnDefs": [ 
-						  { 'bSortable': false, 'aTargets': [ 0 ]}
+						  {'bSortable': false, 'aTargets': [0]}
 						],
         "aoColumns": [
 			{ 

@@ -1,4 +1,5 @@
 <%@page import="com.vaannila.TO.StudentDetailsTO"%>
+<%@page import="com.vaannila.TO.StudentDetailsGhiTO"%>
 <%@page import="com.vaannila.TO.SearchProcess"%>
 <%@page import="javax.servlet.http.HttpServletRequest" %>
 <%@page import="com.vaannila.TO.OrgProcess" %>
@@ -8,31 +9,10 @@
 <%@page import="java.util.Properties" %>
 <%@page import="com.vaannila.util.PropertyFile" %>
 
+<link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
 <link rel="stylesheet" href="css/highlight.css" type="text/css">
 <link rel="stylesheet" href="css/demo.css" type="text/css">
 <style>
-	.locked {
-		display: block;
-		float: left;
-		width: 34px;
-		height: 34px;
-		background: url(css/sprites.png) no-repeat -166px -94px;
-		margin-left: -12px;
-		margin-top: -9px;
-		position: relative;
-		z-index: 88;
-	}
-	.unlocked {
-		display: block;
-		float: left;
-		width: 34px;
-		height: 34px;
-		background: url(css/sprites.png) no-repeat -30px -94px;
-		margin-left: -12px;
-		margin-top: -9px;
-		position: relative;
-		z-index: 88;
-	}
 	.no-border {
 		border: 0;
 		padding: 6px
@@ -56,9 +36,10 @@
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"sScrollX": '100%',
-			"aaSorting": [[ 9, "desc" ]],
+			"aaSorting": [[ 12, "desc" ]],
 			"aoColumnDefs": [ 
-							  { "bVisible": false, "aTargets": [ 0 ] }
+							  { "bVisible": false, "aTargets": [ 0 ] },
+							  {'bSortable': false, 'aTargets':  [1]  }
 							]
 		});
 		
@@ -261,6 +242,13 @@
 						<th>UUID</th>
 						<th>Bio ID</th>
 						<th>Level1 Org Code</th>
+						<th>Test Date</th>
+						<th>Test Center Code</th>
+						<th>Test Center Name</th>
+						<th>Document Id</th>
+						<th>Schedule Id</th>
+						<th>Tca Schedule Date</th>
+						<th>Test Language</th>
 					</tr>
 					</thead>
 				<tbody>
@@ -288,6 +276,13 @@
 					<td><%=process.getUuid() %></td>
 					<td><%=process.getStudentBioId() %></td>
 					<td><%=process.getLevel1OrgCode() %></td>
+					<td><%=process.getTestDate() %></td>
+					<td><%=process.getTestCenterCode() %></td>
+					<td><%=process.getTestCenterName()%></td>
+					<td><%=process.getDocumentId() %></td>
+					<td><%=process.getScheduleId() %></td>
+					<td><%=process.getTcaScheduleDate() %></td>
+					<td><%=process.getTestLanguage() %></td>
 				</tr>
 			<%}
 			}
@@ -300,34 +295,87 @@
 			<table id="errorGhi" width="100%">
 			<thead>
 				<tr>
-					<th>&nbsp;</th>
-					<th>L Name</th>
-					<th>Test Element Id</th>
-					<th>Subtest</th>
+					<th >&nbsp;</th>
+					<th>Prism Process Status</th>
+					<th>Record Id</th>
+					<th>File Name</th>
+					<th>File Generation Date-Time</th>
+					<th>OrgID~TP</th>
+					<th>DRC Student ID</th>
+					<th>State Code</th>
+					<th>Examinee ID</th>
+					<th>Error Code & Desc</th>
+					<th>Student Name</th>
+					<th>DOB</th>
+					<th>Gender</th>
+					<th>Prism Process Date</th>
+					<th>Org Code Path</th>
+					<th>Test Center Code</th>
+					<th>Test Center Name</th>
+					<th>Document ID</th>
+					<th>Schedule ID</th>
+					<th>TCA Schedule Date</th>
+					<th>ImagingID</th>
+					<th>Litho Code</th>
+					<th>Test Mode</th>
+					<th>Test Language</th>
+					<th>Content Name</th>
 					<th>Form</th>
-					<th>Barcode</th>
-					<th>Test Date</th>
-					<th>Description</th>
-					<th>Date Received</th>
+					<th>Date Test Taken</th>
+					<th>BarcodeID</th>
+					<th>Content Score (NC)</th>
+					<th>Content Test Code</th>
+					<th>Scale Score</th>
+					<th>Scanned Process Date</th>
+					<th>Status Code for Content Area</th>
 				</tr>
 				</thead>
 				<tbody>
 			<% 
-			java.util.List<StudentDetailsTO> errorGhi = (ArrayList) request.getAttribute("errorGhi");
+			java.util.List<StudentDetailsGhiTO> errorGhi = (ArrayList) request.getAttribute("errorGhi");
 			if(errorGhi != null) {
-			for(StudentDetailsTO error : errorGhi) {
+			for(StudentDetailsGhiTO error : errorGhi) {
 			%>
 				<tr>
 					<td>&nbsp;</td>
-					
+					<td style="padding-top: 12px;" nowrap>
+						<%if("CO".equals(error.getPrismProcessStatus())) { %>
+							<span class="completed" title="Completed"></span> 
+						<%} else {%>
+							<span class="error" title="Error"></span> 
+						<%} %>
+					</td>
+					<td><%=error.getRecordId() %></td>
+					<td><%=error.getFileName() %></td>
+					<td><%=error.getFileGenDateTime() %></td>
+					<td><%=error.getOrgIDTP() %></td>
+					<td><%=error.getDrcStudentID() %></td>
+					<td><%=error.getStateCode() %></td>
+					<td><%=error.getExamineeID() %></td>
+					<td><%=error.getErrCodeErrDesc() %></td>
 					<td><%=error.getStudentName() %></td>
-					<td><%=error.getTestElementId() %></td>
-					<td><%=error.getContantArea() %></td>
+					<td><%=error.getDob() %></td>
+					<td><%=error.getGender() %></td>
+					<td><%=error.getProcesDate() %></td>
+					<td><%=error.getOrgCodePath() %></td>
+					<td><%=error.getTestCenterCode() %></td>
+					<td><%=error.getTestCenterName() %></td>
+					<td><%=error.getDocumentID() %></td>
+					<td><%=error.getScheduleID() %></td>
+					<td><%=error.getTcaScheduleDate() %></td>
+					<td><%=error.getImagingID() %></td>
+					<td><%=error.getLithoCode() %></td>
+					<td><%=error.getTestMode() %></td>
+					<td><%=error.getTestLanguage() %></td>
+					<td><%=error.getContentName() %></td>
 					<td><%=error.getForm() %></td>
-					<td><%=error.getBarcode() %></td>
-					<td><%=error.getTestDate() %></td>
-					<td><%=error.getErrorLog() %></td>
-					<td><%=error.getCreatedDate() %></td>
+					<td><%=error.getDateTestTaken() %></td>
+					<td><%=error.getBarcodeID() %></td>
+					<td><%=error.getContentScore() %></td>
+					<td><%=error.getContentTestCode() %></td>
+					<td><%=error.getScaleScore() %></td>
+					<td><%=error.getScannedProcessDate() %></td>
+					<td><%=error.getStatusCodeContentArea() %></td>
 				</tr>
 			
 			<%}
@@ -337,11 +385,11 @@
 			</table>
 			
 			<br/><br/>
-			<p><b>Source System:</b> PP = Paper Pencil</p>
-			<!-- <p><b>Overall Status:</b><br/>
-				<span class="locked" title="Completed"></span> = Locked <br/>
-				<span class="unlocked" title="Completed" style="margin-left: -34px;"></span> = Open
-			</p> -->
+			<p>
+				<b>Overall Status:</b><br/>
+				<span class="completed legend" title="Completed"></span> = Completed/Success (CO) <br/>
+				<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error (Record received by Prism, but there is an error) (ER)</br>
+			</p>
 			
 			<div id='processLogDialog' title='Loading' style='display:none; font-size:10px'>
 				<p id="_process_log"><img src="css/ajax-loader.gif"></img><p>

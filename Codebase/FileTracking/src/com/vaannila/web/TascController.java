@@ -1362,6 +1362,7 @@ public class TascController {
 	 * Get data for single student
 	 * @throws Exception
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping("/process/combinedGhi.htm")
 	public ModelAndView combinedGhi(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -1376,9 +1377,9 @@ public class TascController {
 			
 			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getDRCStudentId() != null && process.getDRCStudentId().length() > 0) ) {
 				TascDAOImpl stageDao = new TascDAOImpl();
-				Map<String,List<StudentDetailsTO>> mapGhi = stageDao.getCombinedGhi(process);
+				Map<String,List> mapGhi = stageDao.getCombinedGhi(process);
 				request.setAttribute("combinedGhiList", (List<StudentDetailsTO>)mapGhi.get("op"));
-				request.setAttribute("errorGhi", (List<StudentDetailsTO>)mapGhi.get("er"));
+				request.setAttribute("errorGhi", (List<StudentDetailsGhiTO>)mapGhi.get("er"));
 				
 				return new ModelAndView("combinedGhi", "message", "");
 			} else {

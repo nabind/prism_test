@@ -1845,23 +1845,23 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		return processList;
 	}
 	
-	public Map<String,List<StudentDetailsTO>> getCombinedGhi(SearchProcess searchProcess) throws Exception {
+	@SuppressWarnings("rawtypes")
+	public Map<String,List> getCombinedGhi(SearchProcess searchProcess) throws Exception {
 		System.out.println("Enter: getCombinedGhi()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
 		ResultSet rsOp = null;
 		ResultSet rsEr = null;
-		Map<String,List<StudentDetailsTO>> returnMap = new HashMap<String,List<StudentDetailsTO>>();
+		Map<String,List> returnMap = new HashMap<String,List>();
 		List<StudentDetailsTO> processListOp = new ArrayList<StudentDetailsTO>();
-		List<StudentDetailsTO> processListEr = new ArrayList<StudentDetailsTO>();
+		List<StudentDetailsGhiTO> processListEr = new ArrayList<StudentDetailsGhiTO>();
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?)}");
 		String query = queryBuff.toString();
 		System.out.println(" UUID:" + searchProcess.getUuid());
 		System.out.println(" State Code:" + searchProcess.getStateCode());
 		System.out.println(" drcStudentID:" + searchProcess.getDRCStudentId());
-		StudentDetailsTO processTO = null;
 		System.out.println(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -1897,37 +1897,67 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				throw new Exception(errorMessage);
 			}
 			while(rsOp.next()) {
-				processTO = new StudentDetailsTO();
-				processTO.setDrcStudentId(rsOp.getString("DRC_STUDENT_ID"));
-				processTO.setUuid(rsOp.getString("UUID"));
-				processTO.setStateCode(rsOp.getString("STATE_CODE"));
-				processTO.setSubtestName(rsOp.getString("SUBTEST_NAME"));
-				processTO.setForm(rsOp.getString("FORM"));
-				processTO.setBarcode(rsOp.getString("BARCODE"));
-				processTO.setStatusCode(rsOp.getString("STATUS_CODE_CONTENT"));
-				processTO.setSs(rsOp.getString("SS"));
-				processTO.setStudentBioId(rsOp.getString("BIO_ID"));
-				processTO.setTestElementId(rsOp.getString("TEST_ELEMENT_ID"));
-				processTO.setStudentName(rsOp.getString("STUDENT_NAME"));
-				processTO.setUpdatedDate(rsOp.getString("SCORE_DATE"));
-				processTO.setHse(rsOp.getString("HSE"));
-				processTO.setSourceSystem(rsOp.getString("STUDENT_MODE"));
-				processTO.setLevel1OrgCode(rsOp.getString("LEVEL1_ORG_CODE"));
+				StudentDetailsTO processTO = new StudentDetailsTO();
+				processTO.setDrcStudentId(rsOp.getString("DRC_STUDENT_ID")!=null?rsOp.getString("DRC_STUDENT_ID"):"");
+				processTO.setUuid(rsOp.getString("UUID")!=null?rsOp.getString("UUID"):"");
+				processTO.setStateCode(rsOp.getString("STATE_CODE")!=null?rsOp.getString("STATE_CODE"):"");
+				processTO.setSubtestName(rsOp.getString("SUBTEST_NAME")!=null?rsOp.getString("SUBTEST_NAME"):"");
+				processTO.setForm(rsOp.getString("FORM")!=null?rsOp.getString("FORM"):"");
+				processTO.setBarcode(rsOp.getString("BARCODE")!=null?rsOp.getString("BARCODE"):"");
+				processTO.setStatusCode(rsOp.getString("STATUS_CODE_CONTENT")!=null?rsOp.getString("STATUS_CODE_CONTENT"):"");
+				processTO.setSs(rsOp.getString("SS")!=null?rsOp.getString("SS"):"");
+				processTO.setStudentBioId(rsOp.getString("BIO_ID")!=null?rsOp.getString("BIO_ID"):"");
+				processTO.setTestElementId(rsOp.getString("TEST_ELEMENT_ID")!=null?rsOp.getString("TEST_ELEMENT_ID"):"");
+				processTO.setStudentName(rsOp.getString("STUDENT_NAME")!=null?rsOp.getString("STUDENT_NAME"):"");
+				processTO.setUpdatedDate(rsOp.getString("SCORE_DATE")!=null?rsOp.getString("SCORE_DATE"):"");
+				processTO.setHse(rsOp.getString("HSE")!=null?rsOp.getString("HSE"):"");
+				processTO.setSourceSystem(rsOp.getString("STUDENT_MODE")!=null?rsOp.getString("STUDENT_MODE"):"");
+				processTO.setLevel1OrgCode(rsOp.getString("LEVEL1_ORG_CODE")!=null?rsOp.getString("LEVEL1_ORG_CODE"):"");
+				processTO.setTestDate(rsOp.getString("TEST_DATE")!=null?rsOp.getString("TEST_DATE"):"");
+				processTO.setTestCenterCode(rsOp.getString("TEST_CENTER_CODE")!=null?rsOp.getString("TEST_CENTER_CODE"):"");
+				processTO.setTestCenterName(rsOp.getString("TEST_CENTER_NAME")!=null?rsOp.getString("TEST_CENTER_NAME"):"");
+				processTO.setDocumentId(rsOp.getString("DOCUMENTID")!=null?rsOp.getString("DOCUMENTID"):"");
+				processTO.setScheduleId(rsOp.getString("SCHEDULE_ID")!=null?rsOp.getString("SCHEDULE_ID"):"");
+				processTO.setTcaScheduleDate(rsOp.getString("TCA_SCHEDULED_DATE")!=null?rsOp.getString("TCA_SCHEDULED_DATE"):"");
+				processTO.setTestLanguage(rsOp.getString("TEST_LANGUAGE")!=null?rsOp.getString("TEST_LANGUAGE"):"");
 				processListOp.add(processTO);
 			}
 			
 			while(rsEr.next()) {
-				processTO = new StudentDetailsTO();
-				processTO.setSubtestName(rsEr.getString("CONTENTNAME"));
-				processTO.setForm(rsEr.getString("FORM"));
-				processTO.setBarcode(rsEr.getString("BARCODE"));
-				processTO.setTestElementId(rsEr.getString("TEST_ELEMENT_ID"));
-				processTO.setTestDate(rsEr.getString("DATETESTTAKEN"));
-				processTO.setErrorLog(rsEr.getString("ERROR_CODE_ERROR_DESCRIPTION"));
-				processTO.setCreatedDate(rsEr.getString("PRISM_PROCESS_DATE"));
-				processTO.setStudentName(rsEr.getString("LAST_NAME"));
-				processTO.setDocumentId(rsEr.getString("DOCUMENTID"));
-				processListEr.add(processTO);
+				StudentDetailsGhiTO studentDetailsTO = new StudentDetailsGhiTO();
+				studentDetailsTO.setPrismProcessStatus(rsEr.getString("PRISM_PROCESS_STATUS")!=null ? rsEr.getString("PRISM_PROCESS_STATUS") : "");
+				studentDetailsTO.setRecordId(rsEr.getString("RECORD_ID")!=null ? rsEr.getString("RECORD_ID") : "");
+				studentDetailsTO.setFileName(rsEr.getString("FILE_NAME")!=null ? rsEr.getString("FILE_NAME") : "");
+				studentDetailsTO.setFileGenDateTime(rsEr.getString("FILE_GENERATION_DATE_TIME")!=null ? rsEr.getString("FILE_GENERATION_DATE_TIME") : "");
+				studentDetailsTO.setOrgIDTP(rsEr.getString("ORGID_TP")!=null ? rsEr.getString("ORGID_TP") : "");
+				studentDetailsTO.setDrcStudentID(rsEr.getString("DRC_STUDENTID")!=null ? rsEr.getString("DRC_STUDENTID") : "");
+				studentDetailsTO.setStateCode(rsEr.getString("STATE_CODE")!=null ? rsEr.getString("STATE_CODE") : "");
+				studentDetailsTO.setExamineeID(rsEr.getString("EXAMINEEID")!=null ? rsEr.getString("EXAMINEEID") : "");
+				studentDetailsTO.setErrCodeErrDesc(rsEr.getString("ERROR_CODE_ERROR_DESCRIPTION")!=null ? rsEr.getString("ERROR_CODE_ERROR_DESCRIPTION") : "");
+				studentDetailsTO.setStudentName(rsEr.getString("STUDENT_NAME")!=null ? rsEr.getString("STUDENT_NAME") : "");
+				studentDetailsTO.setDob(rsEr.getString("DOB")!=null ? rsEr.getString("DOB") : "");
+				studentDetailsTO.setGender(rsEr.getString("GENDER")!=null ? rsEr.getString("GENDER") : "");
+				studentDetailsTO.setProcesDate(rsEr.getString("PRISM_PROCESS_DATE")!=null ? rsEr.getString("PRISM_PROCESS_DATE") : "");
+				studentDetailsTO.setOrgCodePath(rsEr.getString("ORGPATH")!=null ? rsEr.getString("ORGPATH") : "");
+				studentDetailsTO.setTestCenterCode(rsEr.getString("TEST_CENTER_CODE")!=null ? rsEr.getString("TEST_CENTER_CODE") : "");
+				studentDetailsTO.setTestCenterName(rsEr.getString("TEST_CENTER_NAME")!=null ? rsEr.getString("TEST_CENTER_NAME") : "");
+				studentDetailsTO.setDocumentID(rsEr.getString("DOCUMENTID")!=null ? rsEr.getString("DOCUMENTID") : "");
+				studentDetailsTO.setScheduleID(rsEr.getString("SCHEDULEID")!=null ? rsEr.getString("SCHEDULEID") : "");
+				studentDetailsTO.setTcaScheduleDate(rsEr.getString("TCASCHEDULEDATE")!=null ? rsEr.getString("TCASCHEDULEDATE") : "");
+				studentDetailsTO.setImagingID(rsEr.getString("IMAGINGID")!=null ? rsEr.getString("IMAGINGID") : "");
+				studentDetailsTO.setLithoCode(rsEr.getString("LITHOCODE")!=null ? rsEr.getString("LITHOCODE") : "");
+				studentDetailsTO.setTestMode(rsEr.getString("TESTMODE")!=null ? rsEr.getString("TESTMODE") : "");
+				studentDetailsTO.setTestLanguage(rsEr.getString("TESTLANGUAGE")!=null ? rsEr.getString("TESTLANGUAGE") : "");
+				studentDetailsTO.setContentName(rsEr.getString("CONTENTNAME")!=null ? rsEr.getString("CONTENTNAME") : "");
+				studentDetailsTO.setForm(rsEr.getString("FORM")!=null ? rsEr.getString("FORM") : "");
+				studentDetailsTO.setDateTestTaken(rsEr.getString("DATETESTTAKEN")!=null ? rsEr.getString("DATETESTTAKEN") : "");
+				studentDetailsTO.setBarcodeID(rsEr.getString("BARCODEID")!=null ? rsEr.getString("BARCODEID") : "");
+				studentDetailsTO.setContentScore(rsEr.getString("CONTENT_SCORE")!=null ? rsEr.getString("CONTENT_SCORE") : "");
+				studentDetailsTO.setScaleScore(rsEr.getString("SCALE_SCORE")!=null ? rsEr.getString("SCALE_SCORE") : "");
+				studentDetailsTO.setStatusCodeContentArea(rsEr.getString("STATUS_CODE_CONTENT")!=null ? rsEr.getString("STATUS_CODE_CONTENT") : "");
+				studentDetailsTO.setScannedProcessDate(rsEr.getString("SCANNED_PROCESS_DATE")!=null ? rsEr.getString("SCANNED_PROCESS_DATE") : "");
+				studentDetailsTO.setContentTestCode(rsEr.getString("CONTENT_TEST_CODE")!=null ? rsEr.getString("CONTENT_TEST_CODE") : "");
+				processListEr.add(studentDetailsTO);
 			}
 			returnMap.put("op", processListOp);
 			returnMap.put("er", processListEr);

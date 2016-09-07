@@ -92,8 +92,16 @@ public class StudentDetailsTO implements Serializable {
 	private String bioImages = "";
 	private String documentId = "";
 	private String level1OrgCode = "";
+	private String tcaScheduleDate = "";
 	
 	
+	
+	public String getTcaScheduleDate() {
+		return tcaScheduleDate;
+	}
+	public void setTcaScheduleDate(String tcaScheduleDate) {
+		this.tcaScheduleDate = tcaScheduleDate;
+	}
 	public String getLevel1OrgCode() {
 		return level1OrgCode;
 	}

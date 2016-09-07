@@ -1302,45 +1302,57 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                    P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
-    V_QUERY_ACTUAL_OP VARCHAR2(4000) := '';
-    V_QUERY_ACTUAL_ER VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
+    P_OUT_TOTAL_RECORD_COUNT NUMBER(4) := 0;
+    P_OUT_CUR_DATA           GET_REFCURSOR;
   BEGIN
     V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
                          'SELECT SBD.INT_STUDENT_ID DRC_STUDENT_ID,
-                       SBD.EXT_STUDENT_ID UUID,
-                       CI.CUSTOMER_CODE STATE_CODE,
-                       SD.SUBTEST_NAME,
-                       (SELECT FORM_NAME FROM FORM_DIM WHERE FORMID = SSF.FORMID) FORM,
-                       SBD.STUDENT_MODE,
-                       SBD.BARCODE,
-                       DECODE(SSF.STATUS_CODE,
-                              ''3'',
-                              ''OM'',
-                              ''5'',
-                              ''INV'',
-                              ''6'',
-                              ''SUP'',
-                              ''7'',
-                              ''NA'',
-                              ''8'',
-                              ''SIP'') STATUS_CODE_CONTENT,
-                       SSF.SS,
-                       SSF.HSE,
-                       TO_CHAR(SSF.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') SCORE_DATE,
-                       SBD.TEST_ELEMENT_ID,
-                       SBD.LAST_NAME || '','' || SBD.FIRST_NAME || '' '' || SBD.MIDDLE_NAME STUDENT_NAME,
-                       SBD.EXT_STUDENT_ID UUID,
-                       SBD.STUDENT_BIO_ID BIO_ID,
-                       (SELECT SUBSTR(ORG_NODE_CODE_PATH, 3, 3)
-                          FROM ORG_NODE_DIM
-                         WHERE ORG_NODEID = SBD.ORG_NODEID) LEVEL1_ORG_CODE
-                  FROM STUDENT_BIO_DIM    SBD,
-                       SUBTEST_SCORE_FACT SSF,
-                       SUBTEST_DIM        SD,
-                       CUSTOMER_INFO      CI
-                 WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID
-                   AND SSF.SUBTESTID = SD.SUBTESTID
-                   AND SBD.CUSTOMERID = CI.CUSTOMERID';
+                             SBD.EXT_STUDENT_ID UUID,
+                             CI.CUSTOMER_CODE STATE_CODE,
+                             SD.SUBTEST_NAME,
+                             FD.FORM_NAME FORM,
+                             SBD.STUDENT_MODE,
+                             SBD.BARCODE,
+                             DECODE(SSF.STATUS_CODE,
+                                    ''3'',
+                                    ''OM'',
+                                    ''5'',
+                                    ''INV'',
+                                    ''6'',
+                                    ''SUP'',
+                                    ''7'',
+                                    ''NA'',
+                                    ''8'',
+                                    ''SIP'') STATUS_CODE_CONTENT,
+                             SSF.SS,
+                             SSF.HSE,
+                             TO_CHAR(SSF.TEST_DATE, ''MM/DD/YYYY HH24:MI:SS'') TEST_DATE,
+                             TO_CHAR(SSF.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') SCORE_DATE,
+                             SBD.TEST_ELEMENT_ID,
+                             SBD.LAST_NAME || '','' || SBD.FIRST_NAME || '' '' || SBD.MIDDLE_NAME STUDENT_NAME,
+                             SBD.STUDENT_BIO_ID BIO_ID,
+                             OND.ORG_NODE_CODE TEST_CENTER_CODE,
+                             OND.ORG_NODE_NAME TEST_CENTER_NAME,
+                             SUBSTR(OND.ORG_NODE_CODE_PATH, 3, 3) LEVEL1_ORG_CODE,
+                             SDI.DOCUMENTID,
+                             SDI.SCHEDULE_ID,
+                             SDI.TCA_SCHEDULED_DATE,
+                             SDI.TEST_LANGUAGE
+                        FROM STUDENT_BIO_DIM    SBD,
+                             SUBTEST_SCORE_FACT SSF,
+                             STUDENT_DOC_INFO   SDI,
+                             SUBTEST_DIM        SD,
+                             CUSTOMER_INFO      CI,
+                             FORM_DIM           FD,
+                             ORG_NODE_DIM       OND
+                       WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID
+                         AND SSF.SUBTESTID = SD.SUBTESTID
+                         AND SBD.STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
+                         AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
+                         AND SSF.FORMID = FD.FORMID
+                         AND FD.FORM_NAME = SDI.FORM
+                         AND OND.ORG_NODEID = SBD.ORG_NODEID';
   
     IF P_UUID <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
@@ -1365,94 +1377,26 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     OPEN P_OUT_CUR_DATA_OP FOR V_QUERY_ACTUAL_OP;
   
-    V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                         'SELECT *
-                            FROM (SELECT ESRIH.DRC_STUDENTID DRC_STUDENTID,
-                                         ESRI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
-                                         ESRI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
-                                         ESRIH.LAST_NAME LAST_NAME,
-                                         TO_CHAR(ESRI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
-                                         '''' DOCUMENTID,
-                                         '''' SCHEDULEID,
-                                         '''' CONTENTNAME,
-                                         '''' FORM,
-                                         '''' DATETESTTAKEN,
-                                         '''' TEST_ELEMENT_ID,
-                                         '''' BARCODE,
-                                         CI.CUSTOMER_CODE,
-                                         ESRIH.EXAMINEE_ID UUID
-                                    FROM ERR_STUDENT_REG_INFO      ESRI,
-                                         ERR_STUDENT_REG_INFO_HIST ESRIH,
-                                         CUSTOMER_INFO             CI
-                                   WHERE ESRI.STG_REG_INFO_ID = ESRIH.STG_REG_INFO_ID
-                                     AND ESRI.CUSTOMERID = CI.CUSTOMERID';
-  
-    IF P_UUID <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND ESRIH.EXAMINEE_ID LIKE ''%' || P_UUID ||
-                           '%''';
-    END IF;
-  
-    IF P_STATE_CODE <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND CI.CUSTOMER_CODE =  ''' || P_STATE_CODE || '''';
-    END IF;
-  
-    IF P_DRC_STUDENT_ID <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND ESRIH.DRC_STUDENTID = ''' ||
-                           P_DRC_STUDENT_ID || '''';
-    END IF;
-  
-    V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                         ' UNION
-                                  SELECT ESDIH.DRC_STUDENTID DRC_STUDENTID,
-                                         ESDI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
-                                         ESDI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
-                                         ESBDH.LAST_NAME LAST_NAME,
-                                         TO_CHAR(ESDI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
-                                         TO_CHAR(ESDIH.DOCUMENTID) DOCUMENTID,
-                                         ESDIH.SCHEDULE_ID SCHEDULEID,
-                                         (SELECT SUBTEST_NAME
-                                            FROM SUBTEST_DIM
-                                           WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE) CONTENTNAME,
-                                         ESDIH.FORM FORM,
-                                         (SELECT TO_CHAR(DATE_TEST_TAKEN)
-                                            FROM ERR_SUBTEST_SCORE_FACT_HIST
-                                           WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
-                                             AND ROWNUM = 1) DATETESTTAKEN,
-                                         ESBDH.TEST_ELEMENT_ID TEST_ELEMENT_ID,
-                                         ESBDH.BARCODE BARCODE,
-                                         CI.CUSTOMER_CODE,
-                                         ESBDH.EXT_STUDENT_ID UUID
-                                    FROM ERR_STUDENT_DOC_INFO      ESDI,
-                                         ERR_STUDENT_DOC_INFO_HIST ESDIH,
-                                         ERR_STUDENT_BIO_DIM_HIST  ESBDH,
-                                         CUSTOMER_INFO             CI
-                                   WHERE ESDI.STG_STUDENT_DOCID = ESDIH.STG_STUDENT_DOCID
-                                     AND ESDIH.STG_STUDENT_BIO_ID(+) = ESBDH.STG_STUDENT_BIO_ID
-                                     AND ESDI.CUSTOMERID = CI.CUSTOMERID';
-  
-    IF P_UUID <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND ESBDH.EXT_STUDENT_ID LIKE ''%' || P_UUID ||
-                           '%''';
-    END IF;
-  
-    IF P_STATE_CODE <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND CI.CUSTOMER_CODE =  ''' || P_STATE_CODE || '''';
-    END IF;
-  
-    IF P_DRC_STUDENT_ID <> '-1' THEN
-      V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                           ' AND ESDIH.DRC_STUDENTID = ''' ||
-                           P_DRC_STUDENT_ID || '''';
-    END IF;
-    V_QUERY_ACTUAL_ER := V_QUERY_ACTUAL_ER ||
-                         ' ) ORDER BY PRISM_PROCESS_DATE DESC';
-  
-    OPEN P_OUT_CUR_DATA_ER FOR V_QUERY_ACTUAL_ER;
+    SP_GET_DATA_GHI('-1', --P_PROCESS_STATUS,
+                    '-1', --P_DATE_FROM              IN VARCHAR2,
+                    '-1', --P_DATE_TO                IN VARCHAR2,
+                    P_DRC_STUDENT_ID, --P_DRC_STUDENT_ID         IN VARCHAR2,
+                    '-1', --P_DRC_DOCUMENT_ID        IN VARCHAR2,
+                    P_UUID, --P_UUID                   IN VARCHAR2,
+                    '-1', --P_LAST_NAME              IN VARCHAR2,
+                    P_STATE_CODE, --P_STATE_CODE             IN VARCHAR2,
+                    '-1', --P_FORM                   IN VARCHAR2,
+                    '-1', --P_TEST_ELEMENT_ID        IN VARCHAR2,
+                    '-1', --P_BARCODE                IN VARCHAR2,
+                    '-1', --P_SEARCH_PARAM           IN VARCHAR2,
+                    '12', --P_ORDERED_COLUMN         IN VARCHAR2,
+                    'desc', --P_ORDER                  IN VARCHAR2,
+                    '-1', --P_ROWNUM_FROM            IN NUMBER,
+                    '-1', --P_ROWNUM_TO              IN NUMBER,
+                    P_OUT_TOTAL_RECORD_COUNT,
+                    P_OUT_CUR_DATA,
+                    P_OUT_CUR_DATA_ER,
+                    P_OUT_EXCEP_ERR_MSG);
   
   EXCEPTION
     WHEN OTHERS THEN
