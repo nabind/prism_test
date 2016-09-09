@@ -59,7 +59,14 @@ public class SearchProcess implements Serializable, Comparable<SearchProcess>  {
 	private String errorDateFrom;
 	private String errorDateTo;
 	private String trackErrorStatus;
+	private String level1OrgCode;
 	
+	public String getLevel1OrgCode() {
+		return level1OrgCode;
+	}
+	public void setLevel1OrgCode(String level1OrgCode) {
+		this.level1OrgCode = level1OrgCode;
+	}
 	public String getDRCStudentId() {
 		return DRCStudentId;
 	}

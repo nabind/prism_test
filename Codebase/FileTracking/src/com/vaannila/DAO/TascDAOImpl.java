@@ -1857,11 +1857,12 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		List<StudentDetailsTO> processListOp = new ArrayList<StudentDetailsTO>();
 		List<StudentDetailsGhiTO> processListEr = new ArrayList<StudentDetailsGhiTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?)}");
+		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?,?)}");
 		String query = queryBuff.toString();
 		System.out.println(" UUID:" + searchProcess.getUuid());
 		System.out.println(" State Code:" + searchProcess.getStateCode());
 		System.out.println(" drcStudentID:" + searchProcess.getDRCStudentId());
+		System.out.println(" level1OrgCode:" + searchProcess.getLevel1OrgCode());
 		System.out.println(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -1882,15 +1883,20 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			}else{
 				cs.setString(++count, "-1");
 			}
+			if(searchProcess.getLevel1OrgCode() != null && searchProcess.getLevel1OrgCode().trim().length() > 0){
+				cs.setString(++count, searchProcess.getLevel1OrgCode());
+			}else{
+				cs.setString(++count, "-1");
+			}
 			cs.registerOutParameter(++count, OracleTypes.CURSOR);
 			cs.registerOutParameter(++count, OracleTypes.CURSOR);
 			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
 			cs.execute();
 			
-			String errorMessage = cs.getString(6);
+			String errorMessage = cs.getString(7);
 			if (errorMessage == null || errorMessage.isEmpty()) {
-				rsOp = (ResultSet) cs.getObject(4);
-				rsEr = (ResultSet) cs.getObject(5);
+				rsOp = (ResultSet) cs.getObject(5);
+				rsEr = (ResultSet) cs.getObject(6);
 				System.out.println("Fetching data for Online Display");
 			}else{
 				System.out.println("errorMessage: "+errorMessage);

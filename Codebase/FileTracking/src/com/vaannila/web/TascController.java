@@ -1294,7 +1294,7 @@ public class TascController {
 			.append(",").append("DRC Student ID")
 			.append(",").append("State Code")
 			.append(",").append("Examinee ID")
-			.append(",").append("Error Code & Desc")
+			.append(",").append("Error Description")
 			.append(",").append("Student Name")
 			.append(",").append("DOB")
 			.append(",").append("Gender")
@@ -1367,12 +1367,14 @@ public class TascController {
 	public ModelAndView combinedGhi(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		System.out.println("Enter: combinedGhi()");
+		SearchProcess process = new SearchProcess();
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
-			SearchProcess process = new SearchProcess();
+			
 			process.setUuid(request.getParameter("uuid"));
 			process.setStateCode(request.getParameter("stateCode"));
 			process.setDRCStudentId(request.getParameter("drcStudentId"));
+			process.setLevel1OrgCode(request.getParameter("level1OrgCode"));
 			request.getSession().setAttribute("combinedGhiRequestTO", process);
 			
 			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getDRCStudentId() != null && process.getDRCStudentId().length() > 0) ) {

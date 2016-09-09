@@ -15,7 +15,7 @@
 <style>
 	.no-border {
 		border: 0;
-		padding: 6px
+		padding: 3px
 	}
 </style>
 <script src="css/jquery.validate.js"></script>
@@ -26,7 +26,7 @@
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"sScrollX": '100%',
-			"aaSorting": [[ 1, "asc" ]],
+			"aaSorting": [[ 10, "desc" ]],
 			"aoColumnDefs": [ 
 							  { "bVisible": false, "aTargets": [ 0 ] }
 							]
@@ -36,95 +36,14 @@
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"sScrollX": '100%',
-			"aaSorting": [[ 12, "desc" ]],
+			"aaSorting": [[ 13, "desc" ]],
 			"aoColumnDefs": [ 
 							  { "bVisible": false, "aTargets": [ 0 ] },
-							  {'bSortable': false, 'aTargets':  [1]  }
+							  {'bSortable': false, 'aTargets':  [1]  },
+							  { "width": "30%", "aTargets":  [9] }
 							]
 		});
-		
-		/* $('#showComments').click(function(){
-			showComments();
-		});
-		
-		$("#saveComment").click(function(){
-			saveComment();
-		}); */
     });
-	
-	/* function showComments() {
-		$("#commentErrorLog").hide();
-		$("textarea#comments").val( $("textarea#hiddenComments").val() );
-		jQuery("#showCommentsDialog").dialog({
-			title: 'Comments: ',
-			width: 510,
-			height: 300,
-			modal: true,
-			closeOnEscape: false,
-			beforeClose: function( event, ui ) {
-				if( $("#hiddenComments").text() != $("textarea#comments").val() ) {
-					var $dlg = $(this);
-			        if($dlg.data('can-close')) {
-			            $dlg.removeData('can-close');
-			            return true;
-			        }
-			        $("#confirm").dialog({
-			            width: 500,
-			            modal: true,
-			            closeOnEscape: false,
-			            buttons: {
-			                Confirm: function() {
-			                    $(this).dialog('close');
-			                    $dlg.data('can-close', true);
-			                    $dlg.dialog('close');
-			                },
-			                Cancel: function() {
-			                    $(this).dialog('close');
-			                }
-			            }
-			        });
-			        return false;
-				}
-			}
-		});
-		return false;
-	}
-	
-	function saveComment(){
-		var comments = $("textarea#comments").val();
-		var stateCode = $("#commentStateCode").val();
-		var uuid = $("#commentUuid").val();
-		if(comments.length > 4000){
-			$("#commentErrorLog").show();
-			$("#commentErrorLog").css("color","red");
-			$("#commentErrorLog").text("Maximum length is 4000. Please summarize your comment");
-		}else{
-			var dataString = "comments="+comments+"&stateCode="+stateCode+"&uuId="+uuid;
-			$.ajax({
-			      type: "POST",
-			      url: "saveComments.htm",
-			      data: dataString,
-			      success: function(data) {
-			    	  $("#commentErrorLog").show();
-			    	  if(data.indexOf("sucessfully") > 0) {
-			    		  $("#commentErrorLog").css("color","green");
-			    		  
-			    		  // resetting page hidden values
-			    		  $("#comment-div").html("<br/>" + comments);
-			    		  $("#hiddenComments").text(comments)
-			    	  } else {
-			    		  $("#commentErrorLog").css("color","red"); 
-			    	  }						    	  
-					  $("#commentErrorLog").text(data);
-			      },
-				  error: function(data) {
-					  $("#commentErrorLog").show();
-					  $("#commentErrorLog").css("color","red"); 
-					  $("#commentErrorLog").text(data);
-				  }
-		    });
-		}
-	} */
 </script>
 	
 <div id="heromaskarticle">
@@ -161,7 +80,7 @@
 		<h1>Search a single student - GHI</h1>
 		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 666px;float: left;">
 			<%
-			SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("combinedRequestTO");
+			SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("combinedGhiRequestTO");
 			/* String savedComments = (String)request.getAttribute("savedComments"); 
 			String showCommentFlag = (String)request.getAttribute("showCommentFlag");  */
 			if(searchProcess == null) searchProcess = new SearchProcess();
@@ -191,10 +110,13 @@
 							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
 						</tr>
 						<tr>
-							<td class="no-border">DRC Student ID (exact ID is needed):</td>
-							<td class="no-border"><input type="text" name="drcStudentId" id="drcStudentId" value="<% if(searchProcess.getTestElementId() != null) out.print(searchProcess.getTestElementId()); %>"></td>
+							<td class="no-border">Level1 Org Code:</td>
+							<td class="no-border"><input type="text" name="level1OrgCode" id="level1OrgCode" value="<% if(searchProcess.getLevel1OrgCode() != null) out.print(searchProcess.getLevel1OrgCode()); %>"></td>
 						</tr>
-						
+						<tr>
+							<td class="no-border">DRC Student ID (exact ID is needed):</td>
+							<td class="no-border"><input type="text" name="drcStudentId" id="drcStudentId" value="<% if(searchProcess.getDRCStudentId() != null) out.print(searchProcess.getDRCStudentId()); %>"></td>
+						</tr>
 						<tr>
 							<td class="no-border"></td>
 							<td class="no-border"><input type="Submit" value="Search"></td>
@@ -304,7 +226,7 @@
 					<th>DRC Student ID</th>
 					<th>State Code</th>
 					<th>Examinee ID</th>
-					<th>Error Code & Desc</th>
+					<th>Error Description</th>
 					<th>Student Name</th>
 					<th>DOB</th>
 					<th>Gender</th>

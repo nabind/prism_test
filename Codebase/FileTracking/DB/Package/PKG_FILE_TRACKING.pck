@@ -89,6 +89,7 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
   PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID              IN VARCHAR2,
                                    P_STATE_CODE        IN VARCHAR2,
                                    P_DRC_STUDENT_ID    IN VARCHAR2,
+                                   P_LEVEL1_ORG_CODE   IN VARCHAR2,
                                    P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
                                    P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
@@ -1298,6 +1299,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID              IN VARCHAR2,
                                    P_STATE_CODE        IN VARCHAR2,
                                    P_DRC_STUDENT_ID    IN VARCHAR2,
+                                   P_LEVEL1_ORG_CODE   IN VARCHAR2,
                                    P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
                                    P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
@@ -1371,7 +1373,14 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            P_DRC_STUDENT_ID || '''';
     END IF;
   
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' ORDER BY SD.SUBTESTID';
+    IF P_LEVEL1_ORG_CODE <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                           ' AND SUBSTR(OND.ORG_NODE_CODE_PATH, 3, 3) = ''' ||
+                           P_LEVEL1_ORG_CODE || '''';
+    END IF;
+  
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                         ' ORDER BY SSF.DATETIMESTAMP DESC';
   
     --DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL_OP: ' || V_QUERY_ACTUAL_OP);
   
