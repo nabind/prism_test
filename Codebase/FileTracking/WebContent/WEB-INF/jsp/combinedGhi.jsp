@@ -225,7 +225,7 @@
 					<th>OrgID~TP</th>
 					<th>DRC Student ID</th>
 					<th>State Code</th>
-					<th>Examinee ID</th>
+					<th>UUID</th>
 					<th>Error Description</th>
 					<th>Student Name</th>
 					<th>DOB</th>

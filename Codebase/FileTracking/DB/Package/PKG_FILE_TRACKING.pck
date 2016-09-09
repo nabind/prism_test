@@ -1028,8 +1028,80 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                ERR_STUDENT_DOC_INFO_HIST ESDIH,
                ERR_STUDENT_BIO_DIM_HIST  ESBDH
          WHERE ESDI.STG_STUDENT_DOCID = ESDIH.STG_STUDENT_DOCID
-           AND ESDIH.STG_STUDENT_BIO_ID(+) = ESBDH.STG_STUDENT_BIO_ID)
- WHERE 1 = 1';
+           AND ESDIH.STG_STUDENT_BIO_ID(+) = ESBDH.STG_STUDENT_BIO_ID
+        UNION ALL
+        SELECT ESDIH.PROCESS_ID RECORD_ID,
+               ESDIH.FILENAME FILE_NAME,
+               ESDIH.DOC_CREATED_DATE FILE_GENERATION_DATE_TIME,
+               (SELECT DISTINCT TP.TP_CODE
+                  FROM TEST_PROGRAM TP
+                 WHERE TP.CUSTOMERID = ESDIH.CUSTOMERID
+                   AND TP.ADMINID = ESDIH.ADMINID
+                   AND TP_MODE = ESDIH.TEST_MODE) ORGID_TP,
+               ESDIH.DRC_STUDENTID DRC_STUDENTID,
+               (SELECT C.CUSTOMER_CODE
+                  FROM CUSTOMER_INFO C
+                 WHERE C.CUSTOMERID = ESDIH.CUSTOMERID) STATE_CODE,
+               '''' EXAMINEEID,
+               ESDI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
+               ESDI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
+               '''' LAST_NAME,
+               '''' STUDENT_NAME,
+               '''' DOB,
+               '''' GENDER,
+               TO_CHAR(ESDI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
+               (SELECT ORG_NODE_CODE_PATH
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) ORGPATH,
+               (SELECT ORG_NODE_CODE
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) TEST_CENTER_CODE,
+               (SELECT ORG_NODE_NAME
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = ESDIH.ORG_NODEID) TEST_CENTER_NAME,
+               TO_CHAR(ESDIH.DOCUMENTID) DOCUMENTID,
+               ESDIH.SCHEDULE_ID SCHEDULEID,
+               ESDIH.TCA_SCHEDULED_DATE TCASCHEDULEDATE,
+               ESDIH.IMAGING_ID IMAGINGID,
+               ESDIH.LITHOCODE LITHOCODE,
+               ESDIH.TEST_MODE TESTMODE,
+               ESDIH.TEST_LANGUAGE TESTLANGUAGE,
+               (SELECT SUBTEST_NAME
+                  FROM SUBTEST_DIM
+                 WHERE SUBTEST_CODE = ESDIH.CONTENT_CODE) CONTENTNAME,
+               ESDIH.FORM FORM,
+               ESDIH.BARCODE_ID BARCODEID,
+               (SELECT TO_CHAR(DATE_TEST_TAKEN)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                   AND ROWNUM = 1) DATETESTTAKEN,
+               (SELECT TO_CHAR(NCR)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                   AND ROWNUM = 1) CONTENT_SCORE,
+               (SELECT TO_CHAR(SS)
+                  FROM ERR_SUBTEST_SCORE_FACT_HIST
+                 WHERE STG_STUDENT_DOCID = ESDI.STG_STUDENT_DOCID
+                   AND ROWNUM = 1) SCALE_SCORE,
+               DECODE(ESDIH.STATUS_CODE,
+                      ''3'',
+                      ''OM'',
+                      ''5'',
+                      ''INV'',
+                      ''6'',
+                      ''SUP'',
+                      ''7'',
+                      ''NA'',
+                      ''8'',
+                      ''SIP'') STATUS_CODE_CONTENT,
+               '''' CONTENT_TEST_CODE,
+               '''' SCANNED_PROCESS_DATE,
+               '''' TEST_ELEMENT_ID,
+               ESDIH.BARCODE_ID BARCODE
+          FROM ERR_STUDENT_DOC_INFO ESDI, ERR_STUDENT_DOC_INFO_HIST ESDIH
+         WHERE ESDI.STG_STUDENT_DOCID = ESDIH.STG_STUDENT_DOCID
+           AND ESDIH.STG_STUDENT_BIO_ID IS NULL)
+         WHERE 1 = 1';
   
     IF P_PROCESS_STATUS <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL || ' AND PRISM_PROCESS_STATUS =  ''' ||

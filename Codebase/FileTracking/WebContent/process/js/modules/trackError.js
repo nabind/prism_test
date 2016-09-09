@@ -30,7 +30,7 @@ $(document).ready(function(){
         "sAjaxSource": "errorResult.htm",
         "aoColumnDefs": [ 
 						  {'bSortable': false, 'aTargets': [0]},
-						  { "width": "30%", "aTargets":  [8] }
+						  { "width": "40%", "aTargets":  [8] }
 						],
         "aoColumns": [
 			{ 
