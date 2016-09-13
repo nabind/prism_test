@@ -1543,13 +1543,13 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
-			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			if(searchProcess.getErrorDateFrom() != null && searchProcess.getErrorDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getErrorDateFrom());
 			}else{
 				cs.setString(++count, "-1");
 			}
-			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				cs.setString(++count, searchProcess.getProcessedDateTo());
+			if(searchProcess.getErrorDateTo() != null && searchProcess.getErrorDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getErrorDateTo());
 			}else{
 				cs.setString(++count, "-1");
 			}
@@ -1700,13 +1700,13 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
-			if(searchProcess.getProcessedDateFrom() != null && searchProcess.getProcessedDateFrom().trim().length() > 0){
-				cs.setString(++count, searchProcess.getProcessedDateFrom());
+			if(searchProcess.getErrorDateFrom() != null && searchProcess.getErrorDateFrom().trim().length() > 0){
+				cs.setString(++count, searchProcess.getErrorDateFrom());
 			}else{
 				cs.setString(++count, "-1");
 			}
-			if(searchProcess.getProcessedDateTo() != null && searchProcess.getProcessedDateTo().trim().length() > 0){
-				cs.setString(++count, searchProcess.getProcessedDateTo());
+			if(searchProcess.getErrorDateTo() != null && searchProcess.getErrorDateTo().trim().length() > 0){
+				cs.setString(++count, searchProcess.getErrorDateTo());
 			}else{
 				cs.setString(++count, "-1");
 			}

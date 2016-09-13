@@ -907,6 +907,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                (SELECT GENDER_CODE
                   FROM GENDER_DIM G
                  WHERE G.GENDERID = ESRIH.GENDERID) GENDER,
+               ESRI.DATETIMESTAMP PROCESS_DATE,
                TO_CHAR(ESRI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
                ESRIH.ORG_NODE_CODE_PATH ORGPATH,
                (SELECT ORG_NODE_CODE
@@ -959,6 +960,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                (SELECT GENDER_CODE
                   FROM GENDER_DIM G
                  WHERE G.GENDERID = ESBDH.GENDERID) GENDER,
+               ESDI.DATETIMESTAMP PROCESS_DATE,
                TO_CHAR(ESDI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
                (SELECT ORG_NODE_CODE_PATH
                   FROM ORG_NODE_DIM
@@ -1050,6 +1052,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                '''' STUDENT_NAME,
                '''' DOB,
                '''' GENDER,
+               ESDI.DATETIMESTAMP PROCESS_DATE,
                TO_CHAR(ESDI.DATETIMESTAMP, ''MM/DD/YYYY HH24:MI:SS'') PRISM_PROCESS_DATE,
                (SELECT ORG_NODE_CODE_PATH
                   FROM ORG_NODE_DIM
@@ -1111,13 +1114,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(PRISM_PROCESS_DATE) >= TO_DATE(''' ||
+                        ' AND TRUNC(PROCESS_DATE) >= TO_DATE(''' ||
                         P_DATE_FROM || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_DATE_TO <> '-1' THEN
       V_QUERY_ACTUAL := V_QUERY_ACTUAL ||
-                        ' AND TRUNC(PRISM_PROCESS_DATE) <= TO_DATE(''' ||
+                        ' AND TRUNC(PROCESS_DATE) <= TO_DATE(''' ||
                         P_DATE_TO || ''', ''MM/DD/YYYY'')';
     END IF;
   
