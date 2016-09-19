@@ -57,8 +57,11 @@
 									<td><input type="text" name="lastName" id="lastName"></td>
 								</tr>
 								<tr>
-									<td>State Code:</td>
-									<td><input type="text" name="stateCode" id="stateCode"></td>
+									<td>State Prefix:</td>
+									<td>
+										<input type="text" name="stateCode" id="stateCode">
+										<span style="color:red;">* 3 digit.</span>
+									</td>
 								</tr>
 								<tr>
 									<td>Form:</td>

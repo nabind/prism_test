@@ -48,7 +48,7 @@
 					, Last Name: <%=searchError.getLastName()%>
 				<%}%>
 				<%if(searchError.getStateCode() != null && searchError.getStateCode().trim().length() > 0){%>
-					, State Code: <%=searchError.getStateCode()%>
+					, State Prefix: <%=searchError.getStateCode()%>
 				<%}%>
 				<%if(searchError.getForm() != null && searchError.getForm().trim().length() > 0){%>
 					, Form: <%=searchError.getForm()%>
@@ -70,7 +70,7 @@
 							<th>File Generation Date-Time</th>
 							<th>OrgID~TP</th>
 							<th>DRC Student ID</th>
-							<th>State Code</th>
+							<th>State Prefix</th>
 							<th>UUID</th>
 							<th>Error Description</th>
 							<th>Student Name</th>

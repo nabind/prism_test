@@ -1093,11 +1093,12 @@ a:link :hover,a:visited :hover {
 	overflow: hidden
 }
 
+/* PBT Completeness check menu was not coming, so reduced padding : Nabin*/
 #topnavcontrol a.off:link,#topnavcontrol a.off:visited {
 	color: #ffffff;
 	text-decoration: none;
 	margin: 0;
-	padding: 11px 15px;
+	padding: 11px 10px;
 	background-color: transparent;
 	display: block;
 	border: 1px solid transparent

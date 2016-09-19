@@ -545,7 +545,7 @@ public class TascController {
 			.append(",").append("Status")
 			.append(",").append("Bar Code")
 			.append(",").append("Test/Schedule Date")
-			.append(",").append("State Code")
+			.append(",").append("State Prefix")
 			.append(",").append("Form")
 			.append(",").append("Subtest")
 			.append(",").append("Test Center Code")
@@ -759,6 +759,7 @@ public class TascController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			jsonStr = "";
 		} finally{
 			request.setAttribute("showCommentFlag", showCommentFlag);
 			request.setAttribute("uuid", uuid);
@@ -1292,7 +1293,7 @@ public class TascController {
 			.append(",").append("File Generation Date-Time")
 			.append(",").append("OrgID~TP")
 			.append(",").append("DRC Student ID")
-			.append(",").append("State Code")
+			.append(",").append("State Prefix")
 			.append(",").append("Examinee ID")
 			.append(",").append("Error Description")
 			.append(",").append("Student Name")

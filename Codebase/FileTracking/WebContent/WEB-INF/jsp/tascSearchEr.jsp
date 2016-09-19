@@ -135,7 +135,7 @@
 								<td><input type="text" name="exceptionCode" id="exceptionCode"></td>
 							</tr>
 							<tr>
-								<td>State Code:</td>
+								<td>State Prefix:</td>
 								<td><input type="text" name="stateCode" id="stateCode"></td>
 							</tr>
 							<tr>

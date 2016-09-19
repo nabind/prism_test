@@ -263,7 +263,7 @@
 			
 			<div style="padding: 10px;">
 				<label style='font-size:13px; font-weight:bold; color:black;'>
-					Enter Comments for UUID: ${uuid} and State Code: ${stateCode}
+					Enter Comments for UUID: ${uuid} and State Prefix: ${stateCode}
 				</label>
 			</div>
 			<div>
@@ -315,7 +315,7 @@
 							<td class="no-border"><input type="text" name="testElementId" id="testElementId" value="<% if(searchProcess.getTestElementId() != null) out.print(searchProcess.getTestElementId()); %>"></td>
 						</tr>
 						<tr>
-							<td class="no-border">State Code:</td>
+							<td class="no-border">State Prefix:</td>
 							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
 						</tr>
 						<tr>
@@ -330,10 +330,10 @@
 			<% if("false".equals(showCommentFlag)){ %>
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments </h3>
 				<div style="padding: 20px;color: red;">
-					Please provide 9 digit UUID and 2 character state code to fetch comments.
+					Please provide 9 digit UUID and 3 character state prefix to fetch comments.
 				</div>
 			<%}else{%>
-				<h3 style="padding-left: 10px;margin-top: 10px;">Comments for UUID: ${uuid} and State Code: ${stateCode}
+				<h3 style="padding-left: 10px;margin-top: 10px;">Comments for UUID: ${uuid} and State Prefix: ${stateCode}
 					<a id="showComments" href="#nogo" style="color: #00329B;text-decoration:underline;padding-left: 17px;">Add/Edit</a>
 				</h3>
 				<div id="comment-div" style="padding: 0px 10px;font-weight:normal;height: 141px;overflow:auto;white-space: pre-line">
@@ -351,7 +351,7 @@
 				<tr>
 					<th>&nbsp;</th>
 					<th>Lock?</th>
-					<th>State</th>
+					<th>State Prefix</th>
 					<th>Subtest</th>
 					<th>Form</th>
 					<th>Test Code</th>
@@ -434,7 +434,7 @@
 				<tr>
 					<th>&nbsp;</th>
 					<th>Lock?</th>
-					<th>State</th>
+					<th>State Prefix</th>
 					<th>UUID</th>
 					<th>Name</th>
 					<th>Schedule Id</th>

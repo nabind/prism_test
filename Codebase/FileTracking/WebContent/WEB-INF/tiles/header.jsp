@@ -65,9 +65,9 @@ function refreshList(adminid, url) {
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
 			<span><a id="toproot1" class="off" href="completenessCheckSearch.htm">&nbsp; PBT Completeness Check&nbsp;</a></span>
-			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			<!-- <img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
-			<span><a id="toproot1" class="off" href="scoreReview.htm">&nbsp; Score Change Review&nbsp;</a></span>
+			<span><a id="toproot1" class="off" href="scoreReview.htm">&nbsp; Score Change Review&nbsp;</a></span> -->
 			<!-- <img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3"> -->
 			
 			<% } else if("MapAdmin".equals(request.getSession().getAttribute("userName"))) { %>

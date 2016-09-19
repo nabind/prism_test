@@ -15,7 +15,7 @@
 <style>
 	.no-border {
 		border: 0;
-		padding: 3px
+		/*padding: 3px*/
 	}
 </style>
 <script src="css/jquery.validate.js"></script>
@@ -105,13 +105,16 @@
 							<td class="no-border">UUID:</td>
 							<td class="no-border"><input type="text" name="uuid" id="uuid" value="<% if(searchProcess.getUuid() != null) out.print( searchProcess.getUuid());  %>"></td>
 						</tr>
-						<tr>
+						<!-- State code will be 3 digit now. So, Commenting the State code field and making level1 org code as state prefix as both are same. : Nabin -->
+						<%-- <tr>
 							<td class="no-border">State Code:</td>
 							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
-						</tr>
+						</tr>  --%>
 						<tr>
-							<td class="no-border">Level1 Org Code:</td>
-							<td class="no-border"><input type="text" name="level1OrgCode" id="level1OrgCode" value="<% if(searchProcess.getLevel1OrgCode() != null) out.print(searchProcess.getLevel1OrgCode()); %>"></td>
+							<td class="no-border">State Prefix:</td>
+							<td class="no-border"><input type="text" name="level1OrgCode" id="level1OrgCode" value="<% if(searchProcess.getLevel1OrgCode() != null) out.print(searchProcess.getLevel1OrgCode()); %>">
+								<span style="color:red;">* 3 digit.</span>
+							</td>
 						</tr>
 						<tr>
 							<td class="no-border">DRC Student ID (exact ID is needed):</td>
@@ -163,7 +166,7 @@
 						<th>Name</th>
 						<th>UUID</th>
 						<th>Bio ID</th>
-						<th>Level1 Org Code</th>
+						<th>State Prefix</th>
 						<th>Test Date</th>
 						<th>Test Center Code</th>
 						<th>Test Center Name</th>
@@ -224,7 +227,7 @@
 					<th>File Generation Date-Time</th>
 					<th>OrgID~TP</th>
 					<th>DRC Student ID</th>
-					<th>State Code</th>
+					<th>State Prefix</th>
 					<th>UUID</th>
 					<th>Error Description</th>
 					<th>Student Name</th>

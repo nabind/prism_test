@@ -310,7 +310,7 @@
 					, Exception Code: <%=searchProcess.getExceptionCode()%>
 				<%}%>
 				<%if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){%>
-					, State Code: <%=searchProcess.getStateCode()%>
+					, State Prefix: <%=searchProcess.getStateCode()%>
 				<%}%>
 				<%if(searchProcess.getForm() != null && searchProcess.getForm().trim().length() > 0){%>
 					, Form: <%=searchProcess.getForm()%>
@@ -337,7 +337,7 @@
 						<th>Status</th>
 						<th>Bar Code</th>
 						<th>Scheduled Date</th>
-						<th>State Code</th>
+						<th>State Prefix</th>
 						<th>Form</th>
 						<th>Subtest</th>
 						<th>More Info</th>
