@@ -1,4 +1,6 @@
+drop type ER_demo_CODE_det_typ;
 
+drop type ER_demo_CODE_det_obj;
 
 CREATE OR REPLACE TYPE ER_demo_CODE_det_obj AS OBJECT(student_bio_id number,subtestid NUMBER,
  democode VARCHAR2(32), demoval VARCHAR2(32), date_test_taken DATE  )
@@ -11,7 +13,7 @@ drop type ORG_DETAILS_TYP ;
 
 drop type ORG_DETAILS_OBJ; 
 
---Changed by Abir TEST_ELEMENT_ID length 
+--Changed by Abir TEST_ELEMENT_ID ,lname, fname length
 CREATE OR REPLACE TYPE ORG_DETAILS_OBJ AS OBJECT
 (
   STUDENT_BIO_ID        NUMBER,
@@ -23,14 +25,14 @@ CREATE OR REPLACE TYPE ORG_DETAILS_OBJ AS OBJECT
   og_lowestnodeid       NUMBER,
   ORG_CODE              VARCHAR2(50),
   INT_STUDENT_ID        VARCHAR2(30),
-  TEST_ELEMENT_ID       VARCHAR2(45),
+  TEST_ELEMENT_ID       VARCHAR2(50),
   BARCODE               VARCHAR2(30),
   formid                NUMBER,
   lithocode             VARCHAR2(30),
   ext_student_id        VARCHAR2(30),
-  last_name             VARCHAR2(30),
-  first_name            VARCHAR2(30),
-  middle_name           VARCHAR2(30),
+  last_name             VARCHAR2(32),
+  first_name            VARCHAR2(32),
+  middle_name           VARCHAR2(32),
   birthdate             VARCHAR2(30),
   gender                VARCHAR2(30),
   org_cnt               NUMBER,
@@ -70,7 +72,6 @@ CREATE OR REPLACE TYPE SUBOBJITM_SCR_DETAILS_OBJ AS OBJECT
   TCASCHEDULEDATE DATE 
 )
 /
-
 
 CREATE OR REPLACE TYPE SUBOBJITM_SCR_DETAILS_TYP IS TABLE OF SUBOBJITM_SCR_DETAILS_OBJ
 /
