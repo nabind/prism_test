@@ -900,8 +900,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                ESRI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
                ESRI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
                ESRIH.LAST_NAME LAST_NAME,
-               ESRIH.LAST_NAME || '',
-                      '' || ESRIH.FIRST_NAME || '', '' ||
+               ESRIH.LAST_NAME || '','' || ESRIH.FIRST_NAME || '' '' ||
                ESRIH.MIDDLE_NAME STUDENT_NAME,
                ESRIH.BIRTHDATE DOB,
                (SELECT GENDER_CODE
@@ -953,8 +952,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                ESDI.VALIDATION_STATUS PRISM_PROCESS_STATUS,
                ESDI.VALIDATION_LOG ERROR_CODE_ERROR_DESCRIPTION,
                ESBDH.LAST_NAME LAST_NAME,
-               ESBDH.LAST_NAME || '',
-                      '' || ESBDH.FIRST_NAME || '', '' ||
+               ESBDH.LAST_NAME || '','' || ESBDH.FIRST_NAME || '' '' ||
                ESBDH.MIDDLE_NAME STUDENT_NAME,
                ESBDH.BIRTHDATE DOB,
                (SELECT GENDER_CODE
