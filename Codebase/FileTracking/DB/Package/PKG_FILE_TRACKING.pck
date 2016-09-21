@@ -1431,7 +1431,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                          AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
                          AND SSF.FORMID = FD.FORMID
                          AND FD.FORM_NAME = SDI.FORM
-                         AND OND.ORG_NODEID = SBD.ORG_NODEID';
+                         AND OND.ORG_NODEID = SBD.ORG_NODEID
+                         AND CI.CUSTOMERID = OND.CUSTOMERID
+                         AND SBD.CUSTOMERID = OND.CUSTOMERID
+                         AND SSF.STUDENT_DOCID = SDI.STUDENT_DOCID';
   
     IF P_UUID <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
