@@ -1,0 +1,356 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Report" type="ReportType" />
+
+	<xs:element name="Candidate" type="CandidateType" />
+
+	<xs:element name="Demographic" type="DemographicType" />
+
+	<xs:element name="Test" type="TestResultType" />
+
+	<xs:element name="Status" type="StatusType" />
+
+	<xs:complexType name="ReportType">
+		<xs:sequence>
+			<xs:element ref="Candidate" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="jurisdiction" type="TexasType" use="required" />
+		<xs:attribute name="candidateCount" type="CandidateCountType" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="CandidateType">
+		<xs:sequence>
+			<xs:element ref="Demographic" minOccurs="0" />
+			<xs:element ref="Test" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="Status" minOccurs="0" />
+		</xs:sequence>
+		<xs:attribute name="selectedJID" type="TexasType" use="required" />
+		<xs:attribute name="candidateID" type="CandidateIdType" use="required" />
+		<xs:attribute name="candidateID2" type="CandidateIdType" />
+		<xs:attribute name="deleted" type="xs:boolean" use="required" />
+		<xs:attribute name="correctionsID" type="CorrectionsIdType" />
+		<xs:attribute name="credJID" type="JurisdictionType" />
+		<xs:attribute name="testCandidate" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="DemographicType">
+		<xs:attribute name="lastName" type="LastNameType" use="required" />
+		<xs:attribute name="firstName" type="NameType" use="required" />
+		<xs:attribute name="middleName" type="NameType" />
+		<xs:attribute name="generation" type="GenerationType" />
+		<xs:attribute name="streetAddress1" type="StreetAddressType" use="required" />
+		<xs:attribute name="streetAddress2" type="StreetAddressType" />
+		<xs:attribute name="city" type="CityType" use="required" />
+		<xs:attribute name="stateCode" type="TexasType" use="required" />
+		<xs:attribute name="postalCode" type="PostalCodeType" use="required" />
+		<xs:attribute name="county" type="CountyType" />
+		<xs:attribute name="dateOfBirth" type="YMDType" use="required" />
+		<xs:attribute name="phoneNumber" type="PhoneType" />
+		<xs:attribute name="emailAddress" type="EmailType" use="required" />
+		<xs:attribute name="gender" type="GenderType" />
+		<xs:attribute name="ethnicity" type="EthnicityType" />
+		<xs:attribute name="raceAIAN" type="xs:boolean" use="required" />
+		<xs:attribute name="raceAsian" type="xs:boolean" use="required" />
+		<xs:attribute name="raceBlack" type="xs:boolean" use="required" />
+		<xs:attribute name="raceHAPI" type="xs:boolean" use="required" />
+		<xs:attribute name="raceWhite" type="xs:boolean" use="required" />
+		<xs:attribute name="raceNone" type="xs:boolean" use="required" />
+		<xs:attribute name="inHighSchool" type="xs:boolean" use="required" />
+		<xs:attribute name="options" type="xs:boolean" />
+		<xs:attribute name="accRequested" type="xs:boolean" use="required" />
+		<xs:attribute name="accApproved" type="ApprovalType" />
+		<xs:attribute name="edLevel" type="EdLevelType" />
+		<xs:attribute name="ssn" type="SocialSecurityType" />
+		<xs:attribute name="scoreRelease" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="TestResultType">
+		<xs:attribute name="testDate" type="YMDType" use="required" />
+		<xs:attribute name="stateCode" type="JurisdictionType" use="required" />
+		<xs:attribute name="testCenterCode" type="CenterCodeType" use="required" />
+		<xs:attribute name="contentArea" type="ContentAreaType" use="required" />
+		<xs:attribute name="regId" type="RegistrationIdType" use="required" />
+		<xs:attribute name="lang" type="LanguageType" use="required" />
+		<xs:attribute name="formID" type="TestFormType" />
+		<xs:attribute name="score" type="ScoreType" use="required" />
+		<xs:attribute name="rank" type="RankType" />
+		<xs:attribute name="passStatus" type="xs:boolean" use="required" />
+		<xs:attribute name="performanceZone" type="PerformanceZoneType" use="required" />
+		<xs:attribute name="invalid" type="xs:boolean" use="required" />
+		<xs:attribute name="seriesCode" type="SeriesCodeType" use="required" />
+		<xs:attribute name="accUsed" type="UsedType" use="required" />
+		<xs:attribute name="testMedium" type="TestMediumType" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="StatusType">
+		<xs:attribute name="completeStatus" type="xs:boolean" use="required" />
+		<xs:attribute name="completeDate" type="YMDType" />
+		<xs:attribute name="passedStatus" type="xs:boolean" use="required" />
+		<xs:attribute name="passedDate" type="YMDType" />
+		<xs:attribute name="totalStandardScore" type="TotalScoreType" />
+	</xs:complexType>
+
+	<xs:simpleType name="TexasType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TX" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CandidateCountType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CandidateIdType">
+		<xs:restriction base="xs:token">
+			<xs:minLength value="1" />
+			<xs:maxLength value="40" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CorrectionsIdType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="JurisdictionType">
+		<xs:annotation>
+			<xs:documentation>2-character string only</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="LastNameType">
+		<xs:restriction base="xs:token">
+			<xs:minLength value="1" />
+			<xs:maxLength value="50" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="NameType">
+		<xs:restriction base="xs:token">
+			<xs:minLength value="1" />
+			<xs:maxLength value="30" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="GenerationType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="JR" />
+			<xs:enumeration value="SR" />
+			<xs:enumeration value="I" />
+			<xs:enumeration value="II" />
+			<xs:enumeration value="III" />
+			<xs:enumeration value="IV" />
+			<xs:enumeration value="V" />
+			<xs:enumeration value="VI" />
+			<xs:enumeration value="VII" />
+			<xs:enumeration value="VIII" />
+			<xs:enumeration value="IX" />
+			<xs:enumeration value="X" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="StreetAddressType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="40" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CityType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="32" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CountyType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="30" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="PostalCodeType">
+		<xs:restriction base="xs:token">
+			<xs:minLength value="5" />
+			<xs:maxLength value="9" />
+			<xs:pattern value="([0-9]{5})|([0-9]{9})" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="YMDType">
+		<xs:annotation>
+			<xs:documentation>yyyymmdd only</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\d{4}(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[01])" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="PhoneType">
+		<xs:annotation>
+			<xs:documentation>10-digit only</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[0-9]{10}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EmailType">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[A-Za-z0-9](([_\.\-\+]?[a-zA-Z0-9]+)*)@([A-Za-z0-9]+)(([\.\-]?[a-zA-Z0-9]+)*)\.([A-Za-z]{2,})" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="GenderType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="MALE" />
+			<xs:enumeration value="FEMALE" />
+			<xs:enumeration value="UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EthnicityType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="HISPANIC_LATINO" />
+			<xs:enumeration value="NON_HISPANIC_LATINO" />
+			<xs:enumeration value="DECLINE" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ApprovalType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="TRUE" />
+			<xs:enumeration value="FALSE" />
+			<xs:enumeration value="PENDING" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EdLevelType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="0" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="5" />
+			<xs:enumeration value="6" />
+			<xs:enumeration value="7" />
+			<xs:enumeration value="8" />
+			<xs:enumeration value="9" />
+			<xs:enumeration value="10" />
+			<xs:enumeration value="11" />
+			<xs:enumeration value="12" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="SocialSecurityType">
+		<xs:annotation>
+			<xs:documentation>9-character string only</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CenterCodeType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="12" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ContentAreaType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="MATH" />
+			<xs:enumeration value="SCIENCE" />
+			<xs:enumeration value="SOCIAL_STUDIES" />
+			<xs:enumeration value="REASONING_LA" />
+			<xs:enumeration value="LA_WRITING" />
+			<xs:enumeration value="LA_READING" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="RegistrationIdType">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1" />
+			<xs:maxLength value="16" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="LanguageType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="ENU" />
+			<xs:enumeration value="ESP" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TestFormType">
+		<xs:restriction base="xs:token">
+			<xs:minLength value="1" />
+			<xs:maxLength value="10" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ScoreType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="RankType">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1" />
+			<xs:totalDigits value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="PerformanceZoneType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="GED_NON_PASSING_SCORES" />
+			<xs:enumeration value="GED_HIGH_SCHOOL_EQUIVALENCY_LEVEL_PASSING" />
+			<xs:enumeration value="GED_CAREER_AND_COLLEGE_READINESS_LEVEL_PASSING" />
+			<xs:enumeration value="GED_CAREER_AND_COLLEGE_READINESS_PLUS_CREDIT" />
+			<xs:enumeration value="HiSET_NOT_PASSING" />
+			<xs:enumeration value="HiSET_PASSING" />
+			<xs:enumeration value="HiSET_COLLEGE_READINESS" />
+			<xs:enumeration value="TASC_NOT_YET_PASSING" />
+			<xs:enumeration value="TASC_PASSING" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="SeriesCodeType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="ETS_2017" />
+			<xs:enumeration value="GED_2014" />
+			<xs:enumeration value="TASC_2016" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="UsedType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="TRUE" />
+			<xs:enumeration value="FALSE" />
+			<xs:enumeration value="NA" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TestMediumType">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="COMPUTER" />
+			<xs:enumeration value="PAPER" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TotalScoreType">
+		<xs:restriction base="xs:integer">
+			<xs:totalDigits value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
