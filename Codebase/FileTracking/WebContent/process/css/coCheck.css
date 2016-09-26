@@ -103,4 +103,12 @@
 .rv_comment{
 	width:240px;
 }
+.dataTables_scrollBody {
+  overflow-x: scroll;
+  overflow-y: auto;
+  transform:rotateX(180deg);
+}
+.dataTables_scrollBody table {
+  transform:rotateX(180deg);
+}
   
