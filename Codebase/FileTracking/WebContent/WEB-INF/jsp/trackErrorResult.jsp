@@ -9,7 +9,6 @@
 <%@page import="com.vaannila.util.PropertyFile" %>
 
 <link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
-
 <script type="text/javascript" src="js/modules/trackError.js"></script>
 <script src="css/jquery.validate.js"></script>	
 	
@@ -66,36 +65,34 @@
 						<tr>
 							<th >&nbsp;</th>
 							<th>Record Id</th>
-							<th>File Name</th>
-							<th>File Generation Date-Time</th>
-							<th>OrgID~TP</th>
-							<th>DRC Student ID</th>
 							<th>State Prefix</th>
-							<th>UUID</th>
-							<th>Error Description</th>
+							<th>Test Mode</th>
 							<th>Student Name</th>
-							<th>DOB</th>
-							<th>Gender</th>
-							<th>Prism Process Date</th>
-							<th>Org Code Path</th>
-							<th>Test Center Code</th>
-							<th>Test Center Name</th>
-							<th>Document ID</th>
+							<th>Examinee ID (UUID)</th>
+							<th>DRC Student ID</th>
+							<th>Error Status</th>
+							<th>Barcode ID</th>
 							<th>Schedule ID</th>
 							<th>TCA Schedule Date</th>
-							<th>ImagingID</th>
-							<th>Litho Code</th>
-							<th>Test Mode</th>
-							<th>Test Language</th>
-							<th>Content Name</th>
-							<th>Form</th>
 							<th>Date Test Taken</th>
-							<th>BarcodeID</th>
-							<th>Content Score (NC)</th>
+							<th>Form</th>
+							<th>Content Name</th>
 							<th>Content Test Code</th>
+							<th>Test Language</th>
+							<th>Litho Code</th>
 							<th>Scale Score</th>
-							<th>Scanned Process Date</th>
+							<th>Content Score (NC)</th>
 							<th>Status Code for Content Area</th>
+							<th>Test Center Code</th>
+							<th>Test Center Name</th>
+							<th>Error Description</th>
+							<th>Scoring Date</th>
+							<th>Scanned/Process Date</th>
+							<th>Org Code Path</th>
+							<th>Prism Process Date</th>
+							<th>Doc ID</th>
+							<th>File Name</th>
+							<th>File Generation Date-Time</th>
 						</tr>
 					</thead>
 				</table>

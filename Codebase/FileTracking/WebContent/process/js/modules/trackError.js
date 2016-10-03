@@ -16,7 +16,7 @@ $(document).ready(function(){
     	}).dataTable( {
 		"bJQueryUI": true,
 		"sPaginationType": "full_numbers",
-		"order": [[ 12, "desc" ]],
+		"order": [[ 26, "desc" ]],
         "bProcessing": true,
         "bServerSide": true,
         "sort": "position",
@@ -30,7 +30,7 @@ $(document).ready(function(){
         "sAjaxSource": "errorResult.htm",
         "aoColumnDefs": [ 
 						  {'bSortable': false, 'aTargets': [0]},
-						  { "width": "40%", "aTargets":  [8] }
+						  { "width": "30%", "aTargets":  [22] }
 						],
         "aoColumns": [
 			{ 
@@ -44,9 +44,10 @@ $(document).ready(function(){
 			    }		
 			},
 			{ "mData": "recordId" },
-			{ "mData": "fileName" },
-			{ "mData": "fileGenDateTime" },
-			{ "mData": "OrgIDTP" },
+			{ "mData": "stateCode"},
+			{ "mData": "testMode" },
+			{ "mData": "studentName"},
+			{ "mData": "examineeID" },
 			{
 				"mRender": function ( data, type, row ) {
 					var html = "<a href='#note' class='noteLink historyGhi' style='color:#00329B;text-decoration:underline'";
@@ -57,32 +58,29 @@ $(document).ready(function(){
 					return html;
 				}
 			},
-			{ "mData": "stateCode"},
-			{ "mData": "examineeID" },
-			{ "mData": "errCodeErrDesc"},
-			{ "mData": "studentName"},
-			{ "mData": "dob"},
-			{ "mData": "gender"},
-			{ "mData": "procesDate"},
-			{ "mData": "orgCodePath" },
-			{ "mData": "testCenterCode" },
-			{ "mData": "testCenterName" },
-			{ "mData": "documentID" },
+			{ "mData": "prismProcessStatus" },
+			{ "mData": "barcodeID"},
 			{ "mData": "scheduleID" },
 			{ "mData": "tcaScheduleDate" },
-			{ "mData": "imagingID" },
-			{ "mData": "lithoCode"},
-			{ "mData": "testMode" },
-			{ "mData": "testLanguage"},
-			{ "mData": "contentName" },
-			{ "mData": "form"},
 			{ "mData": "dateTestTaken"},
-			{ "mData": "barcodeID"},
-			{ "mData": "contentScore" },
+			{ "mData": "form"},
+			{ "mData": "contentName" },
 			{ "mData": "contentTestCode" },
+			{ "mData": "testLanguage"},
+			{ "mData": "lithoCode"},
 			{ "mData": "scaleScore" },
+			{ "mData": "contentScore" },
+			{ "mData": "statusCodeContentArea" },
+			{ "mData": "testCenterCode" },
+			{ "mData": "testCenterName" },
+			{ "mData": "errCodeErrDesc"},
+			{ "mData": "procesDate"},
 			{ "mData": "scannedProcessDate"},
-			{ "mData": "statusCodeContentArea" }
+			{ "mData": "orgCodePath" },
+			{ "mData": "procesDate"},
+			{ "mData": "documentID" },
+			{ "mData": "fileName" },
+			{ "mData": "fileGenDateTime" }	
         ]
     });
 });

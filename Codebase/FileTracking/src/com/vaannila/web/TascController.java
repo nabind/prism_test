@@ -1279,7 +1279,7 @@ public class TascController {
 		try {
 			process = (SearchProcess)request.getSession().getAttribute("errorTrackingTO");
 			process.setMode("CSV");
-			process.setSortCol("12");
+			process.setSortCol("26");
 			process.setSortDir("desc");
 			TascDAOImpl stageDao = new TascDAOImpl();
 			studentDetailsTOList = stageDao.getResultGhi(process);
@@ -1289,36 +1289,34 @@ public class TascController {
 			
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("Record Id")
-			.append(",").append("File Name")
-			.append(",").append("File Generation Date-Time")
-			.append(",").append("OrgID~TP")
-			.append(",").append("DRC Student ID")
 			.append(",").append("State Prefix")
-			.append(",").append("Examinee ID")
-			.append(",").append("Error Description")
+			.append(",").append("Test Mode")
 			.append(",").append("Student Name")
-			.append(",").append("DOB")
-			.append(",").append("Gender")
-			.append(",").append("Prism Process Date")
-			.append(",").append("Org Code Path")
-			.append(",").append("Test Center Code")
-			.append(",").append("Test Center Name")
-			.append(",").append("Document ID")
+			.append(",").append("Examinee ID (UUID)")
+			.append(",").append("DRC Student ID")
+			.append(",").append("Error Status")
+			.append(",").append("BarcodeID")
 			.append(",").append("Schedule ID")
 			.append(",").append("TCA Schedule Date")
-			.append(",").append("ImagingID")
-			.append(",").append("Litho Code")
-			.append(",").append("Test Mode")
-			.append(",").append("Test Language")
-			.append(",").append("Content Name")
-			.append(",").append("Form")
 			.append(",").append("Date Test Taken")
-			.append(",").append("BarcodeID")
-			.append(",").append("Content Score (NC)")
+			.append(",").append("Form")
+			.append(",").append("Content Name")
 			.append(",").append("Content Test Code")
+			.append(",").append("Test Language")
+			.append(",").append("Litho Code")
 			.append(",").append("Scale Score")
-			.append(",").append("Scanned Process Date")
+			.append(",").append("Content Score (NC)")
 			.append(",").append("Status Code for Content Area")
+			.append(",").append("Test Center Code")
+			.append(",").append("Test Center Name")
+			.append(",").append("Error Description")
+			.append(",").append("Scoring Date")
+			.append(",").append("Scanned/Process Date")
+			.append(",").append("Org Code Path")
+			.append(",").append("Prism Process Date")
+			.append(",").append("Doc ID")
+			.append(",").append("File Name")
+			.append(",").append("File Generation Date-Time")
 			.append("\n");
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
