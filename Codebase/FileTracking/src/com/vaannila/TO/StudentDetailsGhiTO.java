@@ -37,6 +37,7 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String scannedProcessDate;
 	private String statusCodeContentArea;
 	private String prismProcessStatus;
+	private String testEventUpdateDate;
 	
 	public String getFileName() {
 		return fileName;
@@ -229,6 +230,12 @@ public class StudentDetailsGhiTO implements Serializable {
 	}
 	public void setPrismProcessStatus(String prismProcessStatus) {
 		this.prismProcessStatus = prismProcessStatus;
+	}	
+	public String getTestEventUpdateDate() {
+		return testEventUpdateDate;
+	}
+	public void setTestEventUpdateDate(String testEventUpdateDate) {
+		this.testEventUpdateDate = testEventUpdateDate;
 	}
 	
 	@Override
@@ -256,7 +263,7 @@ public class StudentDetailsGhiTO implements Serializable {
 		.append(",").append("\"").append(testCenterCode).append("\"")
 		.append(",").append("\"").append(testCenterName).append("\"")
 		.append(",").append("\"").append(errCodeErrDesc).append("\"")
-		.append(",").append("\"").append(procesDate).append("\"")
+		.append(",").append("\"").append(testEventUpdateDate).append("\"")
 		.append(",").append("\"").append(scannedProcessDate).append("\"")
 		.append(",").append("\"").append(orgCodePath).append("\"")
 		.append(",").append("\"").append(procesDate).append("\"")

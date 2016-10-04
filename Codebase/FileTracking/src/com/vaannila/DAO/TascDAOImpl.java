@@ -1656,6 +1656,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 					studentDetailsTO.setStatusCodeContentArea(rs.getString("STATUS_CODE_CONTENT")!=null ? rs.getString("STATUS_CODE_CONTENT") : "");
 					studentDetailsTO.setScannedProcessDate(rs.getString("SCANNED_PROCESS_DATE")!=null ? rs.getString("SCANNED_PROCESS_DATE") : "");
 					studentDetailsTO.setContentTestCode(rs.getString("CONTENT_TEST_CODE")!=null ? rs.getString("CONTENT_TEST_CODE") : "");
+					studentDetailsTO.setTestEventUpdateDate(rs.getString("TEST_EVENT_UPDATE_DATE")!=null ? rs.getString("TEST_EVENT_UPDATE_DATE") : "");
 						
 					studentDetailsTOList.add(studentDetailsTO);
 				}
@@ -1964,6 +1965,8 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				studentDetailsTO.setStatusCodeContentArea(rsEr.getString("STATUS_CODE_CONTENT")!=null ? rsEr.getString("STATUS_CODE_CONTENT") : "");
 				studentDetailsTO.setScannedProcessDate(rsEr.getString("SCANNED_PROCESS_DATE")!=null ? rsEr.getString("SCANNED_PROCESS_DATE") : "");
 				studentDetailsTO.setContentTestCode(rsEr.getString("CONTENT_TEST_CODE")!=null ? rsEr.getString("CONTENT_TEST_CODE") : "");
+				studentDetailsTO.setTestEventUpdateDate(rsEr.getString("TEST_EVENT_UPDATE_DATE")!=null ? rsEr.getString("TEST_EVENT_UPDATE_DATE") : "");
+				
 				processListEr.add(studentDetailsTO);
 			}
 			returnMap.put("op", processListOp);

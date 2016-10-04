@@ -1310,7 +1310,7 @@ public class TascController {
 			.append(",").append("Test Center Code")
 			.append(",").append("Test Center Name")
 			.append(",").append("Error Description")
-			.append(",").append("Scoring Date")
+			.append(",").append("Last Updated Doc Date")
 			.append(",").append("Scanned/Process Date")
 			.append(",").append("Org Code Path")
 			.append(",").append("Prism Process Date")

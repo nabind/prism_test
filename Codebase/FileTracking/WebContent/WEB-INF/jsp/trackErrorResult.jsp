@@ -86,7 +86,7 @@
 							<th>Test Center Code</th>
 							<th>Test Center Name</th>
 							<th>Error Description</th>
-							<th>Scoring Date</th>
+							<th>Last Updated Doc Date</th>
 							<th>Scanned/Process Date</th>
 							<th>Org Code Path</th>
 							<th>Prism Process Date</th>

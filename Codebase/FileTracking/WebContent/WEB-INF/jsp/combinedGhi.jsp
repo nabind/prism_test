@@ -36,11 +36,10 @@
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"sScrollX": '100%',
-			"aaSorting": [[ 13, "desc" ]],
+			"aaSorting": [[ 26, "desc" ]],
 			"aoColumnDefs": [ 
-							  { "bVisible": false, "aTargets": [ 0 ] },
-							  {'bSortable': false, 'aTargets':  [1]  },
-							  { "width": "30%", "aTargets":  [9] }
+							  {'bSortable': false, 'aTargets':  [0]  },
+							  { "width": "30%", "aTargets":  [22] }
 							]
 		});
     });
@@ -221,38 +220,35 @@
 			<thead>
 				<tr>
 					<th >&nbsp;</th>
-					<th>Prism Process Status</th>
 					<th>Record Id</th>
-					<th>File Name</th>
-					<th>File Generation Date-Time</th>
-					<th>OrgID~TP</th>
-					<th>DRC Student ID</th>
 					<th>State Prefix</th>
-					<th>UUID</th>
-					<th>Error Description</th>
+					<th>Test Mode</th>
 					<th>Student Name</th>
-					<th>DOB</th>
-					<th>Gender</th>
-					<th>Prism Process Date</th>
-					<th>Org Code Path</th>
-					<th>Test Center Code</th>
-					<th>Test Center Name</th>
-					<th>Document ID</th>
+					<th>Examinee ID (UUID)</th>
+					<th>DRC Student ID</th>
+					<th>Error Status</th>
+					<th>Barcode ID</th>
 					<th>Schedule ID</th>
 					<th>TCA Schedule Date</th>
-					<th>ImagingID</th>
-					<th>Litho Code</th>
-					<th>Test Mode</th>
-					<th>Test Language</th>
-					<th>Content Name</th>
-					<th>Form</th>
 					<th>Date Test Taken</th>
-					<th>BarcodeID</th>
-					<th>Content Score (NC)</th>
+					<th>Form</th>
+					<th>Content Name</th>
 					<th>Content Test Code</th>
+					<th>Test Language</th>
+					<th>Litho Code</th>
 					<th>Scale Score</th>
-					<th>Scanned Process Date</th>
+					<th>Content Score (NC)</th>
 					<th>Status Code for Content Area</th>
+					<th>Test Center Code</th>
+					<th>Test Center Name</th>
+					<th>Error Description</th>
+					<th>Last Updated Doc Date</th>
+					<th>Scanned/Process Date</th>
+					<th>Org Code Path</th>
+					<th>Prism Process Date</th>
+					<th>Doc ID</th>
+					<th>File Name</th>
+					<th>File Generation Date-Time</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -262,7 +258,6 @@
 			for(StudentDetailsGhiTO error : errorGhi) {
 			%>
 				<tr>
-					<td>&nbsp;</td>
 					<td style="padding-top: 12px;" nowrap>
 						<%if("CO".equals(error.getPrismProcessStatus())) { %>
 							<span class="completed" title="Completed"></span> 
@@ -271,36 +266,34 @@
 						<%} %>
 					</td>
 					<td><%=error.getRecordId() %></td>
-					<td><%=error.getFileName() %></td>
-					<td><%=error.getFileGenDateTime() %></td>
-					<td><%=error.getOrgIDTP() %></td>
-					<td><%=error.getDrcStudentID() %></td>
 					<td><%=error.getStateCode() %></td>
-					<td><%=error.getExamineeID() %></td>
-					<td><%=error.getErrCodeErrDesc() %></td>
+					<td><%=error.getTestMode() %></td>
 					<td><%=error.getStudentName() %></td>
-					<td><%=error.getDob() %></td>
-					<td><%=error.getGender() %></td>
-					<td><%=error.getProcesDate() %></td>
-					<td><%=error.getOrgCodePath() %></td>
-					<td><%=error.getTestCenterCode() %></td>
-					<td><%=error.getTestCenterName() %></td>
-					<td><%=error.getDocumentID() %></td>
+					<td><%=error.getExamineeID() %></td>
+					<td><%=error.getDrcStudentID() %></td>
+					<td><%=error.getPrismProcessStatus() %></td>
+					<td><%=error.getBarcodeID() %></td>
 					<td><%=error.getScheduleID() %></td>
 					<td><%=error.getTcaScheduleDate() %></td>
-					<td><%=error.getImagingID() %></td>
-					<td><%=error.getLithoCode() %></td>
-					<td><%=error.getTestMode() %></td>
-					<td><%=error.getTestLanguage() %></td>
-					<td><%=error.getContentName() %></td>
-					<td><%=error.getForm() %></td>
 					<td><%=error.getDateTestTaken() %></td>
-					<td><%=error.getBarcodeID() %></td>
-					<td><%=error.getContentScore() %></td>
+					<td><%=error.getForm() %></td>
+					<td><%=error.getContentName() %></td>
 					<td><%=error.getContentTestCode() %></td>
+					<td><%=error.getTestLanguage() %></td>
+					<td><%=error.getLithoCode() %></td>
 					<td><%=error.getScaleScore() %></td>
-					<td><%=error.getScannedProcessDate() %></td>
+					<td><%=error.getContentScore() %></td>
 					<td><%=error.getStatusCodeContentArea() %></td>
+					<td><%=error.getTestCenterCode() %></td>
+					<td><%=error.getTestCenterName() %></td>
+					<td><%=error.getErrCodeErrDesc() %></td>
+					<td><%=error.getTestEventUpdateDate() %></td>
+					<td><%=error.getScannedProcessDate() %></td>
+					<td><%=error.getOrgCodePath() %></td>
+					<td><%=error.getProcesDate() %></td>
+					<td><%=error.getDocumentID() %></td>
+					<td><%=error.getFileName() %></td>
+					<td><%=error.getFileGenDateTime() %></td>
 				</tr>
 			
 			<%}

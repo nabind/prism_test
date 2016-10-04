@@ -74,7 +74,7 @@ $(document).ready(function(){
 			{ "mData": "testCenterCode" },
 			{ "mData": "testCenterName" },
 			{ "mData": "errCodeErrDesc"},
-			{ "mData": "procesDate"},
+			{ "mData": "testEventUpdateDate"},
 			{ "mData": "scannedProcessDate"},
 			{ "mData": "orgCodePath" },
 			{ "mData": "procesDate"},
