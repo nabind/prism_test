@@ -35,38 +35,52 @@ public class TascDAOImpl {
 		ResultSet rs = null;
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
-		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("select PROCESS_ID,FILE_NAME,SOURCE_SYSTEM,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
-		queryBuff.append("OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,DATETIMESTAMP,(SELECT GETSTATUS(PROCESS_ID) FROM DUAL) STSTUS, ER_VALIDATION ");
-		//queryBuff.append(",to_number(datetimestamp - to_date('01-JAN-1970','DD-MON-YYYY')) * (24 * 60 * 60 * 1000) long_time ");
-		queryBuff.append("from stg_process_status ");
-		// queryBuff.append(" WHERE rownum<10 ");
-		if(searchProcess != null) {
-			queryBuff.append(" WHERE 1 = 1 ");
-			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
-					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
-				queryBuff.append("AND (DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
-			}
-			if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0) 
-				queryBuff.append("AND SOURCE_SYSTEM = ? ");
-		}
-		queryBuff.append(" order by PROCESS_ID desc ");
-		String query = queryBuff.toString();
-		// System.out.println(query);
+		String sourceSystem = searchProcess.getStructElement();
+		String query = null;
+		CallableStatement cs = null;
+		
+		if (sourceSystem != null) {
+			if ("UDB".equals(sourceSystem)) {
+				query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS_GHI(?,?,?,?,?)}";
+			} else{
+				query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS_DEF(?,?,?,?,?)}";
+			}			
+		}	
+		System.out.println("query : "+query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
-			pstmt = conn.prepareCall(query);
-			if(searchProcess != null) {
-				if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
-						&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
-					pstmt.setString(++count, searchProcess.getCreatedDate());
-					pstmt.setString(++count, searchProcess.getUpdatedDate());
-				}
-				if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0) 
-					pstmt.setString(++count, searchProcess.getStructElement());
+			cs = conn.prepareCall(query);
+			
+			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0){
+				cs.setString(++count, searchProcess.getCreatedDate());
+			}else{
+				cs.setString(++count, "-1");
 			}
-			rs = pstmt.executeQuery();
+			if(searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0){
+				cs.setString(++count, searchProcess.getUpdatedDate());
+			}else{
+				cs.setString(++count, "-1");
+			}
+			if(sourceSystem != null && sourceSystem.trim().length() > 0){
+				cs.setString(++count, sourceSystem);
+			}else{
+				cs.setString(++count, "-1");
+			}
+	
+			cs.registerOutParameter(++count, OracleTypes.CURSOR);
+			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
+			cs.execute();
+			
+			String errorMessage = cs.getString(5);
+			if (errorMessage == null || errorMessage.isEmpty()) {
+				rs = (ResultSet) cs.getObject(4);
+				System.out.println("Fetching data for TASC Process");
+			}else{
+				System.out.println("errorMessage: "+errorMessage);
+				throw new Exception(errorMessage);
+			}	
+
 			while(rs.next()) {
 				processTO = new TASCProcessTO();
 				processTO.setProcessId(rs.getString("PROCESS_ID"));
@@ -78,10 +92,12 @@ public class TascDAOImpl {
 				processTO.setContentValidation(rs.getString("CONTENT_VALIDATION"));
 				processTO.setObjValidation(rs.getString("OBJECTIVE_VALIDATION"));
 				processTO.setItemValidation(rs.getString("ITEM_VALIDATION"));
-				processTO.setWkfPartitionName(rs.getString("WKF_PARTITION_NAME"));
+				processTO.setWkfPartitionName(rs.getString("WKF_PARTITION_NAME") == null ? " " : rs.getString("WKF_PARTITION_NAME"));
 				processTO.setDateTimestamp(rs.getString("DATETIMESTAMP"));
-				processTO.setOverallStatus(rs.getString("STSTUS"));
+				processTO.setOverallStatus(rs.getString("STATUS"));
 				processTO.setErValidation(rs.getString("ER_VALIDATION") == null ? " " : rs.getString("ER_VALIDATION"));
+				processTO.setRegValidation(rs.getString("REG_VALIDATION") == null ? " " : rs.getString("REG_VALIDATION"));
+				processTO.setDocValidation(rs.getString("DOC_VALIDATION") == null ? " " : rs.getString("DOC_VALIDATION"));
 				processList.add(processTO);
 			}
 		} catch (SQLException e) {

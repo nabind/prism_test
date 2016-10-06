@@ -55,6 +55,8 @@ public class TASCProcessTO implements Serializable {
 	private String studentBioId;
 	private String comments;
 	private String isActive;
+	private String regValidation;
+	private String docValidation;
 	
 	public String getIsActive() {
 		return isActive;
@@ -344,5 +346,19 @@ public class TASCProcessTO implements Serializable {
 	public void setErExcdId(String erExcdId) {
 		this.erExcdId = erExcdId;
 	}
+	public String getRegValidation() {
+		if(regValidation != null && "ER".equals(regValidation)) return "<span style='color: red'>"+regValidation+"</span>";
+		return regValidation;
+	}
+	public void setRegValidation(String regValidation) {
+		this.regValidation = regValidation;
+	}
+	public String getDocValidation() {
+		if(docValidation != null && "ER".equals(docValidation)) return "<span style='color: red'>"+docValidation+"</span>";
+		return docValidation;
+	}
+	public void setDocValidation(String docValidation) {
+		this.docValidation = docValidation;
+	}	
 	
 }

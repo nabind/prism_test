@@ -93,6 +93,18 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                                    P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
                                    P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
+                               
+  PROCEDURE SP_GET_TASC_PROCESS_DEF(P_DATE_FROM          IN VARCHAR2,
+                                    P_DATE_TO            IN VARCHAR2,
+                                    P_SOURCE_SYSTEM      IN VARCHAR2,
+                                    P_OUT_CUR_DATA_DEF   OUT GET_REFCURSOR,
+                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
+                                   
+  PROCEDURE SP_GET_TASC_PROCESS_GHI(P_DATE_FROM          IN VARCHAR2,
+                                    P_DATE_TO            IN VARCHAR2,
+                                    P_SOURCE_SYSTEM      IN VARCHAR2,
+                                    P_OUT_CUR_DATA_GHI   OUT GET_REFCURSOR,
+                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
 
 END PKG_FILE_TRACKING;
 /
@@ -1502,6 +1514,117 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_GHI_SINGLE;
+  
+  
+  
+  PROCEDURE SP_GET_TASC_PROCESS_DEF(P_DATE_FROM          IN VARCHAR2,
+                                    P_DATE_TO            IN VARCHAR2,
+                                    P_SOURCE_SYSTEM      IN VARCHAR2,
+                                    P_OUT_CUR_DATA_DEF   OUT GET_REFCURSOR,
+                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
+  
+    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
+  BEGIN
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                         'SELECT PROCESS_ID,
+                             FILE_NAME,
+                             SOURCE_SYSTEM,
+                             '''' REG_VALIDATION,
+                             '''' DOC_VALIDATION,
+                             HIER_VALIDATION,
+                             BIO_VALIDATION,
+                             DEMO_VALIDATION,
+                             CONTENT_VALIDATION,
+                             OBJECTIVE_VALIDATION,
+                             ITEM_VALIDATION,
+                             WKF_PARTITION_NAME,
+                             DATETIMESTAMP,
+                             (SELECT GETSTATUS(PROCESS_ID) FROM DUAL) STATUS,
+                             ER_VALIDATION
+                        FROM STG_PROCESS_STATUS
+                        WHERE 1 = 1';
+  
+    IF P_DATE_FROM <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                        ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
+                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_DATE_TO <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                        ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
+                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_SOURCE_SYSTEM <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                           ' AND SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
+    END IF;
+  
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                         ' ORDER BY PROCESS_ID DESC';
+  
+    OPEN P_OUT_CUR_DATA_DEF FOR V_QUERY_ACTUAL_OP;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_TASC_PROCESS_DEF;
+  
+  PROCEDURE SP_GET_TASC_PROCESS_GHI(P_DATE_FROM          IN VARCHAR2,
+                                    P_DATE_TO            IN VARCHAR2,
+                                    P_SOURCE_SYSTEM      IN VARCHAR2,
+                                    P_OUT_CUR_DATA_GHI   OUT GET_REFCURSOR,
+                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
+  
+    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
+  BEGIN
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                         'SELECT PROCESS_ID,
+                             FILE_NAME,
+                             SOURCE_SYSTEM,
+                             REG_VALIDATION,
+                             DOC_VALIDATION,
+                             HIER_VALIDATION,
+                             BIO_VALIDATION,
+                             DEMO_VALIDATION,
+                             CONTENT_VALIDATION,
+                             OBJECTIVE_VALIDATION,
+                             ITEM_VALIDATION,
+                             WKF_PARTITION_NAME,
+                             DATETIMESTAMP,
+                             (SELECT GETSTATUS(PROCESS_ID) FROM DUAL) STATUS,
+                             ''''ER_VALIDATION
+                        FROM TASC_PROCESS_STATUS
+                        WHERE 1 = 1';
+  
+    IF P_DATE_FROM <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                        ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
+                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_DATE_TO <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                        ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
+                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
+    END IF;
+  
+    IF P_SOURCE_SYSTEM <> '-1' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                           ' AND SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
+    END IF;
+  
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                         ' ORDER BY PROCESS_ID DESC';
+  
+    OPEN P_OUT_CUR_DATA_GHI FOR V_QUERY_ACTUAL_OP;
+  
+  EXCEPTION
+    WHEN OTHERS THEN
+      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
+  END SP_GET_TASC_PROCESS_GHI;
+  
 
 END PKG_FILE_TRACKING; --END OF PACKAGE
 /

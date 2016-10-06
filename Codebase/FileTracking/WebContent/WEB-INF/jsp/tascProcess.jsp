@@ -234,6 +234,8 @@
 						<th>&nbsp;</th>
 						<th style="min-width: 60px;">Process Id</th>
 						<th>Source System</th>
+						<th>Reg Val.</th>
+						<th>Doc Val.</th>
 						<th>ER Val.</th>
 						<th>Hier Val.</th>
 						<th>Bio Val.</th>
@@ -268,6 +270,8 @@
 						</td>
 						
 						<td><%=process.getSourceSystem() %></td>
+						<td><%=process.getRegValidation() %></td>
+						<td><%=process.getDocValidation() %></td>
 						<td>
 							<%if( process.getErValidation() != null && "IN".equals(process.getErValidation())) { %>
 								<a href='#note' class='noteLink' style='color:red;text-decoration:underline' onclick='testElementIdList(<%=process.getProcessId() %>);'><%=process.getErValidation().replace("IN", "ER") %></a>
