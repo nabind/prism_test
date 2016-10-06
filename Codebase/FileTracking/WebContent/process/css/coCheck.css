@@ -67,6 +67,7 @@
 	border-radius: 5px;
 }
 .dataTables_processing {
+	  z-index: 3000;
 	  position: absolute;
 	  top: 50%;
 	  left: 50%;
