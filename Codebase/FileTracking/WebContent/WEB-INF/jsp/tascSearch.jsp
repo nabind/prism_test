@@ -107,10 +107,10 @@
 							<tr>
 								<td>Source System:</td>
 								<td><select name="sourceSystem">
-									<option value="">All - Form DEF</option>
-									<option value="OL">Online - Form DEF</option>
-									<option value="PP">Paper Pencil - Form DEF</option>
-									<option value="UDB">UDB - Form GHI</option>
+									<option value="">All - Except GHI</option>
+									<option value="OL">Online - Except GHI</option>
+									<option value="PP">Paper Pencil - Except GHI</option>
+									<option value="UDB">All - GHI</option>
 								</select></td>
 							</tr>
 							

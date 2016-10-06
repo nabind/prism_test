@@ -93,17 +93,11 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                                    P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
                                    P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
                                    P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
-                               
-  PROCEDURE SP_GET_TASC_PROCESS_DEF(P_DATE_FROM          IN VARCHAR2,
+                                    
+  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM          IN VARCHAR2,
                                     P_DATE_TO            IN VARCHAR2,
                                     P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA_DEF   OUT GET_REFCURSOR,
-                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
-                                   
-  PROCEDURE SP_GET_TASC_PROCESS_GHI(P_DATE_FROM          IN VARCHAR2,
-                                    P_DATE_TO            IN VARCHAR2,
-                                    P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA_GHI   OUT GET_REFCURSOR,
+                                    P_OUT_CUR_DATA   OUT GET_REFCURSOR,
                                     P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
 
 END PKG_FILE_TRACKING;
@@ -1514,18 +1508,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_GHI_SINGLE;
-  
-  
-  
-  PROCEDURE SP_GET_TASC_PROCESS_DEF(P_DATE_FROM          IN VARCHAR2,
+    
+  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM          IN VARCHAR2,
                                     P_DATE_TO            IN VARCHAR2,
                                     P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA_DEF   OUT GET_REFCURSOR,
+                                    P_OUT_CUR_DATA   OUT GET_REFCURSOR,
                                     P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
   
+    V_QUERY_ACTUAL_DEF        VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_GHI        VARCHAR2(4000) := '';
     V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
   BEGIN
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+    V_QUERY_ACTUAL_DEF := V_QUERY_ACTUAL_DEF ||
                          'SELECT PROCESS_ID,
                              FILE_NAME,
                              SOURCE_SYSTEM,
@@ -1543,43 +1537,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              ER_VALIDATION
                         FROM STG_PROCESS_STATUS
                         WHERE 1 = 1';
-  
-    IF P_DATE_FROM <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                        ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
-                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
-    END IF;
-  
-    IF P_DATE_TO <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                        ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
-                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
-    END IF;
-  
-    IF P_SOURCE_SYSTEM <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                           ' AND SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
-    END IF;
-  
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                         ' ORDER BY PROCESS_ID DESC';
-  
-    OPEN P_OUT_CUR_DATA_DEF FOR V_QUERY_ACTUAL_OP;
-  
-  EXCEPTION
-    WHEN OTHERS THEN
-      P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
-  END SP_GET_TASC_PROCESS_DEF;
-  
-  PROCEDURE SP_GET_TASC_PROCESS_GHI(P_DATE_FROM          IN VARCHAR2,
-                                    P_DATE_TO            IN VARCHAR2,
-                                    P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA_GHI   OUT GET_REFCURSOR,
-                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
-  
-    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
-  BEGIN
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
+                        
+    V_QUERY_ACTUAL_GHI := V_QUERY_ACTUAL_GHI ||
                          'SELECT PROCESS_ID,
                              FILE_NAME,
                              SOURCE_SYSTEM,
@@ -1597,6 +1556,13 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              ''''ER_VALIDATION
                         FROM TASC_PROCESS_STATUS
                         WHERE 1 = 1';
+    
+    -- checking the source system and using the query accordingly                       
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_DEF;
+    
+    IF P_SOURCE_SYSTEM <> '-1' AND P_SOURCE_SYSTEM = 'UDB' THEN
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_GHI;
+    END IF;
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
@@ -1618,13 +1584,12 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
                          ' ORDER BY PROCESS_ID DESC';
   
-    OPEN P_OUT_CUR_DATA_GHI FOR V_QUERY_ACTUAL_OP;
+    OPEN P_OUT_CUR_DATA FOR V_QUERY_ACTUAL_OP;
   
   EXCEPTION
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
-  END SP_GET_TASC_PROCESS_GHI;
-  
+  END SP_GET_TASC_PROCESS;
 
 END PKG_FILE_TRACKING; --END OF PACKAGE
 /

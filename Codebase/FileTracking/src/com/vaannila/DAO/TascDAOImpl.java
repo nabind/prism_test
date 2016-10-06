@@ -35,17 +35,9 @@ public class TascDAOImpl {
 		ResultSet rs = null;
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
-		String sourceSystem = searchProcess.getStructElement();
-		String query = null;
+        String query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS(?,?,?,?,?)}";;
 		CallableStatement cs = null;
 		
-		if (sourceSystem != null) {
-			if ("UDB".equals(sourceSystem)) {
-				query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS_GHI(?,?,?,?,?)}";
-			} else{
-				query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS_DEF(?,?,?,?,?)}";
-			}			
-		}	
 		System.out.println("query : "+query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -62,8 +54,8 @@ public class TascDAOImpl {
 			}else{
 				cs.setString(++count, "-1");
 			}
-			if(sourceSystem != null && sourceSystem.trim().length() > 0){
-				cs.setString(++count, sourceSystem);
+			if(searchProcess.getStructElement() != null && searchProcess.getStructElement().trim().length() > 0){
+				cs.setString(++count, searchProcess.getStructElement());
 			}else{
 				cs.setString(++count, "-1");
 			}
