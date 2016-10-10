@@ -105,13 +105,13 @@ public class TascDAOImpl {
 	}
 	
 	/**
-	 * Method to update the process log
+	 * Method to get the process log
 	 * @param processId
-	 * @param log
+	 * @param source
 	 * @return
 	 * @throws Exception 
 	 */
-	public String getProcessLog(String processId) throws Exception {
+	public String getProcessLog(String processId, String source) throws Exception {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -119,6 +119,9 @@ public class TascDAOImpl {
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			String query = "SELECT U.PROCESS_LOG FROM STG_PROCESS_STATUS U WHERE U.PROCESS_ID = ?";
+			if (source != null && "UDB".equals(source)) {
+				query = "SELECT U.PROCESS_LOG FROM TASC_PROCESS_STATUS U WHERE U.PROCESS_ID = ?";
+			}
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, processId);
 			rs = pstmt.executeQuery();

@@ -141,8 +141,9 @@ public class TascController {
 			HttpServletResponse response) throws Exception {
 		try {
 			String processId = request.getParameter("processId");
+			String source = request.getParameter("source");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			String processLog = stageDao.getProcessLog(processId);
+			String processLog = stageDao.getProcessLog(processId,source);
 			if(processLog != null) processLog = processLog.replaceAll("\n", "<br>");
 			else processLog = "";
 			response.setContentType("text/plain");

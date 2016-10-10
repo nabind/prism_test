@@ -1552,7 +1552,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              ITEM_VALIDATION,
                              WKF_PARTITION_NAME,
                              DATETIMESTAMP,
-                             (SELECT GETSTATUS(PROCESS_ID) FROM DUAL) STATUS,
+                             (SELECT GETSTATUSGHI(PROCESS_ID) FROM DUAL) STATUS,
                              ''''ER_VALIDATION
                         FROM TASC_PROCESS_STATUS
                         WHERE 1 = 1';
