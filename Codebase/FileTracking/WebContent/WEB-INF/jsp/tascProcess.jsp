@@ -285,7 +285,7 @@
 						<td><%=process.getContentValidation() %></td>
 						<td><%=process.getObjValidation() %></td>
 						<td><%=process.getItemValidation() %></td>
-						<td><a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>,'<%=process.getSourceSystem() %>');'>
+						<td><a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, "<%=process.getSourceSystem() %>");'>
 							<%=process.getWkfPartitionName() %></a>
 						</td>
 						<td><%=process.getDateTimestamp() %></td>
@@ -299,7 +299,7 @@
 						%>
 						<td>
 						<%if(!"NA".equals(sourceFileName)) { %>
-								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, '<%=process.getSourceSystem() %>');'>
+								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, "<%=process.getSourceSystem() %>");'>
 								<%=sourceFileName %></a>
 							<%} else {%>
 								<%=sourceFileName %>
