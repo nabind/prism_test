@@ -27,6 +27,11 @@ public class DecryptXMLAttribute {
 	public static final String DEMO_ENCRYPTED_ATTRIBUTE_KEY = "DEMO_ENCRYPTED_ATTR";
 	public static final String LOG4J_FILE_APPENDER_KEY = "LOG4J_FILE_APPENDER_FILE";
 	public static final String LOG4J_FILE_THRESHOLD_KEY = "LOG4J_FILE_THRESHOLD_KEY";
+	public static final String CANDIDATE_TAG = "Candidate";
+	public static final String DEMOGRAPHIC_TAG = "Demographic";
+	public static final String CANDIDATE_ID_ATTRIBUTE = "candidateID";
+	public static final String DECRYPTED_FILE_SUFFIX = ".DECRYPTED";
+	
 	public static Properties prop;
 	
 	private static final Logger logger = Logger.getLogger(DecryptXMLAttribute.class);
@@ -38,55 +43,64 @@ public class DecryptXMLAttribute {
 			if (args.length < 1) {
 				logger.error("Please provide XML file name");
 			} else {		
-			AESEncryptionDecryption aes = new AESEncryptionDecryption();			
-			
-			String finalXmlFilePath = prop.getProperty(XML_FILE_PATH_KEY);
-			if (finalXmlFilePath != null) {
-				finalXmlFilePath = finalXmlFilePath + args[0];
-			}
-			String[] attrs = prop.getProperty(DEMO_ENCRYPTED_ATTRIBUTE_KEY).split(",");
-			
-			logger.info("Starting the parsing of the file :"+args[0]);
-			
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(finalXmlFilePath);
-
-			// Get the root element
-			Node report = doc.getFirstChild();
-			NodeList list = report.getChildNodes();
-
-			for (int i = 0; i < list.getLength(); i++) {
-				Node candidate = list.item(i);
-				if ("Candidate".equalsIgnoreCase(candidate.getNodeName())) {
-					NodeList demoList = candidate.getChildNodes();
-					for (int j = 0; j < demoList.getLength(); j++) {
-						Node demographic = demoList.item(j);
-						if ("Demographic".equalsIgnoreCase(demographic.getNodeName())) {
-							NamedNodeMap attributes = demographic.getAttributes();
-							
-							for (String encAttr : attrs) {
-								Node encryptedAttribute = attributes.getNamedItem(encAttr);
-								if (encryptedAttribute != null) {
-									logger.info("Decrypting the attribute :"+encryptedAttribute.getNodeName());
-									String decryptedValue = aes.decryptText(encryptedAttribute.getNodeValue(), prop.getProperty(PRIVATEKEY_KEY));
-									encryptedAttribute.setNodeValue(decryptedValue);
+				AESEncryptionDecryption aes = new AESEncryptionDecryption();			
+				
+				//get the xml file path from property file and append with the file name provided as input
+				String finalXmlFilePath = prop.getProperty(XML_FILE_PATH_KEY);
+				if (finalXmlFilePath != null) {
+					finalXmlFilePath = finalXmlFilePath + args[0];
+				}
+				
+				//this is the decrypted file which will be FTP for TX and then it will be renamed to remove .DECRYPTED suffix.
+				String decryptedXMLFilePath = finalXmlFilePath + DECRYPTED_FILE_SUFFIX;
+				
+				//get the encrypted attribute name which need to be decrypted under Demographic tag from properties file
+				String[] attrs = prop.getProperty(DEMO_ENCRYPTED_ATTRIBUTE_KEY).split(",");
+				
+				logger.info("Starting the parsing of the file : "+args[0]);
+				
+				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+				Document doc = docBuilder.parse(finalXmlFilePath);
+	
+				// Get the root element
+				Node report = doc.getFirstChild();
+				NodeList list = report.getChildNodes();
+	
+				for (int i = 0; i < list.getLength(); i++) {
+					Node candidate = list.item(i);
+					if (CANDIDATE_TAG.equalsIgnoreCase(candidate.getNodeName())) {
+						NamedNodeMap candidateAttributes = candidate.getAttributes();
+						
+						NodeList demoList = candidate.getChildNodes();
+						for (int j = 0; j < demoList.getLength(); j++) {
+							Node demographic = demoList.item(j);
+							if (DEMOGRAPHIC_TAG.equalsIgnoreCase(demographic.getNodeName())) {
+								NamedNodeMap attributes = demographic.getAttributes();
+								
+								for (String encAttr : attrs) {
+									Node encryptedAttribute = attributes.getNamedItem(encAttr);
+									if (encryptedAttribute != null) {
+										logger.info("Decrypting the attributes of Demographic for Canditate id : "+candidateAttributes.getNamedItem(CANDIDATE_ID_ATTRIBUTE).getNodeValue());
+										logger.info("Decrypting the attribute : "+encryptedAttribute.getNodeName());
+										String decryptedValue = aes.decryptText(encryptedAttribute.getNodeValue(), prop.getProperty(PRIVATEKEY_KEY));
+										encryptedAttribute.setNodeValue(decryptedValue);
+									}
 								}
+								
 							}
-							
 						}
 					}
+	
 				}
-
-			}
-			
-			logger.info("Writing the XML file with decrypted data");
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(finalXmlFilePath));
-			transformer.transform(source, result);
-			logger.info("Process complete");
+				
+				logger.info("Writing the XML file with decrypted data");
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				DOMSource source = new DOMSource(doc);
+				StreamResult result = new StreamResult(new File(decryptedXMLFilePath));
+				transformer.transform(source, result);
+				logger.info("Process complete");
 
 			}
 		}			
