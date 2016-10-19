@@ -8,12 +8,15 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class provides the utilities of a cryptographic cipher for encryption and decryption.
  *
  */
 public class Cipherer {
 
+	private static final Logger logger = Logger.getLogger(Cipherer.class);
     
 	private static final byte[] DEFAULT_KEY_BYTES = {(byte)0xC8, (byte)0x43, (byte)0x29, (byte)0x49, 
 		                               (byte)0xAE, (byte)0x25, (byte)0x2F, (byte)0xA1, 
@@ -231,15 +234,15 @@ public class Cipherer {
 		}
 		
 		byte[] bytes = key.getEncoded();
-		System.out.println(hexify(bytes));
-		System.out.println(new String(bytes));
+		logger.info(hexify(bytes));
+		logger.info(new String(bytes));
 		SecretKeySpec spec = new SecretKeySpec(bytes, "DESede");
-		System.out.println(key.equals(spec)); //true
-		System.out.println(keyBytes[0] == (byte) -56); //true*/
+		logger.info(key.equals(spec)); //true
+		logger.info(keyBytes[0] == (byte) -56); //true*/
 		/******************************************************/
 		/*try {
 			String s = new String(DEFAULT_KEY_BYTES);
-			System.out.println("Key Bytes = <" + s + ">");
+			logger.info("Key Bytes = <" + s + ">");
 			
 			byte[] array = s.getBytes();
 			StringBuffer buf = new StringBuffer();
@@ -249,15 +252,15 @@ public class Cipherer {
 	            buf.append(array[i]);
 	        }
 	       
-			System.out.println("Key Bytes = <" +  buf.toString()+ ">");
+			logger.info("Key Bytes = <" +  buf.toString()+ ">");
 			
 			String myKey = "0xC8 0x43 0x29 0x49 0xAE 0x25 0x2F 0xA1 0xC1 0xF2 0xC8 " +
 					       "0xD9 0x31 0x01 0x2C  0x52 0x54 0x0B 0x5E 0xEA 0x9E 0x37 0xA8 0x61";
 			
 			Cipherer c = new Cipherer();
 			c.setKeyBytes(myKey, false);
-			System.out.println();
-			System.out.println("Equals = " + s.equals(new String(c.keyBytes)));
+			logger.info();
+			logger.info("Equals = " + s.equals(new String(c.keyBytes)));
 			
 			test(args);
 		}
@@ -271,29 +274,29 @@ public class Cipherer {
 		cip.init();
 		try{
 			passwd = password.getBytes("UTF-8");
-			System.out.println("passwd = " + new String(passwd) + " " + new String(passwd, "UTF-8"));
+			logger.info("passwd = " + new String(passwd) + " " + new String(passwd, "UTF-8"));
 			
 			byte[] encoded = cip.encode(passwd);
-			System.out.println("Encoded = " + new String(encoded));
+			logger.info("Encoded = " + new String(encoded));
 			
 			String hex = hexify(encoded);
-			System.out.println("Hexified bytes= " + hex);
+			logger.info("Hexified bytes= " + hex);
 			
 			byte[] dehex = dehexify(hex);
-			System.out.println("Dehexify = " + new String(dehex));
+			logger.info("Dehexify = " + new String(dehex));
 			
-			System.out.println("valid = " + new String(encoded).equals(new String(dehex)));
+			logger.info("valid = " + new String(encoded).equals(new String(dehex)));
 			
 			byte[] decoded = cip.decode(dehex);
-			System.out.println("Decoded = " + new String(decoded));
+			logger.info("Decoded = " + new String(decoded));
 			
-			System.out.println("valid decode = " + new String(decoded).equals(password));
+			logger.info("valid decode = " + new String(decoded).equals(password));
 			
 			String en = cip.encode(password);
-			System.out.println("String encoded: " + en);
+			logger.info("String encoded: " + en);
 			String de = cip.decode(en);
-			System.out.println("String decoded: " + de);
-			System.out.println("string decoded = " + new String(de).equals(password));
+			logger.info("String decoded: " + de);
+			logger.info("string decoded = " + new String(de).equals(password));
 		} catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -313,7 +316,7 @@ public class Cipherer {
 						"-e      encrypts password" ;
 		
 		if (args.length < 2 || args[0] == null || args[1] == null) {
-			System.out.println(usage);
+			logger.info(usage);
 			return;
 		}
 		Cipherer cip = new Cipherer();
@@ -323,17 +326,17 @@ public class Cipherer {
 		String password = args[1];
 		if (option.equals("-d")) {
 			String de = cip.decode(password);
-			System.out.println("The decoded password for <" + password + "> is <" + de+ ">");
-			System.out.println("The re-encoded password for <" + password + "> is <" + cip.encode(de)+ ">");
+			logger.info("The decoded password for <" + password + "> is <" + de+ ">");
+			logger.info("The re-encoded password for <" + password + "> is <" + cip.encode(de)+ ">");
 		} 
 		else if (option.equals("-e")) {
 			String en = cip.encode(password);
-			System.out.println("The encoded password for <" + password + "> is <" + en+ ">");
-			System.out.println("The re-decoded password for <" + password + "> is <" + cip.decode(en)+ ">");
+			logger.info("The encoded password for <" + password + "> is <" + en+ ">");
+			logger.info("The re-decoded password for <" + password + "> is <" + cip.decode(en)+ ">");
 		}
 		else {
-			System.out.println("Unknown option: <" + option + ">");
-			System.out.println(usage);
+			logger.info("Unknown option: <" + option + ">");
+			logger.info(usage);
 			return;
 		}
 		

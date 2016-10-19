@@ -1,5 +1,6 @@
 package com.vaannila.cipher;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.providers.encoding.PasswordEncoder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -10,7 +11,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
  */
 
 public class PasswordCipherer implements PasswordEncoder{
-	
+	private static final Logger logger = Logger.getLogger(PasswordCipherer.class);
 	
     //singleton self
     private static PasswordCipherer instance = null;
@@ -53,7 +54,7 @@ public class PasswordCipherer implements PasswordEncoder{
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("testing ...");
+		logger.info("testing ...");
 		PasswordCipherer pc = getInstance();
     	pc.initCipherer();
     	pc.setAllowEncoding(Boolean.TRUE);
@@ -62,7 +63,7 @@ public class PasswordCipherer implements PasswordEncoder{
     	
     	String encPwd = pc.encodePassword("Regular");
     	
-    	System.out.println(encPwd);
+    	logger.info(encPwd);
 	}
 	
 	public static String getEncryptedString(String rawString) {

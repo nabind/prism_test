@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import oracle.jdbc.OracleTypes;
 
 import com.vaannila.TO.StudentDetailsTO;
@@ -13,7 +15,8 @@ public class SupportDAOImpl {
 	
 	static JDCConnectionDriver driver = null;
 	static String TASC_DATA_SOURCE = "jdbc:jdc:tasc";
-
+	private static final Logger logger = Logger.getLogger(SupportDAOImpl.class);
+	
 	/**
 	 * @author Abir
 	 * Unlock the schedule for selected sub-test of a specific student
@@ -21,7 +24,7 @@ public class SupportDAOImpl {
 	 */
 	
 	public String unlockStudnet(StudentDetailsTO studentTO, boolean undo) throws Exception {
-		System.out.println("Enter: unlockStudnet()");
+		logger.info("Enter: unlockStudnet()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -36,7 +39,7 @@ public class SupportDAOImpl {
 			else
 				query = "{call PKG_FILE_TRACKING_SUPPORT.SP_UNLOCK_STUDENT_SCHE_UNDO(?,?,?,?)}";
 			
-			System.out.println("unlock query: "+query);
+			logger.info("unlock query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, studentTO.getUuid());
@@ -50,7 +53,7 @@ public class SupportDAOImpl {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				errorMessage = "Student has been unlocked";
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -60,7 +63,7 @@ public class SupportDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: unlockStudnet() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: unlockStudnet() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return errorMessage;
 	}
@@ -72,7 +75,7 @@ public class SupportDAOImpl {
 	 */
 	
 	public String invalidateSch(StudentDetailsTO studentTO, boolean undo) throws Exception {
-		System.out.println("Enter: invalidateSch()");
+		logger.info("Enter: invalidateSch()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -87,7 +90,7 @@ public class SupportDAOImpl {
 			else
 				query = "{call PKG_FILE_TRACKING_SUPPORT.SP_INVALIDATE_SCHEDULE_UNDO(?,?,?,?)}";
 			
-			System.out.println("invalidate schedule query: "+query);
+			logger.info("invalidate schedule query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, studentTO.getUuid());
@@ -101,7 +104,7 @@ public class SupportDAOImpl {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				errorMessage = "Student scheduled has been invalidated";
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -111,7 +114,7 @@ public class SupportDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: invalidateSch() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: invalidateSch() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return errorMessage;
 	}
@@ -123,7 +126,7 @@ public class SupportDAOImpl {
 	 */
 	
 	public String invalidate(StudentDetailsTO studentTO, boolean undo) throws Exception {
-		System.out.println("Enter: invalidate()");
+		logger.info("Enter: invalidate()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -138,7 +141,7 @@ public class SupportDAOImpl {
 			else
 				query = "{call PKG_FILE_TRACKING_SUPPORT.SP_INVALIDATE_STUDENT_UNDO(?,?,?,?)}";
 			
-			System.out.println("invalidate student query: "+query);
+			logger.info("invalidate student query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, studentTO.getUuid());
@@ -152,7 +155,7 @@ public class SupportDAOImpl {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				errorMessage = "Student has been invalidated";
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -162,7 +165,7 @@ public class SupportDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: invalidate() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: invalidate() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return errorMessage;
 	}
@@ -175,7 +178,7 @@ public class SupportDAOImpl {
 	 */
 	
 	public String deleteStudent(StudentDetailsTO studentTO) throws Exception {
-		System.out.println("Enter: deleteStudent()");
+		logger.info("Enter: deleteStudent()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -186,7 +189,7 @@ public class SupportDAOImpl {
 	
 			String query = "{call PKG_FILE_TRACKING_SUPPORT.SP_DELETE_STUDENT(?,?)}";
 						
-			System.out.println("delete student query: "+query);
+			logger.info("delete student query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, studentTO.getStudentBioId());
@@ -198,7 +201,7 @@ public class SupportDAOImpl {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				errorMessage = "Student has been deleted";
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -208,7 +211,7 @@ public class SupportDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: deleteStudent() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: deleteStudent() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return errorMessage;
 	}

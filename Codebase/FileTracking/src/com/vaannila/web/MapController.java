@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,6 +24,7 @@ import com.vaannila.TO.TASCProcessTO;
 
 @Controller
 public class MapController {
+	private static final Logger logger = Logger.getLogger(MapController.class);
 	
 	String jsonStr = "";
 	/**
@@ -35,10 +37,10 @@ public class MapController {
 	@RequestMapping("/process/mapProcess.htm")
 	public ModelAndView tascProcess(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: mapProcess()");
+		logger.info("Enter: mapProcess()");
 		try {
 			String adminid = request.getParameter("adminid");
-			System.out.println("adminid = " + adminid);
+			logger.info("adminid = " + adminid);
 			if(adminid == null) {
 				adminid = (String) request.getSession().getAttribute("adminid");
 			} else {
@@ -46,9 +48,9 @@ public class MapController {
 			}
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			MapDAOImpl stageDao = new MapDAOImpl();
-			System.out.println("getting processes...");
+			logger.info("getting processes...");
 			List<TASCProcessTO> processes = stageDao.getProcess(null);
-			System.out.println("got processes successfully");
+			logger.info("got processes successfully");
 			request.getSession().setAttribute("mapProcess", processes);
 			convertProcessToJson(processes);
 			
@@ -60,14 +62,14 @@ public class MapController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Exit: mapProcess()");
+		logger.info("Exit: mapProcess()");
 		return new ModelAndView("mapProcess", "message", jsonStr);
 	}
 	
 	@RequestMapping("/process/searchMap.htm")
 	public ModelAndView searchMap(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		logger.info("process method called");
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			SearchProcess process = new SearchProcess();
@@ -96,20 +98,20 @@ public class MapController {
 	@RequestMapping("/process/getErrorStudents.htm")
 	public @ResponseBody String getErrorStudents(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: getErrorStudents()");
+		logger.info("Enter: getErrorStudents()");
 		try {
 			String adminid = request.getParameter("adminid");
-			System.out.println("adminid = " + adminid);
+			logger.info("adminid = " + adminid);
 			if(adminid == null) {
 				adminid = (String) request.getSession().getAttribute("adminid");
 			} else {
 				request.getSession().setAttribute("adminid", adminid);
 			}
 			MapDAOImpl stageDao = new MapDAOImpl();
-			System.out.println("getting processes...");
+			logger.info("getting processes...");
 			String taskId = request.getParameter("taskId");
 			List<StudentDetailsTO> students = stageDao.getStudentDetails(taskId);
-			System.out.println("got processes successfully");
+			logger.info("got processes successfully");
 			request.getSession().setAttribute("errorStudents", students);
 			convertProcessToJson(students);
 			
@@ -118,7 +120,7 @@ public class MapController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Exit: getErrorStudents()");
+		logger.info("Exit: getErrorStudents()");
 		return null;
 	}
 	
@@ -152,7 +154,7 @@ public class MapController {
 			response.setContentType("text/plain");
 			response.getWriter().write(processLog);
 		} catch (Exception e) {
-			System.out.println("Failed to get log");
+			logger.error("Failed to get log");
 			e.printStackTrace();
 		}
 		return null;
@@ -161,7 +163,7 @@ public class MapController {
 	@RequestMapping("/process/mapSearch.htm")
 	public ModelAndView mapSearch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("view method called");
+		logger.info("view method called");
 		String adminid = request.getParameter("adminid");
 		if(adminid != null) {
 			request.getSession().setAttribute("adminid", adminid);

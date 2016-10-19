@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.digester.Substitutor;
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -41,6 +42,8 @@ import com.vaannila.DAO.SupportDAOImpl;
 @Controller
 public class TascController {
 	
+	private static final Logger logger = Logger.getLogger(TascController.class);
+	
 	String jsonStr = "";
 	/**
 	 * This method is to get all processes in datatable
@@ -52,10 +55,10 @@ public class TascController {
 	@RequestMapping("/process/tascProcess.htm")
 	public ModelAndView tascProcess(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: tascProcess()");
+		logger.info("Enter: tascProcess()");
 		try {
 			String adminid = request.getParameter("adminid");
-			System.out.println("adminid = " + adminid);
+			logger.info("adminid = " + adminid);
 			if(adminid == null) {
 				adminid = (String) request.getSession().getAttribute("adminid");
 			} else {
@@ -63,36 +66,36 @@ public class TascController {
 			}
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			TascDAOImpl stageDao = new TascDAOImpl();
-			System.out.println("getting processes...");
+			logger.info("getting processes...");
 			List<TASCProcessTO> processes = stageDao.getProcess(null);
-			System.out.println("got processes successfully");
+			logger.info("got processes successfully");
 			request.getSession().setAttribute("tascProcess", processes);
 			convertProcessToJson(processes);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Exit: tascProcess()");
+		logger.info("Exit: tascProcess()");
 		return new ModelAndView("tascProcess", "message", jsonStr);
 	}
 	
 	@RequestMapping("/process/testElementIdList.htm")
 	public @ResponseBody String testElementIdList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: testElementIdList()");
+		logger.info("Enter: testElementIdList()");
 		String processId = request.getParameter("processId");
-		System.out.println("processId=" + processId);
+		logger.info("processId=" + processId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			List<TASCProcessTO> testElementIdList = stageDao.getTestElementIdList(processId);
-			System.out.println("testElementIdList=" + testElementIdList);
+			logger.info("testElementIdList=" + testElementIdList);
 			response.setContentType("application/json");
 			response.getWriter().write(convertToJson(testElementIdList));
 		} catch (Exception e) {
-			System.out.println("Failed to get testElementIdList, processId=" + processId);
+			logger.error("Failed to get testElementIdList, processId=" + processId);
 			response.setContentType("text/plain");
 			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: testElementIdList()");
+		logger.info("Exit: testElementIdList()");
 		return null;
 	}
 	
@@ -113,26 +116,26 @@ public class TascController {
 	
 	@RequestMapping("/process/getStudentDetails.htm")
 	public @ResponseBody String getStudentDetails(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: getStudentDetails()");
+		logger.info("Enter: getStudentDetails()");
 		String processId = request.getParameter("processId");
 		String testElementId = request.getParameter("testElementId");
-		System.out.println("processId=" + processId);
-		System.out.println("testElementId=" + testElementId);
+		logger.info("processId=" + processId);
+		logger.info("testElementId=" + testElementId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			Map<String, String> studentDetailsMap = stageDao.getStudentDetails(processId, testElementId);
-			System.out.println("Map = " + studentDetailsMap);
+			logger.info("Map = " + studentDetailsMap);
 			String studentDetailsJson = Utils.mapToJson(studentDetailsMap);
-			System.out.println("Json = " + studentDetailsJson);
+			logger.info("Json = " + studentDetailsJson);
 			response.setContentType("text/plain");
 			response.getWriter().write(studentDetailsJson);
 		} catch (Exception e) {
-			System.out.println("Failed to get StudentDetails, processId=" + processId + ", testElementId=" + testElementId);
+			logger.error("Failed to get StudentDetails, processId=" + processId + ", testElementId=" + testElementId);
 			response.setContentType("text/plain");
 			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: getStudentDetails()");
+		logger.info("Exit: getStudentDetails()");
 		return null;
 	}
 	
@@ -149,7 +152,7 @@ public class TascController {
 			response.setContentType("text/plain");
 			response.getWriter().write(processLog);
 		} catch (Exception e) {
-			System.out.println("Failed to get log");
+			logger.error("Failed to get log");
 			e.printStackTrace();
 		}
 		return null;
@@ -158,7 +161,7 @@ public class TascController {
 	@RequestMapping("/process/tascSearch.htm")
 	public ModelAndView tascSearch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("view method called");
+		logger.info("view method called");
 		String adminid = request.getParameter("adminid");
 		if(adminid != null) {
 			request.getSession().setAttribute("adminid", adminid);
@@ -178,7 +181,7 @@ public class TascController {
 	@RequestMapping("/process/searchTasc.htm")
 	public ModelAndView searchTasc(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		logger.info("process method called");
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			SearchProcess process = new SearchProcess();
@@ -203,7 +206,7 @@ public class TascController {
 	@RequestMapping("/process/searchTascGraph.htm")
 	public ModelAndView searchTascGraph(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		logger.info("process method called");
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			TascDAOImpl stageDao = new TascDAOImpl();
@@ -307,7 +310,7 @@ public class TascController {
 	@RequestMapping("/process/tascSearchEr.htm")
 	public ModelAndView tascSearchEr(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: tascSearchEr()");
+		logger.info("Enter: tascSearchEr()");
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		return new ModelAndView("tascSearchEr", "message", "");
 	}
@@ -323,7 +326,7 @@ public class TascController {
 	@RequestMapping("/process/tascSearchErNew.htm")
 	public ModelAndView tascSearchErNew(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: tascSearchErNew()");
+		logger.info("Enter: tascSearchErNew()");
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		return new ModelAndView("tascSearchErNew", "message", "");
 	}
@@ -339,7 +342,7 @@ public class TascController {
 	@RequestMapping("/process/searchTascErNew.htm")
 	public ModelAndView searchTascErNew(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchTascErNew()");
+		logger.info("Enter: searchTascErNew()");
 		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;
@@ -386,7 +389,7 @@ public class TascController {
 	 */
 	@RequestMapping(value = "/process/searchTascErPaging.htm", method = RequestMethod.GET)
 	public @ResponseBody String searchTascErPaging(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchTascErPaging()");
+		logger.info("Enter: searchTascErPaging()");
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("tascRequestTO");
     	String searchParameter = request.getParameter("sSearch");
@@ -433,24 +436,24 @@ public class TascController {
 	 */
 	@RequestMapping("/process/getStudentHist.htm")
 	public @ResponseBody String getStudentHist(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: getStudentHist()");
+		logger.info("Enter: getStudentHist()");
 		String erSsHistId = request.getParameter("erSsHistId");
-		System.out.println("erSsHistId=" + erSsHistId);
+		logger.info("erSsHistId=" + erSsHistId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			Map<String, String> studentDetailsMap = stageDao.getStudentHist(erSsHistId);
-			System.out.println("Map = " + studentDetailsMap);
+			logger.info("Map = " + studentDetailsMap);
 			String studentDetailsJson = Utils.mapToJson(studentDetailsMap);
-			System.out.println("Json = " + studentDetailsJson);
+			logger.info("Json = " + studentDetailsJson);
 			response.setContentType("text/plain");
 			response.getWriter().write(studentDetailsJson);
 		} catch (Exception e) {
-			System.out.println("Failed to get StudentDetails, erSsHistId=" + erSsHistId);
+			logger.error("Failed to get StudentDetails, erSsHistId=" + erSsHistId);
 			response.setContentType("text/plain");
 			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: getStudentHist()");
+		logger.info("Exit: getStudentHist()");
 		return null;
 	}
 	
@@ -463,25 +466,25 @@ public class TascController {
 	 */
 	@RequestMapping("/process/getMoreInfo.htm")
 	public @ResponseBody String getMoreInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: getMoreInfo()");
+		logger.info("Enter: getMoreInfo()");
 		String erExcdId = request.getParameter("erExcdId");
-		System.out.println("erExcdId=" + erExcdId);
+		logger.info("erExcdId=" + erExcdId);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			Map<String, String> moreInfoMap = stageDao.getMoreInfo(erExcdId);
-			System.out.println("Map = " + moreInfoMap);
+			logger.info("Map = " + moreInfoMap);
 			String moreInfoJson = Utils.mapToJson(moreInfoMap);
-			System.out.println("Json = " + moreInfoJson);
+			logger.info("Json = " + moreInfoJson);
 			response.setContentType("text/plain");
 			response.getWriter().write(moreInfoJson);
 			
 		} catch (Exception e) {
-			System.out.println("Failed to get More Info, erExcdId=" + erExcdId);
+			logger.error("Failed to get More Info, erExcdId=" + erExcdId);
 			response.setContentType("text/plain");
 			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: getMoreInfo()");
+		logger.info("Exit: getMoreInfo()");
 		return null;
 	}
 	
@@ -504,7 +507,7 @@ public class TascController {
 			response.setContentType("text/plain");
 			response.getWriter().write(errorLog);
 		} catch (Exception e) {
-			System.out.println("Failed to get log");
+			logger.error("Failed to get log");
 			e.printStackTrace();
 		}
 		return null;
@@ -520,7 +523,7 @@ public class TascController {
 	@RequestMapping("/process/downloadCsv.htm")
 	public void downloadCsv(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: downloadCsv()");
+		logger.info("Enter: downloadCsv()");
 		long t1 = System.currentTimeMillis();
 		String fileName = "data.csv";
 		String contentType = "application/octet-stream";
@@ -606,21 +609,21 @@ public class TascController {
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
 			buffer.append(data);
-			System.out.println("buffer: "+buffer);
+			logger.info("buffer: "+buffer);
 			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
 		} catch (Exception e) {
-			System.out.println("Failed to download the file");
+			logger.error("Failed to download the file");
 			e.printStackTrace();
 		}finally{
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: downloadCsv() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: downloadCsv() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 	
 	@RequestMapping("/process/combined.htm")
 	public ModelAndView searchCombined(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchCombined()");
+		logger.info("Enter: searchCombined()");
 		String showCommentFlag = "false"; 
 		String savedComments = ""; 
 		String uuid = "";
@@ -648,7 +651,7 @@ public class TascController {
 					studentTO.setStudentBioId(studentBiodId);
 					//Delete student code goes here with bio id
 					jsonStr = supportDao.deleteStudent(studentTO);
-					System.out.println("Student "+studentBiodId+ " has been deleted");
+					logger.info("Student "+studentBiodId+ " has been deleted");
 				}
 				if(action!=null && action.equals("invalidate")){
 					String inUuid = request.getParameter("inUuid");
@@ -660,7 +663,7 @@ public class TascController {
 					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate student code goes here with uuid
 					jsonStr = supportDao.invalidate(studentTO,false);
-					System.out.println("Student "+process.getUuid()+ " has been invalidate");
+					logger.info("Student "+process.getUuid()+ " has been invalidate");
 				}
 				if(action!=null && action.equals("undoInvalidate")){
 					String inUuid = request.getParameter("inUuid");
@@ -672,7 +675,7 @@ public class TascController {
 					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate student code goes here with uuid
 					jsonStr = supportDao.invalidate(studentTO,true);
-					System.out.println("Student "+process.getUuid()+ " has been invalidate");
+					logger.info("Student "+process.getUuid()+ " has been invalidate");
 				}
 				if(action!=null && action.equals("invalidateSch")){
 					String insUuid = request.getParameter("insUuid");
@@ -684,7 +687,7 @@ public class TascController {
 					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate schedule code goes here with uuid
 					jsonStr = supportDao.invalidateSch(studentTO,false);
-					System.out.println("Student "+insUuid+ " with erTestSchId " +erTestSchId+" has been invalidate");
+					logger.info("Student "+insUuid+ " with erTestSchId " +erTestSchId+" has been invalidate");
 				}
 				if(action!=null && action.equals("undoInvalidateSch")){
 					String insUuid = request.getParameter("insUuid");
@@ -696,7 +699,7 @@ public class TascController {
 					studentTO.setErTestSchId(erTestSchId);
 					//Invalidate schedule code goes here with uuid
 					jsonStr = supportDao.invalidateSch(studentTO,true);
-					System.out.println("Student "+insUuid+ " with schedule " +erTestSchId+" has been invalidate");
+					logger.info("Student "+insUuid+ " with schedule " +erTestSchId+" has been invalidate");
 				}
 				if(action!=null && action.equals("unlock")){
 					String unUuid = request.getParameter("unUuid");
@@ -708,7 +711,7 @@ public class TascController {
 					studentTO.setScheduleId(scheduleId);
 					//Unlock student code goes here with uuid
 					jsonStr = supportDao.unlockStudnet(studentTO,false);
-					System.out.println("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
+					logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
 				}
 				if(action!=null && action.equals("undoUnlock")){
 					String unUuid = request.getParameter("unUuid");
@@ -720,7 +723,7 @@ public class TascController {
 					studentTO.setScheduleId(scheduleId);
 					//Unlock student code goes here with uuid
 					jsonStr = supportDao.unlockStudnet(studentTO,true);
-					System.out.println("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
+					logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
 				}
 				
 				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
@@ -782,13 +785,13 @@ public class TascController {
 	 */
 	@RequestMapping("/process/saveComments.htm")
 	public @ResponseBody String saveComments (HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: saveComments()");
+		logger.info("Enter: saveComments()");
 		String comments = request.getParameter("comments");
 		String uuid = request.getParameter("uuId");
 		String stateCode = request.getParameter("stateCode");
-		System.out.println("comments=" + comments);
-		System.out.println("uuId=" + uuid);
-		System.out.println("stateCode=" + stateCode);
+		logger.info("comments=" + comments);
+		logger.info("uuId=" + uuid);
+		logger.info("stateCode=" + stateCode);
 		try {
 			TascDAOImpl stageDao = new TascDAOImpl();
 			StudentDetailsTO studentDetailsTO = new StudentDetailsTO();
@@ -807,16 +810,16 @@ public class TascController {
 			} else {
 				status = "Comments save failed as no match found";
 			}
-			System.out.println("Json = " + status);
+			logger.info("Json = " + status);
 			response.setContentType("text/plain");
 			response.getWriter().write(status);
 		} catch (Exception e) {
-			System.out.println("Failed to save comments=" + comments);
+			logger.error("Failed to save comments=" + comments);
 			response.setContentType("text/plain");
 			response.getWriter().write("Error");
 			e.printStackTrace();
 		}
-		System.out.println("Exit: saveComments()");
+		logger.info("Exit: saveComments()");
 		return null;
 	}
 	
@@ -831,7 +834,7 @@ public class TascController {
 	@RequestMapping("/process/completenessCheckSearch.htm")
 	public ModelAndView completenessCheckSearch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: completenessCheckSearch()");
+		logger.info("Enter: completenessCheckSearch()");
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		return new ModelAndView("completenessCheckSearch", "message", "");
 	}
@@ -847,7 +850,7 @@ public class TascController {
 	@RequestMapping("/process/searchCompletenessCheck.htm")
 	public ModelAndView searchCompletenessCheck(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchCompletenessCheck()");
+		logger.info("Enter: searchCompletenessCheck()");
 		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;
@@ -888,7 +891,7 @@ public class TascController {
 	 */
 	@RequestMapping(value = "/process/coCheckResult.htm", method = RequestMethod.GET)
 	public @ResponseBody String coCheckResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: coCheckResult()");
+		logger.info("Enter: coCheckResult()");
 		long t1 = System.currentTimeMillis();
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("coCheckTO");
@@ -925,7 +928,7 @@ public class TascController {
 		response.setContentType("application/json");
 		response.getWriter().write(jsonStr);
 		long t2 = System.currentTimeMillis();
-		System.out.println("Exit: coCheckResult() took time: " + String.valueOf(t2 - t1) + "ms");
+		logger.info("Exit: coCheckResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		return null;			
 	}
 	
@@ -939,7 +942,7 @@ public class TascController {
 	@RequestMapping("/process/downloadCsvWin.htm")
 	public void downloadCsvWin(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: downloadCsvWin()");
+		logger.info("Enter: downloadCsvWin()");
 		long t1 = System.currentTimeMillis();
 		String fileName = "dataWin.csv";
 		String contentType = "application/octet-stream";
@@ -987,14 +990,14 @@ public class TascController {
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
 			buffer.append(data);
-			System.out.println("buffer: "+buffer);
+			logger.info("buffer: "+buffer);
 			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
 		} catch (Exception e) {
-			System.out.println("Failed to download the file");
+			logger.error("Failed to download the file");
 			e.printStackTrace();
 		}finally{
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: downloadCsvWin() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: downloadCsvWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 	
@@ -1078,8 +1081,8 @@ public class TascController {
 			
 			TascDAOImpl stageDao = new TascDAOImpl();
 			List<Map<String, String>> reviewProcess = stageDao.getReviewResult(process);
-			System.out.println("result size: " + reviewProcess!=null? reviewProcess.size() : "null");
-			System.out.println(listmapToJsonString(reviewProcess, process));
+			logger.info("result size: " + reviewProcess!=null? reviewProcess.size() : "null");
+			logger.info(listmapToJsonString(reviewProcess, process));
 			response.setContentType("application/json");
 			response.getWriter().write(listmapToJsonString(reviewProcess, process));
 		} catch (Exception e) {
@@ -1140,7 +1143,7 @@ public class TascController {
 			String message = stageDao.saveReviewScore(paramMap);
 			Gson gson = new GsonBuilder().setPrettyPrinting().create();
 			String jsonStr = gson.toJson(message);
-			System.out.println("jsonStr:"+jsonStr);
+			logger.info("jsonStr:"+jsonStr);
 			response.setContentType("application/json");
 			response.getWriter().write(jsonStr);
 		} catch (Exception e) {
@@ -1160,7 +1163,7 @@ public class TascController {
 	@RequestMapping("/process/trackErrorSearch.htm")
 	public ModelAndView trackErrorSearch(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: trackErrorSearch()");
+		logger.info("Enter: trackErrorSearch()");
 		if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 		return new ModelAndView("trackErrorSearch", "message", "");
 	}
@@ -1176,7 +1179,7 @@ public class TascController {
 	@RequestMapping("/process/searchError.htm")
 	public ModelAndView searchError(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: searchError()");
+		logger.info("Enter: searchError()");
 		ModelAndView modelAndView = new ModelAndView("welcome", "message", "Please login.");
 		try {
 			if(!UserController.checkLogin(request)) return modelAndView;
@@ -1220,7 +1223,7 @@ public class TascController {
 	 */
 	@RequestMapping(value = "/process/errorResult.htm", method = RequestMethod.GET)
 	public @ResponseBody String errorResult(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		System.out.println("Enter: errorResult()");
+		logger.info("Enter: errorResult()");
 		long t1 = System.currentTimeMillis();
 		TascDAOImpl stageDao = new TascDAOImpl();
     	SearchProcess process = (SearchProcess)request.getSession().getAttribute("errorTrackingTO");
@@ -1257,7 +1260,7 @@ public class TascController {
 		response.setContentType("application/json");
 		response.getWriter().write(jsonStr);
 		long t2 = System.currentTimeMillis();
-		System.out.println("Exit: errorResult() took time: " + String.valueOf(t2 - t1) + "ms");
+		logger.info("Exit: errorResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		return null;			
 	}
 	
@@ -1271,7 +1274,7 @@ public class TascController {
 	@RequestMapping("/process/downloadCsvGhi.htm")
 	public void downloadCsvGhi(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: downloadCsvGhi()");
+		logger.info("Enter: downloadCsvGhi()");
 		long t1 = System.currentTimeMillis();
 		String fileName = "dataGhi.csv";
 		String contentType = "application/octet-stream";
@@ -1322,14 +1325,14 @@ public class TascController {
 			
 			String data = StringUtils.collectionToDelimitedString(studentDetailsTOList, "\n");
 			buffer.append(data);
-			System.out.println("buffer: "+buffer);
+			logger.info("buffer: "+buffer);
 			Utils.browserDownload(response, buffer.toString().getBytes(), fileName, contentType);
 		} catch (Exception e) {
-			System.out.println("Failed to download the file");
+			logger.error("Failed to download the file");
 			e.printStackTrace();
 		}finally{
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: downloadCsvGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: downloadCsvGhi() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 	}
 	
@@ -1347,8 +1350,8 @@ public class TascController {
 			
 			TascDAOImpl stageDao = new TascDAOImpl();
 			List<Map<String, String>> historyData = stageDao.getHistoryResult(process);
-			System.out.println("result size: " + historyData!=null? historyData.size() : "null");
-			System.out.println(listmapToJsonString(historyData, process));
+			logger.info("result size: " + historyData!=null? historyData.size() : "null");
+			logger.info(listmapToJsonString(historyData, process));
 			response.setContentType("application/json");
 			response.getWriter().write(listmapToJsonString(historyData, process));
 		} catch (Exception e) {
@@ -1366,7 +1369,7 @@ public class TascController {
 	@RequestMapping("/process/combinedGhi.htm")
 	public ModelAndView combinedGhi(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("Enter: combinedGhi()");
+		logger.info("Enter: combinedGhi()");
 		SearchProcess process = new SearchProcess();
 		try {
 			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
