@@ -72,7 +72,7 @@ public class AESEncryptionDecryption {
 		return new String(bytesDecrypted);
 	}	
 	
-	public static void main(String args[]){
+	/*public static void main(String args[]){
 		AESEncryptionDecryption c = new AESEncryptionDecryption();
 		try {
 			System.out.println(c.encryptText("123456789", "tasc-dev-test-encrypt"));
@@ -80,6 +80,6 @@ public class AESEncryptionDecryption {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 }
