@@ -26,4 +26,4 @@ The aesDecryption properties file needs to be kept outside of the jar and parall
 
 Create an Runnable jar file by Export as Runnable jar file.
 
-How to call for command prompt: %JAVA_HOME%/bin/java -jar AESDecryptionUtility.jar <XML_FILE_NAME.xml>
+How to call for command prompt: %JAVA_HOME%/bin/java -jar AESDecryptionUtility.jar <XML_FILE_NAME.xml>  <XSD_FILE_NAME.xsd> 
