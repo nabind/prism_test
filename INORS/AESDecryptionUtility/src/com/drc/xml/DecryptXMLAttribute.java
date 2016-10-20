@@ -3,7 +3,6 @@ package com.drc.xml;
 import com.drc.aes.AESEncryptionDecryption;
 import com.drc.util.ApplicationConstants;
 import com.drc.util.PropertyLoader;
-import com.drc.util.XSDValidator;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,25 +29,26 @@ public class DecryptXMLAttribute {
 
 	private static final Logger logger = Logger.getLogger(DecryptXMLAttribute.class);
 	
-	public static Properties prop = PropertyLoader.loadProperties (ApplicationConstants.AES_DECRYPTION_PROPERTIES_FILE);
+	public static Properties prop = null;
 	
 	public static void main(String[] args) {
-		boolean isValid= false;
 		try {
+			prop = PropertyLoader.loadProperties(ApplicationConstants.AES_DECRYPTION_PROPERTIES_FILE);
 			initLogger();
 			if (args.length < 1) {
 				logger.error("Please provide XML file name");
+				System.exit(1);
 			} else {		
 				AESEncryptionDecryption aes = new AESEncryptionDecryption();			
 				
 				//get the xml file path from property file and append with the file name provided as input
 				String finalXmlFilePath = prop.getProperty(ApplicationConstants.XML_FILE_PATH_KEY);
 				if (finalXmlFilePath != null) {
-					finalXmlFilePath = finalXmlFilePath + "\\" + args[0];
+					finalXmlFilePath = finalXmlFilePath + File.separator + args[0];
 				}
 				
 				//this is the decrypted file which will be FTP for TX and then it will be renamed to remove .DECRYPTED suffix.
-				String decryptedXMLFilePath = finalXmlFilePath.replace(".xml", ApplicationConstants.DECRYPTED_FILE_SUFFIX + ".xml");
+				String decryptedXMLFilePath = finalXmlFilePath + ApplicationConstants.DECRYPTED_FILE_SUFFIX;
 				
 				//get the encrypted attribute name which need to be decrypted under Demographic tag from properties file
 				String[] attrs = prop.getProperty(ApplicationConstants.DEMO_ENCRYPTED_ATTRIBUTE_KEY).split(",");
@@ -81,6 +81,14 @@ public class DecryptXMLAttribute {
 										logger.info("Decrypting the attribute : "+encryptedAttribute.getNodeName());
 										String decryptedValue = aes.decryptText(encryptedAttribute.getNodeValue(), prop.getProperty(ApplicationConstants.PRIVATEKEY_KEY));
 										
+										if (encryptedAttribute.getNodeName().equals(prop.get(ApplicationConstants.VALIDATE_SSN_ATTR_KEY))) {
+											decryptedValue = decryptedValue.replace("-", "");
+											if (decryptedValue.length() != 9) {
+												logger.error("Error occurred - SSN validation failed : Length is not 9");
+												System.exit(2);
+											}
+											logger.info("Validated the attribute : "+encryptedAttribute.getNodeName());
+										}
 										encryptedAttribute.setNodeValue(decryptedValue);
 									}
 								}
@@ -97,15 +105,6 @@ public class DecryptXMLAttribute {
 				DOMSource source = new DOMSource(doc);
 				StreamResult result = new StreamResult(new File(decryptedXMLFilePath));
 				transformer.transform(source, result);
-				
-				
-				isValid = XSDValidator.validateXMLSchema(prop.getProperty(ApplicationConstants.XSD_FILE) + "\\" + args[1],
-						decryptedXMLFilePath);
-				if(isValid){
-					logger.warn("XML validation success");
-				} else {
-					logger.warn("XML validation failed");
-				}
 				logger.info("Process complete");
 
 			}

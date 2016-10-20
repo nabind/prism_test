@@ -9,9 +9,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
-import com.drc.util.ApplicationConstants;
-
-
 public class AESEncryptionDecryption {	
 	
 	private byte[] AES_Encrypt(byte[] bytesToBeEncrypted,byte[] passwordBytes) throws Exception{

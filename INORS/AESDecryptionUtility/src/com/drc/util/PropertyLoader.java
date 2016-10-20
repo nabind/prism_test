@@ -1,10 +1,10 @@
 package com.drc.util;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
@@ -19,7 +19,7 @@ public class PropertyLoader {
 	 * @param name
 	 * @return
 	 */
-	public static Properties loadProperties(final String name) {
+	/*public static Properties loadProperties(final String name) {
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		return loadProperties(name, loader);
 	}
@@ -81,7 +81,42 @@ public class PropertyLoader {
 					+ (ApplicationConstants.LOAD_AS_RESOURCE_BUNDLE ? "a resource bundle" : "a classloader resource"));
 		}
 		return result;
-	}
+	}*/
 	
+	
+	public static Properties loadProperties(String name) {
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		InputStream in = loader.getResourceAsStream(name);
+		Properties prop = null;
+		
+		//getting the properties file for local environment
+		if (in == null) {
+			try {
+				in = new FileInputStream(ApplicationConstants.LOCAL_AES_DECRYPTION_PROPERTIES_FILE);
+			} catch (FileNotFoundException e) {
+				prop = null;
+			}
+		}
+		if (in != null) {
+			prop = new Properties();
+			try {
+				prop.load(in);
+			} catch (IOException e) {
+				prop = null;
+				
+			}finally {
+				if (in != null)
+					try {
+						in.close();
+					} catch (Throwable ignore) {
+						logger.warn(ignore.getMessage());
+					}
+			}
+		}
+		if (prop == null) {
+			throw new IllegalArgumentException("Could not load properties file");
+		}
+		return prop;
+	}
 	
 }
