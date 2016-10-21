@@ -80,10 +80,11 @@ public class DecryptXMLAttribute {
 										logger.info("Decrypting the attributes of Demographic for Canditate id : "+candidateAttributes.getNamedItem(ApplicationConstants.CANDIDATE_ID_ATTRIBUTE).getNodeValue());
 										logger.info("Decrypting the attribute : "+encryptedAttribute.getNodeName());
 										String decryptedValue = aes.decryptText(encryptedAttribute.getNodeValue(), prop.getProperty(ApplicationConstants.PRIVATEKEY_KEY));
-										
+										String exactDecryptedValue = null;
 										if (encryptedAttribute.getNodeName().equals(prop.get(ApplicationConstants.VALIDATE_SSN_ATTR_KEY))) {
-											decryptedValue = decryptedValue.replace("-", "");
-											if (decryptedValue.length() != 9) {
+											/*need to remove - and leading/trailing/in between space for length check of SSN*/
+											exactDecryptedValue = decryptedValue.replace("-", "").replaceAll("\\s","");
+											if (exactDecryptedValue.length() != 9) {
 												logger.error("Error occurred - SSN validation failed : Length is not 9");
 												System.exit(2);
 											}
