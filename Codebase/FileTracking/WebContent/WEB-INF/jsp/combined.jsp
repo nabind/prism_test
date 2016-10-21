@@ -1,4 +1,5 @@
 <%@page import="com.vaannila.TO.StudentDetailsTO"%>
+<%@page import="com.vaannila.TO.StudentDetailsGhiTO"%>
 <%@page import="com.vaannila.TO.SearchProcess"%>
 <%@page import="javax.servlet.http.HttpServletRequest" %>
 <%@page import="com.vaannila.TO.OrgProcess" %>
@@ -8,6 +9,8 @@
 <%@page import="java.util.Properties" %>
 <%@page import="com.vaannila.util.PropertyFile" %>
 
+<link rel="stylesheet" href="css/coCheck.css" type="text/css"/>
+<link rel="stylesheet" href="css/demo.css" type="text/css">
 <link rel="stylesheet" href="css/highlight.css" type="text/css">
 <link rel="stylesheet" href="css/demo.css" type="text/css">
 <style>
@@ -42,6 +45,28 @@
 	
 <script type="text/javascript" charset="utf-8">
 	$(document).ready(function() {
+		oTable33 = $('#processGhi').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "full_numbers",
+			"sScrollX": '100%',
+			"aaSorting": [[ 10, "desc" ]],
+			"aoColumnDefs": [ 
+							  { "bVisible": false, "aTargets": [ 0 ] }
+							]
+		});
+		
+		oTable22 = $('#errorGhi').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "full_numbers",
+			"sScrollX": '100%',
+			"aaSorting": [[ 27, "desc" ]],
+			"aoColumnDefs": [ 
+							  { "bVisible": false, "aTargets": [ 0 ] },
+							  {'bSortable': false, 'aTargets':  [1]  },
+							  { "width": "30%", "aTargets":  [9] }
+							]
+		});
+		
 		oTable = $('#process').dataTable({
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
@@ -221,13 +246,21 @@
 							<td class="no-border">UUID:</td>
 							<td class="no-border"><input type="text" name="uuid" id="uuid" value="<% if(searchProcess.getUuid() != null) out.print( searchProcess.getUuid());  %>"></td>
 						</tr>
-						<tr>
+						<%-- <tr>
 							<td class="no-border">Test Element ID:</td>
 							<td class="no-border"><input type="text" name="testElementId" id="testElementId" value="<% if(searchProcess.getTestElementId() != null) out.print(searchProcess.getTestElementId()); %>"></td>
-						</tr>
+						</tr> --%>
 						<tr>
 							<td class="no-border">State Prefix:</td>
-							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>"></td>
+							<td class="no-border"><input type="text" name="stateCode" id="stateCode" value="<% if(searchProcess.getStateCode() != null) out.print(searchProcess.getStateCode()); %>">
+							<span style="color:red;">* 3 digit.</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="no-border">DRC Student ID (exact ID is needed):</td>
+							<td class="no-border"><input type="text" name="drcStudentId" id="drcStudentId" value="<% if(searchProcess.getDRCStudentId() != null) out.print(searchProcess.getDRCStudentId()); %>">
+							<span style="color:red;">* Only for GHI</span>
+							</td>
 						</tr>
 						<tr>
 							<td class="no-border"></td>
@@ -239,7 +272,7 @@
 		</div>
 		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 172px;float: right;">
 			<% if("false".equals(showCommentFlag)){ %>
-				<h3 style="padding-left: 10px;margin-top: 10px;">Comments </h3>
+				<h3 style="padding-left: 10px;margin-top: 10px;">Comments (only for DEF)</h3>
 				<div style="padding: 20px;color: red;">
 					Please provide 9 digit UUID and 3 character state prefix to fetch comments.
 				</div>
@@ -256,6 +289,169 @@
 	<div id="articlecontent">
 		<div id="accordion" style="margin-top:25px">
 			<!-- panel -->
+			<h3><u>GHI Forms ONLY</u></h3>
+			<h4>Data Compared to Operational (PRISM report data)</h4>
+			<table id="processGhi" width="100%">
+				<thead>
+					<tr>
+						<th>&nbsp;</th>
+						<th>DRC Student ID</th>
+						<th>State</th>
+						<th>Subtest</th>
+						<th>Form</th>
+						<th>Mode</th>
+						<th>Barcode</th>
+						<th>Status Code</th>
+						<th>SS</th>
+						<th>HSE</th>
+						<th>Score Date</th>
+						<th>TestElem ID</th>
+						<th>Name</th>
+						<th>UUID</th>
+						<th>Bio ID</th>
+						<th>State Prefix</th>
+						<th>Test Date</th>
+						<th>Test Center Code</th>
+						<th>Test Center Name</th>
+						<th>Document Id</th>
+						<th>Schedule Id</th>
+						<th>Tca Schedule Date</th>
+						<th>Test Language</th>
+					</tr>
+					</thead>
+				<tbody>
+			<% 
+			java.util.List<StudentDetailsTO> allProcess = (ArrayList) request.getAttribute("combinedGhiList");
+			int count=0;
+			if(allProcess != null) {
+			for(StudentDetailsTO process : allProcess) {
+				count++;
+			%>
+				<tr>
+					<td>&nbsp;</td>
+					<td><%=process.getDrcStudentId() %></td>
+					<td><%=process.getStateCode() %></td>
+					<td><%=process.getSubtestName() %></td>
+					<td><%=process.getForm() %></td>
+					<td><%=process.getSourceSystem() %></td>
+					<td><%=process.getBarcode() %></td>
+					<td><%=process.getStatusCode() %></td>
+					<td><%=process.getSs() %></td>
+					<td><%=process.getHse() %></td>
+					<td><%=process.getUpdatedDate() %></td>
+					<td><%=process.getTestElementId() %></td>
+					<td><%=process.getStudentName() %></td>
+					<td><%=process.getUuid() %></td>
+					<td><%=process.getStudentBioId() %></td>
+					<td><%=process.getLevel1OrgCode() %></td>
+					<td><%=process.getTestDate() %></td>
+					<td><%=process.getTestCenterCode() %></td>
+					<td><%=process.getTestCenterName()%></td>
+					<td><%=process.getDocumentId() %></td>
+					<td><%=process.getScheduleId() %></td>
+					<td><%=process.getTcaScheduleDate() %></td>
+					<td><%=process.getTestLanguage() %></td>
+				</tr>
+			<%}
+			}
+			%>
+			</tbody>
+			</table>
+			
+			<br/><br/>
+			<h4> Latest Error: </h4>
+			<table id="errorGhi" width="100%">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+					<th>Record Id</th>
+					<th>State Prefix</th>
+					<th>Test Mode</th>
+					<th>Student Name</th>
+					<th>Examinee ID (UUID)</th>
+					<th>DRC Student ID</th>
+					<th>Error Status</th>
+					<th>Barcode ID</th>
+					<th>Schedule ID</th>
+					<th>TCA Schedule Date</th>
+					<th>Date Test Taken</th>
+					<th>Form</th>
+					<th>Content Name</th>
+					<th>Content Test Code</th>
+					<th>Test Language</th>
+					<th>Litho Code</th>
+					<th>Scale Score</th>
+					<th>Content Score (NC)</th>
+					<th>Status Code for Content Area</th>
+					<th>Test Center Code</th>
+					<th>Test Center Name</th>
+					<th>Error Description</th>
+					<th>Last Updated Doc Date</th>
+					<th>Scanned/Process Date</th>
+					<th>Org Code Path</th>
+					<th>Prism Process Date</th>
+					<th>Doc ID</th>
+					<th>File Name</th>
+					<th>File Generation Date-Time</th>
+				</tr>
+				</thead>
+				<tbody>
+			<% 
+			java.util.List<StudentDetailsGhiTO> errorGhi = (ArrayList) request.getAttribute("errorGhi");
+			if(errorGhi != null) {
+			for(StudentDetailsGhiTO error : errorGhi) {
+			%>
+				<tr>
+					<td>&nbsp;</td>
+					<td style="padding-top: 12px;" nowrap>
+						<%if("CO".equals(error.getPrismProcessStatus())) { %>
+							<span class="completed" title="Completed"></span> 
+						<%} else {%>
+							<span class="error" title="Error"></span> 
+						<%} %>
+					</td>
+					<td><%=error.getRecordId() %></td>
+					<td><%=error.getStateCode() %></td>
+					<td><%=error.getTestMode() %></td>
+					<td><%=error.getStudentName() %></td>
+					<td><%=error.getExamineeID() %></td>
+					<td><%=error.getDrcStudentID() %></td>
+					<td><%=error.getPrismProcessStatus() %></td>
+					<td><%=error.getBarcodeID() %></td>
+					<td><%=error.getScheduleID() %></td>
+					<td><%=error.getTcaScheduleDate() %></td>
+					<td><%=error.getDateTestTaken() %></td>
+					<td><%=error.getForm() %></td>
+					<td><%=error.getContentName() %></td>
+					<td><%=error.getContentTestCode() %></td>
+					<td><%=error.getTestLanguage() %></td>
+					<td><%=error.getLithoCode() %></td>
+					<td><%=error.getScaleScore() %></td>
+					<td><%=error.getContentScore() %></td>
+					<td><%=error.getStatusCodeContentArea() %></td>
+					<td><%=error.getTestCenterCode() %></td>
+					<td><%=error.getTestCenterName() %></td>
+					<td><%=error.getErrCodeErrDesc() %></td>
+					<td><%=error.getTestEventUpdateDate() %></td>
+					<td><%=error.getScannedProcessDate() %></td>
+					<td><%=error.getOrgCodePath() %></td>
+					<td><%=error.getProcesDate() %></td>
+					<td><%=error.getDocumentID() %></td>
+					<td><%=error.getFileName() %></td>
+					<td><%=error.getFileGenDateTime() %></td>
+				</tr>
+			
+			<%}
+			}
+			%>
+			</tbody>
+			</table>
+			
+			<br/><br/>
+			
+			<!-- panel for DEF-->
+			<h3><u>DEF Forms ONLY</u></h3>
 			<h4>ER Data Compared to Operational (PRISM report data)</h4>
 			<table id="process" width="100%">
 			<thead>
@@ -281,10 +477,10 @@
 				</thead>
 				<tbody>
 			<% 
-			java.util.List<StudentDetailsTO> allProcess = (ArrayList) request.getAttribute("combinedList");
-			int count=0;
-			if(allProcess != null) {
-			for(StudentDetailsTO process : allProcess) {
+			java.util.List<StudentDetailsTO> allProcessDef = (ArrayList) request.getAttribute("combinedList");
+			count=0;
+			if(allProcessDef != null) {
+			for(StudentDetailsTO process : allProcessDef) {
 				count++;
 			%>
 				<tr>

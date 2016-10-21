@@ -621,160 +621,167 @@ public class TascController {
 	}
 	
 	@RequestMapping("/process/combined.htm")
-	public ModelAndView searchCombined(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-		logger.info("Enter: searchCombined()");
-		String showCommentFlag = "false"; 
-		String savedComments = ""; 
-		String uuid = "";
-		String stateCode = "";
-		String userName = (String)request.getSession().getAttribute("userName");
-		try {
-			if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
-			SearchProcess process = new SearchProcess();
-			process.setUuid(request.getParameter("uuid"));
-			process.setTestElementId(request.getParameter("testElementId"));
-			process.setStateCode(request.getParameter("stateCode"));
-			request.getSession().setAttribute("combinedRequestTO", process);
-					
-			
-			if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getTestElementId() != null && process.getTestElementId().length() > 0) ) {
-				TascDAOImpl stageDao = new TascDAOImpl();
-				
-				String action = request.getParameter("action");
-				
-				SupportDAOImpl supportDao = new SupportDAOImpl();
-				
-				if(action!=null && action.equals("delete")){
-					String studentBiodId = request.getParameter("bioId");
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setStudentBioId(studentBiodId);
-					//Delete student code goes here with bio id
-					jsonStr = supportDao.deleteStudent(studentTO);
-					logger.info("Student "+studentBiodId+ " has been deleted");
-				}
-				if(action!=null && action.equals("invalidate")){
-					String inUuid = request.getParameter("inUuid");
-					String inStateCode = request.getParameter("inStateCode");
-					String erTestSchId = request.getParameter("erTestSchId");
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(inUuid);
-					studentTO.setStateCode(inStateCode);
-					studentTO.setErTestSchId(erTestSchId);
-					//Invalidate student code goes here with uuid
-					jsonStr = supportDao.invalidate(studentTO,false);
-					logger.info("Student "+process.getUuid()+ " has been invalidate");
-				}
-				if(action!=null && action.equals("undoInvalidate")){
-					String inUuid = request.getParameter("inUuid");
-					String inStateCode = request.getParameter("inStateCode");
-					String erTestSchId = request.getParameter("erTestSchId");
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(inUuid);
-					studentTO.setStateCode(inStateCode);
-					studentTO.setErTestSchId(erTestSchId);
-					//Invalidate student code goes here with uuid
-					jsonStr = supportDao.invalidate(studentTO,true);
-					logger.info("Student "+process.getUuid()+ " has been invalidate");
-				}
-				if(action!=null && action.equals("invalidateSch")){
-					String insUuid = request.getParameter("insUuid");
-					String insStateCode = request.getParameter("insStateCode");
-					String erTestSchId = request.getParameter("erTestSchId");
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(insUuid);
-					studentTO.setStateCode(insStateCode);
-					studentTO.setErTestSchId(erTestSchId);
-					//Invalidate schedule code goes here with uuid
-					jsonStr = supportDao.invalidateSch(studentTO,false);
-					logger.info("Student "+insUuid+ " with erTestSchId " +erTestSchId+" has been invalidate");
-				}
-				if(action!=null && action.equals("undoInvalidateSch")){
-					String insUuid = request.getParameter("insUuid");
-					String insStateCode = request.getParameter("insStateCode");
-					String erTestSchId = request.getParameter("erTestSchId");
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(insUuid);
-					studentTO.setStateCode(insStateCode);
-					studentTO.setErTestSchId(erTestSchId);
-					//Invalidate schedule code goes here with uuid
-					jsonStr = supportDao.invalidateSch(studentTO,true);
-					logger.info("Student "+insUuid+ " with schedule " +erTestSchId+" has been invalidate");
-				}
-				if(action!=null && action.equals("unlock")){
-					String unUuid = request.getParameter("unUuid");
-					String unStateCode = request.getParameter("unStateCode");
-					String scheduleId = request.getParameter("schId");	
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(unUuid);
-					studentTO.setStateCode(unStateCode);
-					studentTO.setScheduleId(scheduleId);
-					//Unlock student code goes here with uuid
-					jsonStr = supportDao.unlockStudnet(studentTO,false);
-					logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
-				}
-				if(action!=null && action.equals("undoUnlock")){
-					String unUuid = request.getParameter("unUuid");
-					String unStateCode = request.getParameter("unStateCode");
-					String scheduleId = request.getParameter("schId");	
-					StudentDetailsTO studentTO = new StudentDetailsTO();
-					studentTO.setUuid(unUuid);
-					studentTO.setStateCode(unStateCode);
-					studentTO.setScheduleId(scheduleId);
-					//Unlock student code goes here with uuid
-					jsonStr = supportDao.unlockStudnet(studentTO,true);
-					logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
-				}
-				
-				List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
-				request.setAttribute("combinedList", studentDetailsTOList);
-				
-				List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
-				request.setAttribute("erBucket", erBucket);
-				
-				if(erBucket != null && erBucket.size() > 0
-						&& (process.getUuid() != null && process.getUuid().equals(erBucket.get(0).getUuid()))
-						&& (process.getStateCode() != null && process.getStateCode().length() == 2)){
-					savedComments = (erBucket.get(0).getComments()==null?"":erBucket.get(0).getComments());
-					showCommentFlag = "true";
-					uuid = process.getUuid();
-					stateCode = process.getStateCode();
-				} else{
-					savedComments = "";
-				}
-				
-				List<StudentDetailsTO> erError = stageDao.getERError(process);
-				request.setAttribute("erError", erError);
-				
-				List<StudentDetailsTO> oasPpError = stageDao.getOasPPError(process);
-				request.setAttribute("oasPpError", oasPpError);
-				
-				convertProcessToJson(studentDetailsTOList);
-				if (userName.equals("Support"))
-					return new ModelAndView("supportPageTASC", "message", "");
-				else
-					return new ModelAndView("combined", "message", "");
-			} else {
-				if (userName.equals("Support"))
-					return new ModelAndView("supportPageTASC", "message", "Please provide UUID or TEST-ELEMENT-ID");
-				else	
-					return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			jsonStr = "";
-		} finally{
-			request.setAttribute("showCommentFlag", showCommentFlag);
-			request.setAttribute("uuid", uuid);
-			request.setAttribute("stateCode", stateCode);
-			request.setAttribute("savedComments", savedComments);
-		}
-		if (userName.equals("Support"))
-			return new ModelAndView("supportPageTASC", "message", jsonStr);
-		else
-			return new ModelAndView("combined", "message", jsonStr);
-	}
+    public ModelAndView searchCombined(HttpServletRequest request,
+                  HttpServletResponse response) throws Exception {
+		   logger.info("Enter: searchCombined()");
+           String showCommentFlag = "false";
+           String savedComments = "";
+           String uuid = "";
+           String stateCode = "";
+           String userName = (String)request.getSession().getAttribute("userName");
+           try {
+                  if(!UserController.checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
+                  SearchProcess process = new SearchProcess();
+                  process.setUuid(request.getParameter("uuid"));
+                  process.setTestElementId(request.getParameter("testElementId"));
+                  process.setStateCode(request.getParameter("stateCode"));
+                  process.setDRCStudentId(request.getParameter("drcStudentId"));
+                  process.setLevel1OrgCode(request.getParameter("stateCode"));
+                  request.getSession().setAttribute("combinedRequestTO", process);
+                 
+                  if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getTestElementId() != null && process.getTestElementId().length() > 0) ) {
+                        TascDAOImpl stageDao = new TascDAOImpl();
+                       
+                        String action = request.getParameter("action");
+                       
+                        SupportDAOImpl supportDao = new SupportDAOImpl();
+                       
+                        if(action!=null && action.equals("delete")){
+                               String studentBiodId = request.getParameter("bioId");
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setStudentBioId(studentBiodId);
+                               //Delete student code goes here with bio id
+                               jsonStr = supportDao.deleteStudent(studentTO);
+                               logger.info("Student "+studentBiodId+ " has been deleted");
+                        }
+                        if(action!=null && action.equals("invalidate")){
+                               String inUuid = request.getParameter("inUuid");
+                               String inStateCode = request.getParameter("inStateCode");
+                               String erTestSchId = request.getParameter("erTestSchId");
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(inUuid);
+                               studentTO.setStateCode(inStateCode);
+                               studentTO.setErTestSchId(erTestSchId);
+                               //Invalidate student code goes here with uuid
+                               jsonStr = supportDao.invalidate(studentTO,false);
+                               logger.info("Student "+process.getUuid()+ " has been invalidate");
+                        }
+                        if(action!=null && action.equals("undoInvalidate")){
+                               String inUuid = request.getParameter("inUuid");
+                               String inStateCode = request.getParameter("inStateCode");
+                               String erTestSchId = request.getParameter("erTestSchId");
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(inUuid);
+                               studentTO.setStateCode(inStateCode);
+                               studentTO.setErTestSchId(erTestSchId);
+                               //Invalidate student code goes here with uuid
+                               jsonStr = supportDao.invalidate(studentTO,true);
+                               logger.info("Student "+process.getUuid()+ " has been invalidate");
+                        }
+                        if(action!=null && action.equals("invalidateSch")){
+                               String insUuid = request.getParameter("insUuid");
+                               String insStateCode = request.getParameter("insStateCode");
+                               String erTestSchId = request.getParameter("erTestSchId");
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(insUuid);
+                               studentTO.setStateCode(insStateCode);
+                               studentTO.setErTestSchId(erTestSchId);
+                               //Invalidate schedule code goes here with uuid
+                               jsonStr = supportDao.invalidateSch(studentTO,false);
+                               logger.info("Student "+insUuid+ " with erTestSchId " +erTestSchId+" has been invalidate");
+                        }
+                        if(action!=null && action.equals("undoInvalidateSch")){
+                               String insUuid = request.getParameter("insUuid");
+                               String insStateCode = request.getParameter("insStateCode");
+                               String erTestSchId = request.getParameter("erTestSchId");
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(insUuid);
+                               studentTO.setStateCode(insStateCode);
+                               studentTO.setErTestSchId(erTestSchId);
+                               //Invalidate schedule code goes here with uuid
+                               jsonStr = supportDao.invalidateSch(studentTO,true);
+                               logger.info("Student "+insUuid+ " with schedule " +erTestSchId+" has been invalidate");
+                        }
+                        if(action!=null && action.equals("unlock")){
+                               String unUuid = request.getParameter("unUuid");
+                               String unStateCode = request.getParameter("unStateCode");
+                               String scheduleId = request.getParameter("schId");    
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(unUuid);
+                               studentTO.setStateCode(unStateCode);
+                               studentTO.setScheduleId(scheduleId);
+                               //Unlock student code goes here with uuid
+                               jsonStr = supportDao.unlockStudnet(studentTO,false);
+                               logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been unlocked");
+                        }
+                        if(action!=null && action.equals("undoUnlock")){
+                               String unUuid = request.getParameter("unUuid");
+                               String unStateCode = request.getParameter("unStateCode");
+                               String scheduleId = request.getParameter("schId");    
+                               StudentDetailsTO studentTO = new StudentDetailsTO();
+                               studentTO.setUuid(unUuid);
+                               studentTO.setStateCode(unStateCode);
+                               studentTO.setScheduleId(scheduleId);
+                               //Unlock student code goes here with uuid
+                               jsonStr = supportDao.unlockStudnet(studentTO,true);
+                               logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
+                        }
+                       
+                        List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
+                        request.setAttribute("combinedList", studentDetailsTOList);
+                       
+                        List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
+                        request.setAttribute("erBucket", erBucket);
+                       
+                        if(erBucket != null && erBucket.size() > 0
+                                      && (process.getUuid() != null && process.getUuid().equals(erBucket.get(0).getUuid()))
+                                      && (process.getStateCode() != null && process.getStateCode().length() == 2)){
+                               savedComments = (erBucket.get(0).getComments()==null?"":erBucket.get(0).getComments());
+                               showCommentFlag = "true";
+                               uuid = process.getUuid();
+                               stateCode = process.getStateCode();
+                        } else{
+                               savedComments = "";
+                        }
+                       
+                        List<StudentDetailsTO> erError = stageDao.getERError(process);
+                        request.setAttribute("erError", erError);
+                       
+                        List<StudentDetailsTO> oasPpError = stageDao.getOasPPError(process);
+                        request.setAttribute("oasPpError", oasPpError);
+                       
+                       
+                        /** this is to fetch GHI record **/
+                        Map<String,List> mapGhi = stageDao.getCombinedGhi(process);
+                        request.setAttribute("combinedGhiList", (List<StudentDetailsTO>)mapGhi.get("op"));
+                        request.setAttribute("errorGhi", (List<StudentDetailsGhiTO>)mapGhi.get("er"));
+                       
+                        convertProcessToJson(studentDetailsTOList);
+                        if (userName.equals("Support"))
+                               return new ModelAndView("supportPageTASC", "message", "");
+                        else
+                               return new ModelAndView("combined", "message", "");
+                  } else {
+                        if (userName.equals("Support"))
+                               return new ModelAndView("supportPageTASC", "message", "Please provide UUID or TEST-ELEMENT-ID");
+                        else  
+                               return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
+                  }
+                 
+           } catch (Exception e) {
+                  e.printStackTrace();
+                  jsonStr = "";
+           } finally{
+                  request.setAttribute("showCommentFlag", showCommentFlag);
+                  request.setAttribute("uuid", uuid);
+                  request.setAttribute("stateCode", stateCode);
+                  request.setAttribute("savedComments", savedComments);
+           }
+           if (userName.equals("Support"))
+                  return new ModelAndView("supportPageTASC", "message", jsonStr);
+           else
+                  return new ModelAndView("combined", "message", jsonStr);
+    }
 	
 	/**
 	 * @author Abir

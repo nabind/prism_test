@@ -1459,10 +1459,10 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            '%''';
     END IF;
   
-    IF P_STATE_CODE <> '-1' THEN
+    /*IF P_STATE_CODE <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
                            ' AND CI.CUSTOMER_CODE =  ''' || P_STATE_CODE || '''';
-    END IF;
+    END IF;*/
   
     IF P_DRC_STUDENT_ID <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
