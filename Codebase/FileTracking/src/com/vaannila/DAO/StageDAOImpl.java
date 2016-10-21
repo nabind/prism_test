@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.vaannila.TO.OrgProcess;
 import com.vaannila.TO.OrgTO;
 import com.vaannila.TO.SearchProcess;
@@ -16,6 +18,7 @@ import com.vaannila.util.JDCConnectionDriver;
 public class StageDAOImpl {
 	static JDCConnectionDriver driver = null;
 	static String DATA_SOURCE = "jdbc:jdc:acsi";
+	private static final Logger logger = Logger.getLogger(StageDAOImpl.class);
 	
 	/**
 	 * 
@@ -66,7 +69,7 @@ public class StageDAOImpl {
 				process.setLoginPDFLoc(rs.getString(16));
 				process.setLetterPDFLoc(rs.getString(17));
 				
-				System.out.println(process);
+				logger.info(process);
 				processList.add(process);
 			}
 			
@@ -193,7 +196,7 @@ public class StageDAOImpl {
 				process.setLoginPDFLoc(rs.getString(16));
 				process.setLetterPDFLoc(rs.getString(17));
 				
-				System.out.println(process);
+				logger.info(process);
 				processList.add(process);
 			}
 			

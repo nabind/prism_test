@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,20 +35,21 @@ import com.vaannila.util.PropertyFile;
 
 @Controller
 public class UserController extends MultiActionController {
-	
+	private static final Logger logger = Logger.getLogger(UserController.class);
+			
 	String jsonStr = "";
 	
 	@RequestMapping("/process/welcome.htm")
 	public ModelAndView welcome(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("welcome method called");
+		logger.info("welcome method called");
 		
 		return new ModelAndView("welcome", "message", "");
 	}
 	@RequestMapping("/process/login.htm")
 	public ModelAndView login(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("login method called");
+		logger.info("login method called");
 		
 		Properties prop = PropertyFile.loadProperties("acsi.properties");
 		String username = prop.getProperty("j_username");
@@ -143,7 +145,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/logout.htm")
 	public ModelAndView logout(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("logout method called");
+		logger.info("logout method called");
 		
 		request.getSession().invalidate();
 		
@@ -152,7 +154,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/view.htm")
 	public ModelAndView view(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("view method called");
+		logger.info("view method called");
 		String adminid = request.getParameter("adminid");
 		if(adminid != null) {
 			request.getSession().setAttribute("adminid", adminid);
@@ -183,7 +185,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/search.htm")
 	public ModelAndView search(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		logger.info("process method called");
 		try {
 			if(!checkLogin(request)) return new ModelAndView("welcome", "message", "Please login.");
 			SearchProcess process = new SearchProcess();
@@ -227,7 +229,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/process.htm")
 	public ModelAndView process(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("process method called");
+		logger.info("process method called");
 		try {
 			String adminid = request.getParameter("adminid");
 			if(adminid == null) {
@@ -259,7 +261,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/processDetails.htm")
 	public @ResponseBody String processDetails(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("processDetails method called");
+		logger.info("processDetails method called");
 		try {
 			CommonDAOImpl commonDao = new CommonDAOImpl();
 			OrgTO processes = commonDao.getSchoolDetails(request.getParameter("structElem"),
@@ -289,7 +291,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/updateEmail.htm")
 	public @ResponseBody String updateEmail(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("processDetails method called");
+		logger.info("processDetails method called");
 		try {
 			CommonDAOImpl commonDao = new CommonDAOImpl();
 			commonDao.updateEmail(request.getParameter("newMail")
@@ -328,7 +330,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/sendMail.htm")
 	public @ResponseBody String sendMail(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("send mail method called");
+		logger.info("send mail method called");
 		try {
 			String processId = request.getParameter("processId");
 			String schoolEmail = request.getParameter("schoolEmail");
@@ -382,8 +384,8 @@ public class UserController extends MultiActionController {
 				Properties prop = PropertyFile.loadProperties("acsi.properties");
 				pdfFileLoc = pdfFileLoc.replaceAll(prop.getProperty("pdfGenPath"), prop.getProperty("pdfGenPathNew"));
 				letterFileLoc = letterFileLoc.replaceAll(prop.getProperty("pdfGenPath"), prop.getProperty("pdfGenPathNew"));
-				System.out.println("email pdfFileLoc >>>"+pdfFileLoc+"<<<");
-				System.out.println("email letterFileLoc >>>"+letterFileLoc+"<<<");
+				logger.info("email pdfFileLoc >>>"+pdfFileLoc+"<<<");
+				logger.info("email letterFileLoc >>>"+letterFileLoc+"<<<");
 				String mailSubject = prop.getProperty("mailSubject");
 				String mailBody = prop.getProperty("messageBody")+prop.getProperty("messageFooter");
 				//_SendMailSSL.sendMail(prop, schoolEmail, pdfFileLoc, pdfFileName, mailSubject, mailBody);
@@ -417,7 +419,7 @@ public class UserController extends MultiActionController {
 	@RequestMapping("/process/viewPdf.htm")
 	public ModelAndView viewPdf(HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		System.out.println("viewPdf method called");
+		logger.info("viewPdf method called");
 		OutputStream os = null;
 		try {
 			String pdfFileLoc = "";
@@ -476,7 +478,7 @@ public class UserController extends MultiActionController {
 			}
 			
 			//pdfFileLoc = "C:\\Documents and Settings\\amit_dhara\\My Documents\\Quick_Start_Guide.pdf"; // TODO remove
-			System.out.println("pdfFileLoc >>>"+pdfFileLoc+"<<<");
+			logger.info("pdfFileLoc >>>"+pdfFileLoc+"<<<");
 			
 			File file = null;
 			file = new File(pdfFileLoc);
@@ -494,7 +496,7 @@ public class UserController extends MultiActionController {
 					os.write(pdf[i]);
 				}
 			} else {
-				System.out.println("PDF file not present is the specified location");
+				logger.error("PDF file not present is the specified location");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -552,7 +554,7 @@ public class UserController extends MultiActionController {
 			response.setContentType("text/plain");
 			response.getWriter().write(processLog);
 		} catch (Exception e) {
-			System.out.println("Failed to get log");
+			logger.error("Failed to get log");
 			e.printStackTrace();
 		}
 		return null;
@@ -567,7 +569,7 @@ public class UserController extends MultiActionController {
 			StageDAOImpl stageDao = new StageDAOImpl();
 			stageDao.updateProcessLog(Long.valueOf(processId), processLog.toString());
 		} catch (Exception e) {
-			System.out.println("Failed to update log");
+			logger.error("Failed to update log");
 			e.printStackTrace();
 		}
 		

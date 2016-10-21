@@ -4,17 +4,20 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
+import org.apache.log4j.Logger;
+
 class ConnectionReaper extends Thread {
 
     private JDCConnectionPool pool;
     private final long delay = 300000;
+    private static final Logger logger = Logger.getLogger(ConnectionReaper.class);
     
 	ConnectionReaper(JDCConnectionPool pool) {
         this.pool=pool;
     }
 
     public void run() {
-    	System.out.println("starting JDCConnectionPool thread");
+    	logger.info("starting JDCConnectionPool thread");
     	int count = 0;
         while(true) {
     	//while(count < 3) {
@@ -22,10 +25,10 @@ class ConnectionReaper extends Thread {
         	   count++;
               sleep(delay);
            } catch( InterruptedException e) { }
-           System.out.println("Recap JDCConnectionPool thread");
+           logger.info("Recap JDCConnectionPool thread");
            pool.reapConnections();
         }
-    	//System.out.println("Shutting down JDCConnectionPool thread");
+    	//logger.info("Shutting down JDCConnectionPool thread");
     }
 }
 

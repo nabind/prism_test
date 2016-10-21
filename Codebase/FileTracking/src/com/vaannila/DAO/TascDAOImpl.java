@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import oracle.jdbc.OracleTypes;
 
 import com.vaannila.TO.SearchProcess;
@@ -23,13 +25,13 @@ import com.vaannila.TO.StudentDetailsTO;
 public class TascDAOImpl {
 	static JDCConnectionDriver driver = null;
 	static String DATA_SOURCE = "jdbc:jdc:tasc";
-	
+	private static final Logger logger = Logger.getLogger(TascDAOImpl.class);
 	/**
 	 * Get all process list
 	 * @throws Exception
 	 */
 	public List<TASCProcessTO> getProcess(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getProcess()");
+		logger.info("Enter: getProcess()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -38,7 +40,7 @@ public class TascDAOImpl {
         String query = "{call PKG_FILE_TRACKING.SP_GET_TASC_PROCESS(?,?,?,?,?)}";;
 		CallableStatement cs = null;
 		
-		System.out.println("query : "+query);
+		logger.info("query : "+query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -67,9 +69,9 @@ public class TascDAOImpl {
 			String errorMessage = cs.getString(5);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				rs = (ResultSet) cs.getObject(4);
-				System.out.println("Fetching data for TASC Process");
+				logger.info("Fetching data for TASC Process");
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}	
 
@@ -100,7 +102,7 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getProcess()");
+		logger.info("Exit: getProcess()");
 		return processList;
 	}
 	
@@ -316,7 +318,7 @@ public class TascDAOImpl {
 		queryBuff.append(" FROM ER_STUDENT_SCHED_HISTORY");
 		queryBuff.append(" WHERE ER_SS_HISTID = ?");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -400,7 +402,7 @@ public class TascDAOImpl {
 		queryBuff.append(" FROM ER_EXCEPTION_DATA");
 		queryBuff.append(" WHERE ER_EXCDID = ?");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -450,7 +452,7 @@ public class TascDAOImpl {
 		queryBuff.append(" FROM ER_EXCEPTION_DATA");
 		queryBuff.append(" WHERE ER_EXCDID = ?");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
@@ -478,7 +480,7 @@ public class TascDAOImpl {
 	 */
 	//TODO: Need to implement cache
 	public List<StudentDetailsTO> getProcessErPaging(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getProcessErPaging()");
+		logger.info("Enter: getProcessErPaging()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -499,7 +501,7 @@ public class TascDAOImpl {
 			}else{
 				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
-			System.out.println("DATA query: "+query);
+			logger.info("DATA query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -586,11 +588,11 @@ public class TascDAOImpl {
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				if("CSV".equals(searchProcess.getMode())){
-					System.out.println("Fetching data for CSV");
+					logger.info("Fetching data for CSV");
 					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
 				}else{
 					rs = (ResultSet) cs.getObject(placeHolderDataOnline);
-					System.out.println("Fetching data for Online Display");
+					logger.info("Fetching data for Online Display");
 				}
 				while(rs.next()) {
 					studentDetailsTO = new StudentDetailsTO();
@@ -666,7 +668,7 @@ public class TascDAOImpl {
 					studentDetailsTOList.add(studentDetailsTO);
 				}
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (Exception e) {
@@ -677,7 +679,7 @@ public class TascDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getProcessErPaging() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getProcessErPaging() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return studentDetailsTOList;
 	}
@@ -689,7 +691,7 @@ public class TascDAOImpl {
 	 */
 	//TODO: Need to implement cache
 	public long getTotalRecordCount(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getTotalRecord()");
+		logger.info("Enter: getTotalRecord()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -707,7 +709,7 @@ public class TascDAOImpl {
 			}else{
 				query = "{call PKG_FILE_TRACKING.SP_GET_DATA_OL_PP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			}
-			System.out.println("COUNT query: "+query);
+			logger.info("COUNT query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -795,7 +797,7 @@ public class TascDAOImpl {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -805,7 +807,7 @@ public class TascDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getTotalRecord() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getTotalRecord() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return totalRecordCount;
 	}
@@ -816,7 +818,7 @@ public class TascDAOImpl {
 	 * @throws Exception
 	 */
 	public List<StudentDetailsWinTO> getResultWin(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getResultWin()");
+		logger.info("Enter: getResultWin()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -832,7 +834,7 @@ public class TascDAOImpl {
 			int placeHolderDataCsv = 0;
 			int placeHolderErrorMsg = 0;
 			String query = "{call PKG_FILE_TRACKING.SP_GET_DATA_WINSCORE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-			System.out.println("query: "+query);
+			logger.info("query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -878,11 +880,11 @@ public class TascDAOImpl {
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				if("CSV".equals(searchProcess.getMode())){
-					System.out.println("Fetching data for CSV");
+					logger.info("Fetching data for CSV");
 					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
 				}else{
 					rs = (ResultSet) cs.getObject(placeHolderData);
-					System.out.println("Fetching data for Online Display");
+					logger.info("Fetching data for Online Display");
 				}
 				while(rs.next()) {
 					studentDetailsTO = new StudentDetailsWinTO();
@@ -917,7 +919,7 @@ public class TascDAOImpl {
 					studentDetailsTOList.add(studentDetailsTO);
 				}
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (Exception e) {
@@ -928,7 +930,7 @@ public class TascDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getResultWin() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getResultWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return studentDetailsTOList;
 	}
@@ -939,7 +941,7 @@ public class TascDAOImpl {
 	 * @throws Exception
 	 */
 	public long getTotalRecordCountWin(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getTotalRecordCountWin()");
+		logger.info("Enter: getTotalRecordCountWin()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -954,7 +956,7 @@ public class TascDAOImpl {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			query = "{call PKG_FILE_TRACKING.SP_GET_DATA_WINSCORE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-			System.out.println("COUNT query: "+query);
+			logger.info("COUNT query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -1000,9 +1002,9 @@ public class TascDAOImpl {
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
-				System.out.println("totalRecordCount: "+totalRecordCount);
+				logger.info("totalRecordCount: "+totalRecordCount);
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -1012,13 +1014,13 @@ public class TascDAOImpl {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getTotalRecordCountWin() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getTotalRecordCountWin() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return totalRecordCount;
 	}
 	
 	public List<StudentDetailsTO> getCombinedProcess(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getCombinedProcess()");
+		logger.info("Enter: getCombinedProcess()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1060,7 +1062,7 @@ public class TascDAOImpl {
 		}
 		queryBuff.append("order by 1, 2 ");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1113,12 +1115,12 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getCombinedProcess()");
+		logger.info("Exit: getCombinedProcess()");
 		return processList;
 	}
 	
 	public List<StudentDetailsTO> getERBucket(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getERBucket()");
+		logger.info("Enter: getERBucket()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1139,7 +1141,7 @@ public class TascDAOImpl {
 		
 		queryBuff.append("order by 2 ");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1182,12 +1184,12 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getERBucket()");
+		logger.info("Exit: getERBucket()");
 		return processList;
 	}
 	
 	public List<StudentDetailsTO> getERError(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getERError()");
+		logger.info("Enter: getERError()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1208,7 +1210,7 @@ public class TascDAOImpl {
 		
 		//queryBuff.append(" group by exc.er_uuid,exc.content_code, exc.state_code, exc.form, exc.last_name, exc.barcode, hist.date_scheduled, description, hist.content_test_code, decode(hist.content_test_type,'0','OL','PP'), trunc(datetimestamp),hist.schedule_id ");
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1248,12 +1250,12 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getERError()");
+		logger.info("Exit: getERError()");
 		return processList;
 	}
 	
 	public List<StudentDetailsTO> getOasPPError(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getOasPPError()");
+		logger.info("Enter: getOasPPError()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1273,7 +1275,7 @@ public class TascDAOImpl {
 		}
 		
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1312,13 +1314,13 @@ public class TascDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getOasPPError()");
+		logger.info("Exit: getOasPPError()");
 		return processList;
 	}
 	
 public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		
-		System.out.println("Enter: saveComment()");
+		logger.info("Enter: saveComment()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		int updatedRows = 0;
@@ -1327,7 +1329,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		queryBuff.append("UPDATE ER_STUDENT_DEMO SET COMMENTS = ? WHERE UUID = ? AND STATE_CODE = ?");
 		
 		String query = queryBuff.toString();
-		System.out.println(query);
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			pstmt = conn.prepareCall(query);
@@ -1346,12 +1348,12 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		}
 		
 		
-		System.out.println("Exit: saveComment()");
+		logger.info("Exit: saveComment()");
 		return updatedRows;
 	}
 	
 	public List<TASCProcessTO> getScoreReview(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getScoreReview()");
+		logger.info("Enter: getScoreReview()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1378,7 +1380,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		}
 		queryBuff.append(" group by s.last_name || ', ' || s.first_name || ' ' || s.middle_name , s.ext_student_id , c.customer_code, sub.subtest_name, f.opr_ncr, f.opr_ss, f.opr_hse, f.subtestid, s.student_bio_id, s.test_element_id order by datetimestamp ");
 		String query = queryBuff.toString();
-		 System.out.println(query);
+		 logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1422,13 +1424,13 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getScoreReview() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getScoreReview() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return processList;
 	}
 	
 	public List<Map<String, String>> getReviewResult(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getReviewResult()");
+		logger.info("Enter: getReviewResult()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -1442,7 +1444,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		queryBuff.append(" where s.scr_status <> 'IN' and f.formid = s.formid and student_bio_id = ? and subtestid = ? ");
 		queryBuff.append(" order by is_active desc,created_date_time desc ");
 		String query = queryBuff.toString();
-		System.out.println(query + " bio:" + searchProcess.getStudentBioId() + " subtest:" + searchProcess.getSubtestId());
+		logger.info(query + " bio:" + searchProcess.getStudentBioId() + " subtest:" + searchProcess.getSubtestId());
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1476,7 +1478,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getReviewResult() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getReviewResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return processList;
 	}
@@ -1487,7 +1489,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 	 * @throws Exception
 	 */
 	public String saveReviewScore(Map<String,Object> paramMap) throws Exception {
-		System.out.println("Enter: saveReviewScore()");
+		logger.info("Enter: saveReviewScore()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -1497,9 +1499,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
 			String query = "{call PKG_SCORE_REVIEW.SP_SAVE_REVIEW_SCORE(?,?,?,?,?,?)}";
-			System.out.println("query: "+query+" studentBioId:"+Long.parseLong((String)paramMap.get("studentBioId")));
-			System.out.println("subtestId: "+Long.parseLong((String)paramMap.get("subtestId"))+" statusStr:"+(String)paramMap.get("statusStr"));
-			System.out.println("commentStr: "+(String)paramMap.get("commentStr"));
+			logger.info("query: "+query+" studentBioId:"+Long.parseLong((String)paramMap.get("studentBioId")));
+			logger.info("subtestId: "+Long.parseLong((String)paramMap.get("subtestId"))+" statusStr:"+(String)paramMap.get("statusStr"));
+			logger.info("commentStr: "+(String)paramMap.get("commentStr"));
 			cs = conn.prepareCall(query);
 			cs.setLong(++count, Long.parseLong((String)paramMap.get("studentBioId")));
 			cs.setLong(++count, Long.parseLong((String)paramMap.get("subtestId")));
@@ -1512,9 +1514,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			message = cs.getString(count-1);
 			String errorMessage = cs.getString(count);
 			if (errorMessage == null || errorMessage.isEmpty()) {
-			  System.out.println("Success: "+message);
+			  logger.info("Success: "+message);
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -1524,7 +1526,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: saveReviewScore() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: saveReviewScore() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return message;
 	}
@@ -1535,7 +1537,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 	 * @throws Exception
 	 */
 	public List<StudentDetailsGhiTO> getResultGhi(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getResultGhi()");
+		logger.info("Enter: getResultGhi()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -1551,7 +1553,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			int placeHolderDataCsv = 0;
 			int placeHolderErrorMsg = 0;
 			String query = "{call PKG_FILE_TRACKING.SP_GET_DATA_GHI(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-			System.out.println("query: "+query);
+			logger.info("query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -1627,11 +1629,11 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				if("CSV".equals(searchProcess.getMode())){
-					System.out.println("Fetching data for CSV");
+					logger.info("Fetching data for CSV");
 					rs = (ResultSet) cs.getObject(placeHolderDataCsv);
 				}else{
 					rs = (ResultSet) cs.getObject(placeHolderData);
-					System.out.println("Fetching data for Online Display");
+					logger.info("Fetching data for Online Display");
 				}
 				while(rs.next()) {
 					studentDetailsTO = new StudentDetailsGhiTO();
@@ -1672,7 +1674,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 					studentDetailsTOList.add(studentDetailsTO);
 				}
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (Exception e) {
@@ -1683,7 +1685,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getResultGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getResultGhi() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return studentDetailsTOList;
 	}
@@ -1694,7 +1696,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 	 * @throws Exception
 	 */
 	public long getTotalRecordCountGhi(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getTotalRecordCountGhi()");
+		logger.info("Enter: getTotalRecordCountGhi()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -1709,7 +1711,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			int placeHolderErrorMsg = 0;
 			String query = "";
 			query = "{call PKG_FILE_TRACKING.SP_GET_DATA_GHI(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
-			System.out.println("COUNT query: "+query);
+			logger.info("COUNT query: "+query);
 			cs = conn.prepareCall(query);
 			
 			cs.setString(++count, searchProcess.getProcessStatus());
@@ -1785,9 +1787,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			String errorMessage = cs.getString(placeHolderErrorMsg);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				totalRecordCount = cs.getLong(placeHolderTotalRecCount);
-				System.out.println("totalRecordCount: "+totalRecordCount);
+				logger.info("totalRecordCount: "+totalRecordCount);
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 		} catch (SQLException e) {
@@ -1797,7 +1799,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getTotalRecordCountGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getTotalRecordCountGhi() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return totalRecordCount;
 	}
@@ -1808,7 +1810,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 	 * @throws Exception
 	 */
 	public List<Map<String, String>> getHistoryResult(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getHistoryResult()");
+		logger.info("Enter: getHistoryResult()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -1818,7 +1820,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_HISTORY(?,?,?)}");
 		String query = queryBuff.toString();
-		System.out.println(query + " drcStudentID:" + searchProcess.getDRCStudentId());
+		logger.info(query + " drcStudentID:" + searchProcess.getDRCStudentId());
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1831,9 +1833,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			String errorMessage = cs.getString(3);
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				rs = (ResultSet) cs.getObject(2);
-				System.out.println("Fetching data for Online Display");
+				logger.info("Fetching data for Online Display");
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 			while(rs.next()) {
@@ -1853,14 +1855,14 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getHistoryResult() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getHistoryResult() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return processList;
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public Map<String,List> getCombinedGhi(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getCombinedGhi()");
+		logger.info("Enter: getCombinedGhi()");
 		long t1 = System.currentTimeMillis();
 		Connection conn = null;
 		CallableStatement cs = null;
@@ -1872,11 +1874,11 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?,?)}");
 		String query = queryBuff.toString();
-		System.out.println(" UUID:" + searchProcess.getUuid());
-		System.out.println(" State Code:" + searchProcess.getStateCode());
-		System.out.println(" drcStudentID:" + searchProcess.getDRCStudentId());
-		System.out.println(" level1OrgCode:" + searchProcess.getLevel1OrgCode());
-		System.out.println(query);
+		logger.info(" UUID:" + searchProcess.getUuid());
+		logger.info(" State Code:" + searchProcess.getStateCode());
+		logger.info(" drcStudentID:" + searchProcess.getDRCStudentId());
+		logger.info(" level1OrgCode:" + searchProcess.getLevel1OrgCode());
+		logger.info(query);
 		try {
 			conn = BaseDAO.connect(DATA_SOURCE);
 			int count = 0;
@@ -1910,9 +1912,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			if (errorMessage == null || errorMessage.isEmpty()) {
 				rsOp = (ResultSet) cs.getObject(5);
 				rsEr = (ResultSet) cs.getObject(6);
-				System.out.println("Fetching data for Online Display");
+				logger.info("Fetching data for Online Display");
 			}else{
-				System.out.println("errorMessage: "+errorMessage);
+				logger.error("errorMessage: "+errorMessage);
 				throw new Exception(errorMessage);
 			}
 			while(rsOp.next()) {
@@ -1992,7 +1994,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			try {cs.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 			long t2 = System.currentTimeMillis();
-			System.out.println("Exit: getCombinedGhi() took time: " + String.valueOf(t2 - t1) + "ms");
+			logger.info("Exit: getCombinedGhi() took time: " + String.valueOf(t2 - t1) + "ms");
 		}
 		return returnMap;
 	}

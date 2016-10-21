@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.vaannila.TO.SearchProcess;
 import com.vaannila.TO.StudentDetailsTO;
 import com.vaannila.TO.TASCProcessTO;
@@ -16,13 +18,14 @@ import com.vaannila.util.JDCConnectionDriver;
 public class MapDAOImpl {
 	static JDCConnectionDriver driver = null;
 	static String DATA_SOURCE = "jdbc:jdc:usmo";
+	private static final Logger logger = Logger.getLogger(MapDAOImpl.class);
 	
 	/**
 	 * Get all process list
 	 * @throws Exception
 	 */
 	public List<TASCProcessTO> getProcess(SearchProcess searchProcess) throws Exception {
-		System.out.println("Enter: getProcess()");
+		logger.info("Enter: getProcess()");
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -64,7 +67,7 @@ public class MapDAOImpl {
 		}
 		queryBuff.append(" order by TASK_ID desc ");
 		String query = queryBuff.toString();
-		// System.out.println(query);
+		// logger.info(query);
 		try {
 			driver = MAPConnectionProvider.getDriver();
 			conn = driver.connect(DATA_SOURCE, null);
@@ -116,7 +119,7 @@ public class MapDAOImpl {
 			try {pstmt.close();} catch (Exception e2) {}
 			try {conn.close();} catch (Exception e2) {}
 		}
-		System.out.println("Exit: getProcess()");
+		logger.info("Exit: getProcess()");
 		return processList;
 	}
 	

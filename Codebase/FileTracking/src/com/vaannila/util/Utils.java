@@ -6,10 +6,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.FileCopyUtils;
 
 
 public class Utils {
+	private static final Logger logger = Logger.getLogger(Utils.class);
 	public static String convertListToCommaString(List<String> list) {
 		String s = "";
 		if (list != null && !list.isEmpty()) {
@@ -50,9 +52,9 @@ public class Utils {
 		response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 		try {
 			FileCopyUtils.copy(data, response.getOutputStream());
-			System.out.println(fileName + "[" + data.length + "] written to output stream");
+			logger.info(fileName + "[" + data.length + "] written to output stream");
 		} catch (IOException e) {
-			System.out.println(fileName + " - "+e);
+			logger.info(fileName + " - "+e);
 			e.printStackTrace();
 		}
 	}

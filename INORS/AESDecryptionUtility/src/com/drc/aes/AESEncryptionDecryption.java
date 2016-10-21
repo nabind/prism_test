@@ -1,3 +1,5 @@
+package com.drc.aes;
+
 import java.security.MessageDigest;
 import java.security.spec.AlgorithmParameterSpec;
 
@@ -6,7 +8,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-
 
 public class AESEncryptionDecryption {	
 	
@@ -46,7 +47,7 @@ public class AESEncryptionDecryption {
 		return result;
 	}
 
-	public String encryptText(String input, String password) throws Exception{
+	public  String encryptText(String input, String password) throws Exception{
 
 		byte[] bytesToBeEncrypted=input.getBytes("UTF-8");
 		byte[] passwordBytes=password.getBytes("UTF-8");
@@ -67,4 +68,15 @@ public class AESEncryptionDecryption {
 		byte[] bytesDecrypted=AES_Decrypt(bytesToBeDecrypted,passwordBytes);
 		return new String(bytesDecrypted);
 	}	
+	
+	/*public static void main(String args[]){
+		AESEncryptionDecryption c = new AESEncryptionDecryption();
+		try {
+			System.out.println(c.encryptText("123456789", "tasc-dev-test-encrypt"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}*/
+	
 }

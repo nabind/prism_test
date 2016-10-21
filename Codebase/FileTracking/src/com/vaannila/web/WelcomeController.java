@@ -7,6 +7,7 @@ import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import com.vaannila.util.PropertyFile;
 
 @Controller
 public class WelcomeController {
+	private static final Logger logger = Logger.getLogger(WelcomeController.class);
 
 	JSONArray jsonArray = new JSONArray();
 	String jsonStr = "";
@@ -35,7 +37,7 @@ public class WelcomeController {
 			List<OrgProcess> processes = stageDao.getProcessDetails((String) request.getSession().getAttribute("adminid"));
 			convertToJson(processes);
 			
-			System.out.println(jsonArray);
+			logger.info(jsonArray);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,7 +51,7 @@ public class WelcomeController {
         xstream.alias("product", OrgProcess.class);
 		for(Iterator<OrgProcess> itr = processes.iterator(); itr.hasNext();) {
 			jsonStr = xstream.toXML(itr.next());
-			//System.out.println(jsonStr);
+			//logger.info(jsonStr);
 			jsonArray.put(xstream.toXML(jsonStr));
 		}
 	}

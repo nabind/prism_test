@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 public class PropertyFile {
 
 	// Constants
 	private static final boolean THROW_EXCEPTION_ON_LOAD_FAILURE = true;
 	private static final boolean LOAD_AS_RESOURCE_BUNDLE = false;
 	private static final String SUFFIX = ".properties";
+	private static final Logger logger = Logger.getLogger(PropertyFile.class);
 
 	// Methods
 	/**
@@ -25,7 +28,7 @@ public class PropertyFile {
 	public static void main(String[] args) {
 		Properties p = loadProperties("acsi.properties");
 		
-		System.out.println("done "+p.get("TXT_ONE"));
+		logger.info("done "+p.get("TXT_ONE"));
 	}
 	/**
 	 * Looks up a resource named 'name' in the classpath. The resource must map
@@ -124,7 +127,7 @@ public class PropertyFile {
  * public class PropertyFile {
  * 
  * public static void main(String[] args) { ResourceBundle bundle =
- * ResourceBundle.getBundle("acsi", Locale.US); System.out.println("Message in "
+ * ResourceBundle.getBundle("acsi", Locale.US); logger.info("Message in "
  * + Locale.UK + ": " + bundle.getString("greeting")); }
  * 
  * static final String PROP_FILE =
@@ -134,8 +137,8 @@ public class PropertyFile {
  * pro.load(in); // getting values from property file value =
  * pro.getProperty(key);
  * 
- * // Printing Values fetched System.out.println(value);
+ * // Printing Values fetched logger.info(value);
  * 
- * } catch (IOException e) { System.out.println("Error is:" + e.getMessage());
+ * } catch (IOException e) { logger.info("Error is:" + e.getMessage());
  * e.printStackTrace(); } return value; } }
  */
