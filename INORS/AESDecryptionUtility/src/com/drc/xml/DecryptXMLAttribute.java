@@ -1,9 +1,5 @@
 package com.drc.xml;
 
-import com.drc.aes.AESEncryptionDecryption;
-import com.drc.util.ApplicationConstants;
-import com.drc.util.PropertyLoader;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
@@ -23,6 +19,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.drc.aes.AESEncryptionDecryption;
+import com.drc.util.ApplicationConstants;
+import com.drc.util.PropertyLoader;
+import com.drc.util.XSDValidator;
 
 
 public class DecryptXMLAttribute {
@@ -56,6 +57,7 @@ public class DecryptXMLAttribute {
 				logger.info("Starting the parsing of the file : "+args[0]);
 				
 				DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+				docFactory.setNamespaceAware(true); //this will be required for XSD validation
 				DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 				Document doc = docBuilder.parse(finalXmlFilePath);
 	
@@ -80,15 +82,9 @@ public class DecryptXMLAttribute {
 										logger.info("Decrypting the attributes of Demographic for Canditate id : "+candidateAttributes.getNamedItem(ApplicationConstants.CANDIDATE_ID_ATTRIBUTE).getNodeValue());
 										logger.info("Decrypting the attribute : "+encryptedAttribute.getNodeName());
 										String decryptedValue = aes.decryptText(encryptedAttribute.getNodeValue(), prop.getProperty(ApplicationConstants.PRIVATEKEY_KEY));
-										String exactDecryptedValue = null;
+										
 										if (encryptedAttribute.getNodeName().equals(prop.get(ApplicationConstants.VALIDATE_SSN_ATTR_KEY))) {
-											/*need to remove - and leading/trailing/in between space for length check of SSN*/
-											exactDecryptedValue = decryptedValue.replace("-", "").replaceAll("\\s","");
-											if (exactDecryptedValue.length() != 9) {
-												logger.error("Error occurred - SSN validation failed : Length is not 9");
-												System.exit(2);
-											}
-											logger.info("Validated the attribute : "+encryptedAttribute.getNodeName());
+											decryptedValue = decryptedValue.replace("-", "");											
 										}
 										encryptedAttribute.setNodeValue(decryptedValue);
 									}
@@ -100,12 +96,19 @@ public class DecryptXMLAttribute {
 	
 				}
 				
-				logger.info("Writing the XML file with decrypted data");
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				DOMSource source = new DOMSource(doc);
-				StreamResult result = new StreamResult(new File(decryptedXMLFilePath));
-				transformer.transform(source, result);
+				//let's validate the DOM XML. If the validation is success, the file will be saved.
+				if (XSDValidator.validateXMLSchema(doc)) {					
+					logger.info("XSD validated : Writing the XML file with decrypted data");
+					TransformerFactory transformerFactory = TransformerFactory.newInstance();
+					Transformer transformer = transformerFactory.newTransformer();
+					DOMSource source = new DOMSource(doc);
+					StreamResult result = new StreamResult(new File(decryptedXMLFilePath));
+					transformer.transform(source, result);
+				} else {
+					logger.error("XSD validation failed");
+					System.exit(2);
+				}
+				
 				logger.info("Process complete");
 
 			}
