@@ -123,7 +123,8 @@ public class DecryptXMLAttribute {
 	
 	
 	
-	public static void initLogger() throws IOException{		 
+	public static void initLogger() throws IOException{
+		 Logger logger = Logger.getRootLogger();
 		 RollingFileAppender rfapender = new RollingFileAppender();
 		 
 		 String conversionPattern = "%d{yyyy-MM-dd HH:mm:ss} %m%n";
