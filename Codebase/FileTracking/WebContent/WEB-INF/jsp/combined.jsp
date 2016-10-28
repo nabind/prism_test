@@ -219,7 +219,7 @@
 		
 	<div class="container" style="margin-left:25px;width: 900px !important;">
 		<h1>Search a single student</h1>
-		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 480px;float: left;">
+		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 488px;float: left;">
 			<%
 			SearchProcess searchProcess = (SearchProcess) request.getSession().getAttribute("combinedRequestTO");
 			String savedComments = (String)request.getAttribute("savedComments"); 
@@ -270,7 +270,7 @@
 				</table>
 			</form>
 		</div>
-		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 400px;height: 172px;float: right;">
+		<div class="fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix" style="width: 393px;height: 172px;float: right;">
 			<% if("false".equals(showCommentFlag)){ %>
 				<h3 style="padding-left: 10px;margin-top: 10px;">Comments (only for DEF)</h3>
 				<div style="padding: 20px;color: red;">

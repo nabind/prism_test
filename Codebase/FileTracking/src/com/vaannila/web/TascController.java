@@ -763,9 +763,9 @@ public class TascController {
                                return new ModelAndView("combined", "message", "");
                   } else {
                         if (userName.equals("Support"))
-                               return new ModelAndView("supportPageTASC", "message", "Please provide UUID or TEST-ELEMENT-ID");
+                               return new ModelAndView("supportPageTASC", "message", "Please provide UUID");
                         else  
-                               return new ModelAndView("combined", "message", "Please provide UUID or TEST-ELEMENT-ID");
+                               return new ModelAndView("combined", "message", "Please provide UUID");
                   }
                  
            } catch (Exception e) {
