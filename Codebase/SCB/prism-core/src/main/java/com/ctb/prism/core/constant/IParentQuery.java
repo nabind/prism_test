@@ -25,7 +25,7 @@ public interface IParentQuery {
 	/**
 	 * Query to assign user role to the new registered user
 	 */
-	public static final String ADD_ROLE_TO_REGISTERED_USER = "INSERT INTO USER_ROLE VALUES ((SELECT USERID FROM USERS WHERE upper(USERNAME) LIKE upper(?)),(SELECT ROLEID FROM ROLE WHERE ROLE_NAME LIKE ?),SYSDATE,SYSDATE)";
+	public static final String ADD_ROLE_TO_REGISTERED_USER = "INSERT INTO USER_ROLE SELECT (SELECT USERID FROM USERS WHERE upper(USERNAME) LIKE upper(?)),(SELECT ROLEID FROM ROLE WHERE ROLE_NAME LIKE ?),SYSDATETIME(),SYSDATETIME()";
 
 	/**
 	 * @author Joy
@@ -56,10 +56,10 @@ public interface IParentQuery {
 
 	// Query to retrieve list of children of the logged in parent.
 	public static final String SEARCH_CHILDREN = CustomStringUtil.appendString(
-			"SELECT ST.LAST_NAME || ',' || ST.FIRST_NAME || ' ' || ST.MIDDLE_NAME AS STUDENT_NAME,",
+			"SELECT ISNULL(ST.LAST_NAME,'') + ',' +ISNULL(ST.FIRST_NAME,'') + ' ' +ISNULL(ST.MIDDLE_NAME,'') AS STUDENT_NAME,",
 			" ST.STUDENT_BIO_ID STUDENT_BIO_ID,",
 			" GRD.GRADE_NAME AS STUDENTGRADE,",
-			" AD.ADMIN_SEASON || ' ' || AD.ADMIN_YEAR AS ADMIN_SEASON_YEAR,",
+			" ISNULL(AD.ADMIN_SEASON,'')+ ' '+ISNULL(AD.ADMIN_YEAR,'') AS ADMIN_SEASON_YEAR,",
 			" AD.ADMIN_SEQ,",
 			" AD.ADMINID ADMINID",
 			" FROM STUDENT_BIO_DIM ST,",
@@ -68,17 +68,17 @@ public interface IParentQuery {
 			" INVITATION_CODE IC,",
 			" INVITATION_CODE_CLAIM ICC,",
 			" ORG_USERS OU,",
-			" USERS U ",
+			" USERS U",
 			" WHERE ST.ADMINID = AD.ADMINID",
 			" AND ST.ADMINID = IC.ADMINID",
 			" AND ST.GRADEID = GRD.GRADEID",
 			" AND IC.ICID = ICC.ICID",
 			" AND ICC.ORG_USER_ID = OU.ORG_USER_ID",
-			" AND OU.USERID = U.USERID ",
-			" and ic.org_nodeid = st.org_nodeid ",
-			" and icc.activation_status = 'AC' ",
+			" AND OU.USERID = U.USERID",
+			" and ic.org_nodeid = st.org_nodeid",
+			" and icc.activation_status = 'AC'",
 			" AND IC.activation_status = 'AC'",
-			" AND upper(U.USERNAME) = upper(?) ",
+			" AND upper(U.USERNAME) = upper(?)",
 			" ORDER BY AD.ADMIN_SEQ DESC");
 	
 	/*
@@ -149,8 +149,8 @@ public interface IParentQuery {
 	public static final String UPDATE_PASSWORD_DATA = " UPDATE USERS SET IS_FIRSTTIME_LOGIN = ?, password = ? , salt = ? WHERE upper(USERNAME) =upper(?)";
 	public static final String UPDATE_PASSWORD_HISTORY = CustomStringUtil.appendString(
 			" insert into PASSWORD_HISTORY (PWD_HISTORYID, PASSWORD, USERID, CREATED_DATE_TIME, ",
-			" UPDATED_DATE_TIME) values (SEQ_PASSWORD_HISTORY.Nextval, ?, (select userid from users ",
-			" where upper(USERNAME) =upper(?)), sysdate, sysdate) ");
+			" UPDATED_DATE_TIME) SELECT NEXT VALUE FOR SEQ_PASSWORD_HISTORY, ?,",
+			" (select userid from users  where upper(USERNAME) =upper(?)), sysdatetime(), sysdatetime() ");
 	
 	public static final String SP_RESET_PASSWORD ="{CALL PKG_MANAGE_USERS.SP_RESET_PASSWORD(?, ?, ?, ?, ?)}";
 
@@ -159,8 +159,8 @@ public interface IParentQuery {
 			" where ORG.ORG_NODEID = std.ORG_NODEID and std.student_bio_id = ? ");
 
 	public static final String STUDENT_LIST_FOR_TREE = CustomStringUtil.appendString(
-			" select last_name || ' ' || first_name || ' ' || middle_name NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",
-			" where stu.gradeid = grd.gradeid and org_nodeid = (select org_lstnodeid from ORG_LSTNODE_LINK where org_nodeid = ? and adminid = ? and rownum = 1) and adminid = ? and customerid = ? and stu.gradeid = ? ");
+			" select ISNULL(last_name,'')+' '+ISNULL(first_name,'')+' '+ISNULL(middle_name,'') NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",
+			" where stu.gradeid = grd.gradeid and org_nodeid = (select TOP(1) org_lstnodeid from ORG_LSTNODE_LINK where org_nodeid = ? and adminid = ?) and adminid = ? and customerid = ? and stu.gradeid = ? ");
 
 	public static final String GET_TEST_ADMINISTRATION = "PKG_MANAGE_CONTENT.SP_GET_CUST_PROD_DETAILS(?,?,?,?)";
 

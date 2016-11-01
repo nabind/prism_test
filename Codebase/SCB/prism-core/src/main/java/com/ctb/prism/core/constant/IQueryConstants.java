@@ -18,11 +18,11 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	// query to retrieve more info message dynamically
 	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC =  CustomStringUtil.appendString(
-			"select DM.REPORT_MSG as REPORT_MSG from DASH_REPORTS DR ",
+			"select TOP(1) DM.REPORT_MSG as REPORT_MSG from DASH_REPORTS DR ",
 			" join DASH_MENU_RPT_ACCESS DMRA on DR.DB_REPORTID=DMRA.DB_REPORTID ",
 			" JOIN DASH_MESSAGES DM on DMRA.DB_REPORTID=DM.DB_REPORTID ",
 			" JOIN DASH_MESSAGE_TYPE DMT on  DM.MSG_TYPEID=DMT.MSG_TYPEID ",
-			" where DR.DB_REPORTID= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC' and ROWNUM=1");
+			" where DR.DB_REPORTID= ? and DMT.MESSAGE_TYPE= ? and DMT.MESSAGE_NAME= ? and DM.ACTIVATION_STATUS='AC'");
 	
 	//Fix for TD 77743 - By Joy
 	//More info message - By Joy
@@ -71,24 +71,25 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_TENANT_ID = "SELECT TOP(1) org_nodeid FROM users users, org_users org WHERE upper(USERNAME) = upper(?) and org.userid = users.userid";
 	
 	// query to retrieve education center id for a particular username
-	public static final String GET_EDU_TENANT_ID = "SELECT EDU.EDU_CENTERID FROM USERS USERS, EDU_CENTER_USER_LINK EDU  WHERE UPPER(USERNAME) = UPPER(?) AND EDU.USERID = USERS.USERID AND ROWNUM = 1";
+	public static final String GET_EDU_TENANT_ID = "SELECT TOP(1) EDU.EDU_CENTERID FROM USERS USERS, EDU_CENTER_USER_LINK EDU  WHERE UPPER(USERNAME) = UPPER(?) AND EDU.USERID = USERS.USERID";
 	
-	public static final String GET_REPORT_ID = "select db_reportid from DASH_REPORTS where report_folder_uri like ? AND ROWNUM = 1";
+	public static final String GET_REPORT_ID = "select TOP(1) db_reportid from DASH_REPORTS where report_folder_uri like ?";
 
 	
 	// get all organization list based on tenantId
 	public static final String GET_ORGANIZATION_LIST = CustomStringUtil.appendString
-	("Select Org_Nodeid,",
-			" Org_Node_Name,",
-			" Parent_Org_Nodeid,",
-			" to_char(?)  AS SELECTED_ORG_ID,",
-			" Org_Node_Level,",
-			" (Select Nvl(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = ? And Customerid = ? and org_mode=?) Child_Org_No,",
-			" (Select Nvl(Sum(Count(1)), 0) From Users u, Org_Users o Where u.Userid = o.Userid And u.activation_status in ('AC','SS')",
-			" And o.Org_Nodeid = d.Org_Nodeid Group By o.Org_Nodeid) User_No",
-			" From Org_Node_Dim d",
-			" Where d.org_nodeid = ? And Customerid = ?",
-			" Order By Org_Node_Name");
+			("Select Org_Nodeid,", 
+			 " Org_Node_Name,",
+			 " Parent_Org_Nodeid,",
+			 " convert(varchar(4000), ?)  AS SELECTED_ORG_ID,",
+			 " Org_Node_Level,",
+			 " (Select ISNULL(Count(1), 0) From Org_Node_dim Where Parent_Org_Nodeid = ? And Customerid = ? and org_mode=?) Child_Org_No,",
+			 " (Select ISNULL(Sum(1), 0) From Users u, Org_Users o Where u.Userid = o.Userid And u.activation_status in ('AC','SS')",
+			 " And o.Org_Nodeid = d.Org_Nodeid Group By o.Org_Nodeid) User_No",
+			 " From Org_Node_Dim d",
+			 " Where d.org_nodeid = ? And Customerid = ?",
+			 " Order By Org_Node_Name");
+			
 	/*("SELECT ORG_ID,ORG_NAME,O.ORG_PARENT_ID,to_char(?) AS SELECTED_ORG_ID,O.ORG_LEVEL, ",
 		       " (SELECT NVL(COUNT(1),0) FROM ORG_HIERARCHY WHERE ORG_PARENT_ID = ? and (adminid = 0 OR adminid = ?) ) CHILD_ORG_NO,",
 		       " (SELECT NVL(SUM(COUNT(1)),0 ) FROM USERS U WHERE ORG_ID IN (SELECT ORG_ID",
@@ -180,21 +181,41 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" Order By o.Org_Nodeid) a ",
 			" Where Rownum <= ? "); 
 	
-	public static final String GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString("SELECT a.* FROM ",
-			" (SELECT O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid ,to_char(?) AS SELECTED_ORG_ID,",
-			" (SELECT NVL(COUNT(1),0) FROM org_node_dim WHERE parent_org_nodeid  = O.org_nodeid) CHILD_ORG_NO ",
-			" FROM org_node_dim O ",
-			"  Where O.org_nodeid  <> ? ",
-			" AND O.org_nodeid  > ? ",
-			" AND O.ORG_MODE = ? ",
-			" AND UPPER(O.org_node_name ) LIKE UPPER(?)",
-			" And o.customerid = ?",
-			" AND EXISTS (SELECT 1 FROM ORG_PRODUCT_LINK OPL ", 
-            "       WHERE   O.ORG_NODEID = OPL.ORG_NODEID ",
-            " 		AND OPL.CUST_PROD_ID = ?)",
-			" GROUP BY O.org_nodeid ,O.org_node_name ,O.parent_org_nodeid, O.ORG_MODE ",
-			" ORDER BY O.org_nodeid  ) a ",
-			"  WHERE  ROWNUM <= ?"); 
+	public static final String GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM = CustomStringUtil.appendString(
+			" 	SELECT	",
+			" 	  a.org_nodeid,	",
+			" 	  a.org_node_name,	",
+			" 	  a.parent_org_nodeid,	",
+			" 	  a.SELECTED_ORG_ID,	",
+			" 	  a.CHILD_ORG_NO	",
+			" 	FROM (SELECT	",
+			" 	  O.org_nodeid,	",
+			" 	  O.org_node_name,	",
+			" 	  O.parent_org_nodeid,	",
+			" 	  CONVERT(varchar(4000), ?) AS SELECTED_ORG_ID,	",
+			" 	  (SELECT	",
+			" 	    ISNULL(COUNT(1), 0)	",
+			" 	  FROM org_node_dim	",
+			" 	  WHERE parent_org_nodeid = O.org_nodeid)	",
+			" 	  CHILD_ORG_NO,	",
+			" 	  ROW_NUMBER() OVER (ORDER BY O.org_nodeid) ROWNUM	",
+			" 	FROM org_node_dim O	",
+			" 	WHERE O.org_nodeid <> ?	",
+			" 	AND O.org_nodeid > ?	",
+			" 	AND O.ORG_MODE = ?	",
+			" 	AND UPPER(O.org_node_name) LIKE UPPER(?)	",
+			" 	AND o.customerid = ?	",
+			" 	AND EXISTS (SELECT	",
+			" 	1	",
+			" 	FROM ORG_PRODUCT_LINK OPL	",
+			" 	WHERE O.ORG_NODEID = OPL.ORG_NODEID	",
+			" 	AND OPL.CUST_PROD_ID = ?)	",
+			" 	GROUP BY O.org_nodeid,	",
+			" 	         O.org_node_name,	",
+			" 	         O.parent_org_nodeid,	",
+			" 	         O.ORG_MODE) a	",
+			" 	WHERE a.ROWNUM <= ?	",
+			" 	ORDER BY a.org_nodeid	"); 
 	
 	public static final String GET_USER_COUNT = CustomStringUtil.appendString(
 			/*"SELECT COUNT.USER_NO, ADM.ADMIN_NAME FROM ",
@@ -267,13 +288,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String DELETE_ROLE_FROM_ROLE_CUSTOMER_TABLE ="DELETE FROM ROLE_CUSTOMER WHERE ROLEID = ?";
 	
-	public static final String INSERT_INTO_USER_ROLE ="INSERT INTO USER_ROLE (USERID, ROLEID) VALUES((SELECT USERID FROM USERS WHERE upper(USERNAME) = upper(?) ), ?)";
+	public static final String INSERT_INTO_USER_ROLE ="INSERT INTO USER_ROLE (USERID, ROLEID) SELECT (SELECT USERID FROM USERS WHERE upper(USERNAME) = upper(?) ), ?";
 	public static final String INSERT_INTO_ROLE_CUSTOMER = CustomStringUtil.appendString("INSERT INTO ROLE_CUSTOMER (USERID, ROLEID, CUSTOMERID, CREATED_DATE_TIME) ",
-								" VALUES((SELECT USER_ID FROM USERS WHERE upper(USERNAME) = upper(?) ), ?, ?, sysdate)" );
+								" SELECT (SELECT USER_ID FROM USERS WHERE upper(USERNAME) = upper(?) ), ?, ?, sysdatetime()" );
 	
-	public static final String IS_ROLE_TAGGED= CustomStringUtil.appendString("SELECT URL.USERID USER_ID FROM USER_ROLE URL",
-																			 " WHERE URL.ROLEID=? ",
-																			 " AND URL.USERID=(SELECT USERID FROM USERS WHERE UPPER(USERNAME)= UPPER(?) AND ROWNUM=1)");
+	public static final String IS_ROLE_TAGGED= CustomStringUtil.appendString("SELECT URL.USERID USER_ID FROM USER_ROLE URL WHERE URL.ROLEID=?  ",
+																		" AND URL.USERID=(SELECT TOP(1) USERID FROM USERS WHERE UPPER(USERNAME)= UPPER(?))");
 	
 	public static final String UPDATE_ROLE = "UPDATE ROLE SET ROLE_NAME = ?, DESCRIPTION  = ? WHERE ROLEID = ?";
 	
@@ -292,51 +312,63 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	
 	public static final String GET_SECRET_QUESTION = "PKG_MY_ACCOUNT.SP_GET_SECURITY_QUESTIONS(?,?,?)";
 	
-	public static final String PARENT_USER_SEQ_ID = "SELECT USER_ID_SEQ.NEXTVAL AS PARENT_SEQ_ID FROM DUAL";
+	public static final String PARENT_USER_SEQ_ID = "SELECT NEXT VALUE FOR  USER_ID_SEQ AS PARENT_SEQ_ID";
 	
 	
 	//TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
 	public static final String INSERT_ANSWER_DATA = CustomStringUtil.appendString(
-			" INSERT INTO PWD_HINT_ANSWERS  " ,
-			" (PH_ANSWERID,   USERID,   " ,
-			" PH_QUESTIONID,   ANSWER_VALUE,   " ,
-			" CREATED_DATE_TIME) VALUES  " ,
-			" (PWD_HINT_ANSWERS_SEQ.NEXTVAL, ?,  " ,
-			" ?,   ?,  " ,
-			" SYSDATE)");
+			"INSERT INTO PWD_HINT_ANSWERS (PH_ANSWERID, USERID, PH_QUESTIONID, ANSWER_VALUE, CREATED_DATE_TIME) ",
+			" VALUES (NEXT VALUE FOR PWD_HINT_ANSWERS_SEQ, ?, ?, ?, SYSDATETIME())");
 	
 	//TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
     public static final String CHECK_FOR_EXISTING_ANSWER = CustomStringUtil.appendString("SELECT COUNT(*) AS NO_OF_ANSWERS FROM  PWD_HINT_ANSWERS P WHERE P.USERID=?");
     
     //TODO - Need to delete after moving SP_SAVE_PH_ANSWER() for all users
-    public static final String UPDATE_ANSWER_DATA = CustomStringUtil.appendString("UPDATE PWD_HINT_ANSWERS PANS SET PANS.PH_QUESTIONID  =?,PANS.ANSWER_VALUE =?,",
-																		    	  " PANS.UPDATED_DATE_TIME=SYSDATE",
-																		          " WHERE PANS.USERID =?",
-																		          " AND PANS.PH_ANSWERID =?");
+    public static final String UPDATE_ANSWER_DATA = CustomStringUtil.appendString("UPDATE PWD_HINT_ANSWERS	",
+																				" 	SET PH_QUESTIONID = ?,	",
+																				" 	    ANSWER_VALUE = ?,	",
+																				" 	    UPDATED_DATE_TIME = SYSDATETIME()	",
+																				" 	WHERE USERID = ?	",
+																				" 	AND PH_ANSWERID = ?	");
     
     public static final String ADMIN_YEAR_LIST = "select adminid, admin_name, is_current_admin,admin_season from admin_dim Where is_current_admin = 'Y' order by admin_seq desc";
     public static final String CURR_ADMIN_YEAR = "select adminid, admin_name, is_current_admin,admin_season from admin_dim Where is_current_admin = 'Y'";
     
     		public static final String VALIDATE_SECURITY_ANSWERS= CustomStringUtil.appendString(
-    		" SELECT (NVL((SUM (COUNT (U.USERNAME))),-1)) AS USERCOUNT",
-		    " FROM PWD_HINT_ANSWERS PWD ,USERS U ,",
-		        "  (SELECT U.USERID FROM PWD_HINT_ANSWERS PWD ,USERS U ",  
-		           "  WHERE U.USERID = (SELECT USERID FROM USERS WHERE UPPER(USERNAME)=UPPER(?) AND ROWNUM=1)",
-		            "  AND PWD.USERID =U.USERID ",
-		            "  AND PWD.PH_QUESTIONID  = ?", 
-		            " AND UPPER(PWD.ANSWER_VALUE )=UPPER(?))VAL1,",
-		            " (SELECT U.USERID FROM PWD_HINT_ANSWERS PWD ,USERS U  ",  
-		            "  WHERE U.USERID = (SELECT USERID FROM USERS WHERE UPPER(USERNAME)=UPPER(?) AND ROWNUM=1)",
-		            " AND PWD.USERID =U.USERID",
-		            "  AND PWD.PH_QUESTIONID  =  ?", 
-		            " AND UPPER(PWD.ANSWER_VALUE )=UPPER(?))VAL2",
-		    " WHERE  PWD.USERID=VAL1.USERID",
-		           " AND VAL1.USERID=VAL2.USERID",
-		           " AND U.USERID=PWD.USERID",
-		           " AND PWD.PH_QUESTIONID  = ?",
-		           " AND UPPER(PWD.ANSWER_VALUE )=UPPER(?)",
-		           " AND ROWNUM=1",
-		           " GROUP BY U.USERNAME ");
+    				" 	SELECT	",
+    				" 	  CASE	",
+    				" 	    WHEN COUNT(U.USERNAME) > 0 THEN 1	",
+    				" 	    ELSE -1	",
+    				" 	  END AS USERCOUNT	",
+    				" 	FROM PWD_HINT_ANSWERS PWD,	",
+    				" 	     USERS U,	",
+    				" 	     (SELECT	",
+    				" 	       U.USERID	",
+    				" 	     FROM PWD_HINT_ANSWERS PWD,	",
+    				" 	          USERS U	",
+    				" 	     WHERE U.USERID = (SELECT TOP (1)	",
+    				" 	       USERID	",
+    				" 	     FROM USERS	",
+    				" 	     WHERE UPPER(USERNAME) = UPPER(?))	",
+    				" 	     AND PWD.USERID = U.USERID	",
+    				" 	     AND PWD.PH_QUESTIONID = ?	",
+    				" 	     AND UPPER(PWD.ANSWER_VALUE) = UPPER(?)) VAL1,	",
+    				" 	     (SELECT	",
+    				" 	       U.USERID	",
+    				" 	     FROM PWD_HINT_ANSWERS PWD,	",
+    				" 	          USERS U	",
+    				" 	     WHERE U.USERID = (SELECT TOP (1)	",
+    				" 	       USERID	",
+    				" 	     FROM USERS	",
+    				" 	     WHERE UPPER(USERNAME) = UPPER(?))	",
+    				" 	     AND PWD.USERID = U.USERID	",
+    				" 	     AND PWD.PH_QUESTIONID = ?	",
+    				" 	     AND UPPER(PWD.ANSWER_VALUE) = UPPER(?)) VAL2	",
+    				" 	WHERE PWD.USERID = VAL1.USERID	",
+    				" 	AND VAL1.USERID = VAL2.USERID	",
+    				" 	AND U.USERID = PWD.USERID	",
+    				" 	AND PWD.PH_QUESTIONID = ?	",
+    				" 	AND UPPER(PWD.ANSWER_VALUE) = UPPER(?) ");
     
     public static final String GET_ALL_USERS_BY_EMAIL = "SELECT USERNAME,FIRST_NAME,LAST_NAME FROM users WHERE EMAIL_ADDRESS=? and ACTIVATION_STATUS IN ('AC','SS')";
     
@@ -350,15 +382,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
     
  // query to insert report role relation in report_role table
 	public static final String INSERT_USABILITY_LOG =  CustomStringUtil.appendString(
-			" INSERT INTO USABILITY_LOG ",
-			" (REPORT_URL, ",
-			" REPORT_ID, ",
-			" REPORT_NAME, ",
-			" USERNAME, ",
-			" CURRENTORG, ",
-			" LOGGED_ON) ",
-			" VALUES ",
-			" (? ,?, ?, ?, ?, SYSDATE) " );
+			" 	INSERT INTO USABILITY_LOG (REPORT_URL, REPORT_ID, REPORT_NAME, USERNAME, CURRENTORG, LOGGED_ON)	",
+			" 	  VALUES (?, ?, ?, ?, ?, SYSDATETIME())	");
 
 
 	public static final String GET_USERS_FOR_SSO_ORG = CustomStringUtil.appendString(
@@ -372,46 +397,64 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_MANAGE_MESSAGE_LIST = "PKG_MANAGE_REPORT.SP_GET_REPORT_MESSAGE_LIST(?,?,?,?,?)";
 	
 	public static final String DELETE_DASH_MESSAGE = CustomStringUtil.appendString(
-			" DELETE FROM DASH_MESSAGES DM",
-			" WHERE DM.DB_REPORTID = ?",
-			" AND DM.CUST_PROD_ID = ?");
+			"  DELETE FROM DASH_MESSAGES WHERE DB_REPORTID = ? AND CUST_PROD_ID = ?");
 	
 	public static final String INSERT_DASH_MESSAGES = CustomStringUtil.appendString(
-			" INSERT INTO prismglobal.DASH_MESSAGES",
-			" (DB_REPORTID,",
-			" MSG_TYPEID,",
-			" REPORT_MSG,",
-			" CUST_PROD_ID,",
-			" ACTIVATION_STATUS,",
-			" CREATED_DATE_TIME)",
-			" VALUES",
-			" (?, ?, ?, ?, ?, SYSDATE)");
+			"INSERT INTO META.DASH_MESSAGES (DB_REPORTID, MSG_TYPEID, REPORT_MSG, CUST_PROD_ID, ACTIVATION_STATUS, CREATED_DATE_TIME) ",
+			" VALUES (?, ?, ?, ?, ?, SYSDATETIME())");
 	
 	public static final String GET_USER_ROLE = CustomStringUtil.appendString(
-			"SELECT DISTINCT RLE.ROLEID,RLE.ROLE_NAME,OTS.ORG_LABEL,RLE.DESCRIPTION",
-			" FROM USER_ROLE URLE, ROLE RLE, USERS USR, ORG_USERS OU, (SELECT TEMP.ORG_LEVEL, LISTAGG(TEMP.ORG_LABEL, '/')",
-			" WITHIN GROUP(ORDER BY TEMP.ORG_LEVEL) AS ORG_LABEL FROM (SELECT  DISTINCT ORG_LEVEL,ORG_LABEL",
-			" FROM ORG_TP_STRUCTURE ORDER BY ORG_LEVEL) TEMP GROUP BY TEMP.ORG_LEVEL) OTS",
-			" WHERE USR.USERID=?",
-			" AND URLE.USERID =USR.USERID AND RLE.ROLEID  =URLE.ROLEID",
-			" AND USR.USERID=OU.USERID AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL"
-			);
+			" 	WITH TEMP	",
+			" 	AS (SELECT DISTINCT	",
+			" 	  ORG_LEVEL,	",
+			" 	  ORG_LABEL	",
+			" 	FROM ORG_TP_STRUCTURE)	",
+			" 	SELECT DISTINCT	",
+			" 	  RLE.ROLEID,	",
+			" 	  RLE.ROLE_NAME,	",
+			" 	  OTS.ORG_LABEL,	",
+			" 	  RLE.DESCRIPTION	",
+			" 	FROM USER_ROLE URLE,	",
+			" 	     ROLE RLE,	",
+			" 	     USERS USR,	",
+			" 	     ORG_USERS OU,	",
+			" 	     (SELECT	",
+			" 	       T.ORG_LEVEL,	",
+			" 	       STUFF((SELECT	",
+			" 	         '/' + ORG_LABEL	",
+			" 	       FROM TEMP	",
+			" 	       WHERE ORG_LEVEL = T.ORG_LEVEL	",
+			" 	       ORDER BY ORG_LEVEL	",
+			" 	       FOR xml PATH (''), TYPE)	",
+			" 	       .value('.', 'VARCHAR(MAX)'), 1, 1, '') AS ORG_LABEL	",
+			" 	     FROM TEMP T	",
+			" 	     GROUP BY T.ORG_LEVEL) OTS	",
+			" 	WHERE USR.USERID = ?	",
+			" 	AND URLE.USERID = USR.USERID	",
+			" 	AND RLE.ROLEID = URLE.ROLEID	",
+			" 	AND USR.USERID = OU.USERID	",
+			" 	AND OU.ORG_NODE_LEVEL = OTS.ORG_LEVEL	");
 
 	public static final String GET_PRODUCT_NAME=CustomStringUtil.appendString(
-			"SELECT B.PRODUCT_NAME FROM CUST_PRODUCT_LINK A,PRODUCT B ",
-			" WHERE A.PRODUCTID = B.PRODUCTID ",
-			" AND A.CUSTOMERID = ? ",
-			" AND ROWNUM =1");
+			" 	SELECT TOP (1)	",
+			" 	  B.PRODUCT_NAME	",
+			" 	FROM CUST_PRODUCT_LINK A,	",
+			" 	     PRODUCT B	",
+			" 	WHERE A.PRODUCTID = B.PRODUCTID	",
+			" 	AND A.CUSTOMERID = ? ");
 	
 	public static final String GET_STUDENT_DATA = CustomStringUtil.appendString(
-			" SELECT * FROM ",
-			" MV_STUDENT_FILE_DOWNLOAD MSTFD,",
-			" ORGUSER_MAPPING OUM",
-			" WHERE  MSTFD.ORG_NODEID = OUM.LOWEST_NODEID",
-			" AND OUM.USERID = ?",
-			" AND EXISTS (SELECT 1 FROM MV_STUDENT_DETAILS MSTD",
-			" WHERE  MSTD.STUDENT_BIO_ID = MSTFD.ROSTER_ID",
-			" AND MSTD.DATE_TEST_TAKEN BETWEEN TO_DATE(?, 'MM/DD/YYYY') AND  TO_DATE(?, 'MM/DD/YYYY'))");
+			" 	SELECT	",
+			" 	  *	",
+			" 	FROM MV_STUDENT_FILE_DOWNLOAD MSTFD,	",
+			" 	     ORGUSER_MAPPING OUM	",
+			" 	WHERE MSTFD.ORG_NODEID = OUM.LOWEST_NODEID	",
+			" 	AND OUM.USERID = ?	",
+			" 	AND EXISTS (SELECT	",
+			" 	1	",
+			" 	FROM MV_STUDENT_DETAILS MSTD	",
+			" 	WHERE MSTD.STUDENT_BIO_ID = MSTFD.ROSTER_ID	",
+			" 	AND MSTD.DATE_TEST_TAKEN BETWEEN CONVERT(datetime2(0), ?, 101) AND CONVERT(datetime2(0), ?, 101))	");
 
 	public static final String GET_STUDENT_DATA_1 = CustomStringUtil.appendString(
 			" SELECT",
@@ -782,84 +825,99 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" AND ECUL.USERID = ?");
 	
 	public static final String GET_EDU_CENTER_USERS_FIRST_LOAD = CustomStringUtil.appendString(
-			"SELECT USR_TAB.USERROWID       AS USERROWID,",
-			" USR_TAB.EDU_CENTERID    EDU_CENTERID,",
-			" USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" USR_TAB.USERID          USERID,",
-			" USR_TAB.USERNAME        USERNAME,",
-			" USR_TAB.FULLNAME        AS FULLNAME,",
-			" USR_TAB.STATUS          STATUS",
-			" FROM (SELECT ROWIDTOCHAR(U.ROWID) AS USERROWID,",
-			" ECD.EDU_CENTERID EDU_CENTERID,",
-			" ECD.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" ECD.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" U.USERID USERID,",
-			" U.USERNAME USERNAME,",
-			" U.LAST_NAME || '  ' || U.FIRST_NAME AS FULLNAME,",
-			" U.ACTIVATION_STATUS STATUS",
-			" FROM EDU_CENTER_DETAILS ECD, EDU_CENTER_USER_LINK ECUL, USERS U",
-			" WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID",
-			" AND ECUL.USERID = U.USERID",
-			" AND ECD.CUSTOMERID = ?",
-			" AND ECD.EDU_CENTERID = ?",
-			" ORDER BY UPPER(USERNAME)) USR_TAB",
-			" WHERE ROWNUM <= ?");
+			" 	SELECT	",
+			" 	  USR_TAB.USERROWID AS USERROWID,	",
+			" 	  USR_TAB.EDU_CENTERID EDU_CENTERID,	",
+			" 	  USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  USR_TAB.USERID USERID,	",
+			" 	  USR_TAB.USERNAME USERNAME,	",
+			" 	  USR_TAB.FULLNAME AS FULLNAME,	",
+			" 	  USR_TAB.STATUS STATUS	",
+			" 	FROM (SELECT	",
+			" 	  CAST(U.USERID AS varchar(18)) AS USERROWID,	",
+			" 	  ECD.EDU_CENTERID EDU_CENTERID,	",
+			" 	  ECD.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  ECD.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  U.USERID USERID,	",
+			" 	  U.USERNAME USERNAME,	",
+			" 	  ISNULL(U.LAST_NAME, '') + '  ' + ISNULL(U.FIRST_NAME, '') AS FULLNAME,	",
+			" 	  U.ACTIVATION_STATUS STATUS,	",
+			" 	  ROW_NUMBER() OVER (ORDER BY UPPER(USERNAME)) AS ROWNUM	",
+			" 	FROM EDU_CENTER_DETAILS ECD,	",
+			" 	     EDU_CENTER_USER_LINK ECUL,	",
+			" 	     USERS U	",
+			" 	WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID	",
+			" 	AND ECUL.USERID = U.USERID	",
+			" 	AND ECD.CUSTOMERID = ?	",
+			" 	AND ECD.EDU_CENTERID = ?) USR_TAB	",
+			" 	WHERE ROWNUM <= ?	",
+			" 	ORDER BY UPPER(USERNAME)	");
 	
 	public static final String GET_EDU_CENTER_USERS_ON_SCROLL = CustomStringUtil.appendString(
-			"SELECT USR_TAB.USERROWID       AS USERROWID,",
-			" USR_TAB.EDU_CENTERID    EDU_CENTERID,",
-			" USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" USR_TAB.USERID          USERID,",
-			" USR_TAB.USERNAME        USERNAME,",
-			" USR_TAB.FULLNAME        AS FULLNAME,",
-			" USR_TAB.STATUS          STATUS",
-			" FROM (SELECT ROWIDTOCHAR(U.ROWID) AS USERROWID,",
-			" ECD.EDU_CENTERID EDU_CENTERID,",
-			" ECD.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" ECD.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" U.USERID USERID,",
-			" U.USERNAME USERNAME,",
-			" U.LAST_NAME || '  ' || U.FIRST_NAME AS FULLNAME,",
-			" U.ACTIVATION_STATUS STATUS",
-			" FROM EDU_CENTER_DETAILS ECD, EDU_CENTER_USER_LINK ECUL, USERS U",
-			" WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID",
-			" AND ECUL.USERID = U.USERID",
-			" AND ECD.CUSTOMERID = ?",
-			" AND ECD.EDU_CENTERID = ?",
-			" AND UPPER(U.USERNAME) > UPPER(?)",
-			" ORDER BY UPPER(USERNAME)) USR_TAB",
-			" WHERE ROWNUM <= ?");
+			" 	SELECT	",
+			" 	  USR_TAB.USERROWID AS USERROWID,	",
+			" 	  USR_TAB.EDU_CENTERID EDU_CENTERID,	",
+			" 	  USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  USR_TAB.USERID USERID,	",
+			" 	  USR_TAB.USERNAME USERNAME,	",
+			" 	  USR_TAB.FULLNAME AS FULLNAME,	",
+			" 	  USR_TAB.STATUS STATUS	",
+			" 	FROM (SELECT	",
+			" 	  CAST(U.USERID AS varchar(18)) AS USERROWID,	",
+			" 	  ECD.EDU_CENTERID EDU_CENTERID,	",
+			" 	  ECD.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  ECD.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  U.USERID USERID,	",
+			" 	  U.USERNAME USERNAME,	",
+			" 	  ISNULL(U.LAST_NAME, '') + '  ' + ISNULL(U.FIRST_NAME, '') AS FULLNAME,	",
+			" 	  U.ACTIVATION_STATUS STATUS,	",
+			" 	  ROW_NUMBER() OVER (ORDER BY UPPER(USERNAME)) AS ROWNUM	",
+			" 	FROM EDU_CENTER_DETAILS ECD,	",
+			" 	     EDU_CENTER_USER_LINK ECUL,	",
+			" 	     USERS U	",
+			" 	WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID	",
+			" 	AND ECUL.USERID = U.USERID	",
+			" 	AND ECD.CUSTOMERID = ?	",
+			" 	AND ECD.EDU_CENTERID = ?	",
+			" 	AND UPPER(U.USERNAME) > UPPER(?)) USR_TAB	",
+			" 	WHERE ROWNUM <= ?	",
+			" 	ORDER BY UPPER(USERNAME)	");
 	
 	public static final String GET_EDU_CENTER_USERS_ON_SCROLL_SEARCH = CustomStringUtil.appendString(
-			"SELECT USR_TAB.USERROWID       AS USERROWID,",
-			" USR_TAB.EDU_CENTERID    EDU_CENTERID,",
-			" USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" USR_TAB.USERID          USERID,",
-			" USR_TAB.USERNAME        USERNAME,",
-			" USR_TAB.FULLNAME        AS FULLNAME,",
-			" USR_TAB.STATUS          STATUS",
-			" FROM (SELECT ROWIDTOCHAR(U.ROWID) AS USERROWID,",
-			" ECD.EDU_CENTERID EDU_CENTERID,",
-			" ECD.EDU_CENTER_CODE EDU_CENTER_CODE,",
-			" ECD.EDU_CENTER_NAME EDU_CENTER_NAME,",
-			" U.USERID USERID,",
-			" U.USERNAME USERNAME,",
-			" U.LAST_NAME || '  ' || U.FIRST_NAME AS FULLNAME,",
-			" U.ACTIVATION_STATUS STATUS",
-			" FROM EDU_CENTER_DETAILS ECD, EDU_CENTER_USER_LINK ECUL, USERS U",
-			" WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID",
-			" AND ECUL.USERID = U.USERID",
-			" AND ECD.CUSTOMERID = ?",
-			" AND ECD.EDU_CENTERID = ?",
-			" AND (UPPER(U.USERNAME) LIKE UPPER(?) OR",
-			" UPPER(U.LAST_NAME) LIKE UPPER(?) OR",
-			" UPPER(U.FIRST_NAME) LIKE UPPER(?))",
-			" AND UPPER(U.USERNAME) > UPPER(?)",
-			" ORDER BY UPPER(USERNAME)) USR_TAB",
-			" WHERE ROWNUM <= ?");
+			" 	SELECT	",
+			" 	  USR_TAB.USERROWID AS USERROWID,	",
+			" 	  USR_TAB.EDU_CENTERID EDU_CENTERID,	",
+			" 	  USR_TAB.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  USR_TAB.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  USR_TAB.USERID USERID,	",
+			" 	  USR_TAB.USERNAME USERNAME,	",
+			" 	  USR_TAB.FULLNAME AS FULLNAME,	",
+			" 	  USR_TAB.STATUS STATUS	",
+			" 	FROM (SELECT	",
+			" 	  CAST(U.USERID AS varchar(18)) AS USERROWID,	",
+			" 	  ECD.EDU_CENTERID EDU_CENTERID,	",
+			" 	  ECD.EDU_CENTER_CODE EDU_CENTER_CODE,	",
+			" 	  ECD.EDU_CENTER_NAME EDU_CENTER_NAME,	",
+			" 	  U.USERID USERID,	",
+			" 	  U.USERNAME USERNAME,	",
+			" 	  ISNULL(U.LAST_NAME, '') + '  ' + ISNULL(U.FIRST_NAME, '') AS FULLNAME,	",
+			" 	  U.ACTIVATION_STATUS STATUS,	",
+			" 	  ROW_NUMBER() OVER (ORDER BY UPPER(USERNAME)) AS ROWNUM	",
+			" 	FROM EDU_CENTER_DETAILS ECD,	",
+			" 	     EDU_CENTER_USER_LINK ECUL,	",
+			" 	     USERS U	",
+			" 	WHERE ECD.EDU_CENTERID = ECUL.EDU_CENTERID	",
+			" 	AND ECUL.USERID = U.USERID	",
+			" 	AND ECD.CUSTOMERID = ?	",
+			" 	AND ECD.EDU_CENTERID = ?	",
+			" 	AND (UPPER(U.USERNAME) LIKE UPPER(?)	",
+			" 	OR UPPER(U.LAST_NAME) LIKE UPPER(?)	",
+			" 	OR UPPER(U.FIRST_NAME) LIKE UPPER(?))	",
+			" 	AND UPPER(U.USERNAME) > UPPER(?)) USR_TAB	",
+			" 	WHERE ROWNUM <= ?	",
+			" 	ORDER BY UPPER(USERNAME)	");
 	
 	public static final String DELETE_EDU_USER = CustomStringUtil.appendString(
 			"DELETE FROM EDU_CENTER_USER_LINK WHERE USERID = ?");
@@ -873,8 +931,8 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	public static final String GET_SCHOOLS_GD = "SELECT DISTINCT ORG_NODEID VALUE, ORG_NODE_NAME NAME, ORG_NODE_LEVEL OTHER FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL = 3 AND ORG_MODE = ? AND PARENT_ORG_NODEID = ? ORDER BY ORG_NODE_NAME";
 	public static final String GET_CLASSES_GD = "SELECT DISTINCT ORG_NODEID VALUE, ORG_NODE_NAME NAME, ORG_NODE_LEVEL OTHER FROM ORG_NODE_DIM WHERE ORG_NODE_LEVEL = 4 AND ORG_MODE = ? AND PARENT_ORG_NODEID = ? ORDER BY ORG_NODE_NAME";
 	public static final String GET_GRADES_GD = "SELECT GRADEID VALUE, GRADE_NAME NAME, GRADE_SEQ OTHER FROM GRADE_DIM ORDER BY GRADE_SEQ";
-	public static final String GET_ALL_GRADES = "SELECT VC1 AS GRADEID FROM TABLE (SELECT SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL)";
-	public static final String GET_ALL_GRADE_NAMES = "SELECT VC2 AS GRADE_NAME FROM TABLE(SELECT  SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) FROM DUAL) WHERE VC1 != -1 ORDER BY 1";
+	public static final String GET_ALL_GRADES = "SELECT VC1 AS GRADEID FROM FACT.SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?)";
+	public static final String GET_ALL_GRADE_NAMES = "SELECT VC2 AS GRADE_NAME FROM FACT.SF_GET_GRADE_DWNLD(?, ?, ?, ?, ?, ?, ?, ?) WHERE VC1 != -1 ORDER BY 1";
 	public static final String GET_SELECTED_CLASS_NAMES = CustomStringUtil.appendString(
 			/*"SELECT ALL_ORGS.ORG_NODE_NAME FROM",
 			" (SELECT VC1 AS ORG_NODEID,  VC2 AS ORG_NODE_NAME FROM",
@@ -1025,11 +1083,35 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 
 	public static final String GET_PARENT_ORG_DATA = CustomStringUtil.appendString(
-			"SELECT DISTINCT ORG_NODE_LEVEL, ORG_NODEID, ORG_NODE_NAME",
-			" FROM ORG_NODE_DIM CONNECT BY NOCYCLE ORG_NODEID = PRIOR PARENT_ORG_NODEID",
-			" START WITH ORG_NODEID = (SELECT ORG_NODEID FROM STUDENT_BIO_DIM WHERE STUDENT_BIO_ID = ?)",
-			" ORDER BY ORG_NODE_LEVEL"
-			);
+			" 	WITH h$cte	",
+			" 	AS (SELECT	",
+			" 	  ORG_NODE_LEVEL,	",
+			" 	  ORG_NODEID,	",
+			" 	  ORG_NODE_NAME,	",
+			" 	  PARENT_ORG_NODEID,	",
+			" 	  CONVERT(varchar(max), '|') + CONVERT(varchar(max), ORG_NODEID) + '|' AS path	",
+			" 	FROM ORG_NODE_DIM	",
+			" 	WHERE ORG_NODEID = (SELECT	",
+			" 	  ORG_NODEID	",
+			" 	FROM STUDENT_BIO_DIM	",
+			" 	WHERE STUDENT_BIO_ID = ?)	",
+			" 	UNION ALL	",
+			" 	SELECT	",
+			" 	  O.ORG_NODE_LEVEL,	",
+			" 	  O.ORG_NODEID,	",
+			" 	  O.ORG_NODE_NAME,	",
+			" 	  O.PARENT_ORG_NODEID,	",
+			" 	  h$cte.path + CONVERT(varchar(max), O.ORG_NODEID) + '|'	",
+			" 	FROM ORG_NODE_DIM O	",
+			" 	JOIN h$cte	",
+			" 	  ON h$cte.PARENT_ORG_NODEID = O.ORG_NODEID	",
+			" 	WHERE h$cte.path NOT LIKE '%|' + CONVERT(varchar(100), O.ORG_NODEID) + '|%')	",
+			" 	SELECT DISTINCT	",
+			" 	  ORG_NODE_LEVEL,	",
+			" 	  ORG_NODEID,	",
+			" 	  ORG_NODE_NAME	",
+			" 	FROM h$cte	",
+			" 	ORDER BY ORG_NODE_LEVEL	");
 	/**
 	 * All 5 Params are STUDENT_BIO_ID
 	 */
@@ -1092,64 +1174,58 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" WHERE lin.customerid = cust.customerid  AND lin.productid = prod.productid ",
 			" AND cust.customerid = ? AND lin.CUST_PROD_ID = ?");
 	
-	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT ADMIN_YEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y' AND ROWNUM = 1";
+	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT TOP(1) ADMIN_YEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y'";
 
 	// query to capture the user  activity when clicked login as
 		public static final String INSERT_LoginAsACTIVITY_LOG =  CustomStringUtil.appendString(
-				" INSERT INTO user_activity_history ",
-				" (activityid, ",
-				" userid, ",
-				" customerid, ",
-				" acty_typeid, ",
-				" activity_date, ",
-				" activity_details, ",
-				" ip_address, ",
-				"datetimestamp) ",
-				" VALUES ",
-	      		" (activityid_seq.NEXTVAL ,(select userid from users where upper(username)=upper(?)), ?, ?, SYSDATE, ?,?,SYSDATE) " );
+				" 	INSERT INTO user_activity_history (activityid, userid, customerid, acty_typeid, activity_date, activity_details, ip_address, datetimestamp)	",
+				" 	  SELECT	",
+				" 	    NEXT VALUE FOR activityid_seq,	",
+				" 	    (SELECT	",
+				" 	      userid	",
+				" 	    FROM users	",
+				" 	    WHERE UPPER(username) = UPPER(?)),	",
+				" 	    ?,	",
+				" 	    ?,	",
+				" 	    SYSDATETIME(),	",
+				" 	    ?,	",
+				" 	    ?,	",
+				" 	    SYSDATETIME() ");
 		
 		// query to capture the user activity
 		public static final String INSERT_ACTIVITY_LOG =  CustomStringUtil.appendString(
-				" INSERT INTO user_activity_history ",
-				" (activityid, ",
-				" userid, ",
-				" customerid, ",
-				" acty_typeid, ",
-				" activity_date, ",
-				" activity_details, ",
-				" ip_address, ",
-				"datetimestamp) ",
-				" VALUES ",
-	      		" (activityid_seq.NEXTVAL ,?, ?, ?, SYSDATE, ?,?,SYSDATE) " );
+				" INSERT INTO user_activity_history (activityid, userid, customerid, acty_typeid, activity_date, activity_details, ip_address, datetimestamp) ",
+				" VALUES (NEXT VALUE FOR activityid_seq, ?, ?, ?, SYSDATETIME(), ?, ?, SYSDATETIME())" );
 
 		public static final String GET_STUDENT_FILE_NAME = CustomStringUtil.appendString(
-				"SELECT CUST.FILE_LOCATION || PROD.FILE_LOCATION || SPF.FILENAME FILENAME",
-				" FROM STUDENT_PDF_FILES SPF,",
-				"       PDF_REPORTS       PR,",
-				"       CUSTOMER_INFO     CUST,",
-				"       PRODUCT           PROD,",
-				"       CUST_PRODUCT_LINK LIN",
-				" WHERE SPF.STUDENT_BIO_ID = ?",
-				" AND PR.REPORT_NAME = ?",
-				" AND SPF.PDF_REPORTID = PR.PDF_REPORTID",
-				" AND PR.CUST_PROD_ID = LIN.CUST_PROD_ID",
-				" AND LIN.CUSTOMERID = CUST.CUSTOMERID",
-				" AND LIN.PRODUCTID = PROD.PRODUCTID and SPF.is_file_exists = 'Y' ",
-				" AND LIN.CUST_PROD_ID = ?"
-				);
+				" 	SELECT	",
+				" 	  ISNULL(CUST.FILE_LOCATION, '') + ISNULL(PROD.FILE_LOCATION, '') + ISNULL(SPF.FILENAME, '') FILENAME	",
+				" 	FROM STUDENT_PDF_FILES SPF,	",
+				" 	     PDF_REPORTS PR,	",
+				" 	     CUSTOMER_INFO CUST,	",
+				" 	     PRODUCT PROD,	",
+				" 	     CUST_PRODUCT_LINK LIN	",
+				" 	WHERE SPF.STUDENT_BIO_ID = ?	",
+				" 	AND PR.REPORT_NAME = ?	",
+				" 	AND SPF.PDF_REPORTID = PR.PDF_REPORTID	",
+				" 	AND PR.CUST_PROD_ID = LIN.CUST_PROD_ID	",
+				" 	AND LIN.CUSTOMERID = CUST.CUSTOMERID	",
+				" 	AND LIN.PRODUCTID = PROD.PRODUCTID	",
+				" 	AND SPF.is_file_exists = 'Y'	",
+				" 	AND LIN.CUST_PROD_ID = ?	");
 		
 		
 		public static final String GET_CURRENT_MSGTYPE = CustomStringUtil.appendString(
-				"SELECT A.MSG_TYPEID MSGTYPEID ",
-				" FROM DASH_MESSAGE_TYPE A, DASH_MESSAGE_TYPE B ",
-				" WHERE A.CUST_PROD_ID = ? ",
-				" AND A.CUST_PROD_ID <> B.CUST_PROD_ID ",
-				" AND B.MSG_TYPEID = ? ",
-				" AND A.MESSAGE_NAME = B.MESSAGE_NAME" +
-				" AND ROWNUM =1"
-				);
+				" 	SELECT TOP (1)	",
+				" 	  A.MSG_TYPEID MSGTYPEID	",
+				" 	FROM DASH_MESSAGE_TYPE A,	",
+				" 	     DASH_MESSAGE_TYPE B	",
+				" 	WHERE A.CUST_PROD_ID = ?	",
+				" 	AND A.CUST_PROD_ID <> B.CUST_PROD_ID	",
+				" 	AND B.MSG_TYPEID = ?	",
+				" 	AND A.MESSAGE_NAME = B.MESSAGE_NAME	");
 
-		public static final String UPDATE_JOB_TRACKING_STATUS = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATE WHERE JOB_ID = ?";
+		public static final String UPDATE_JOB_TRACKING_STATUS = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATETIME() WHERE JOB_ID = ?";
 		
 		public static final String SP_GET_STUDENTS_ALL_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
 		public static final String SP_GET_STUDENTS_ALL_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
@@ -1186,7 +1262,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		
 		public static final String GET_CLOB_XML_FILE = "PKG_STUDENTDATA_EXTRACT.SP_GET_CLOB_XML_FILE(?,?,?,?)";
 		
-		public static final String STORE_WS_LOG = "INSERT INTO OAS_WS_LOG (processid, rosterid, state, uuid, status, summary, message, datetimestamp) VALUES (?,?,?,?,?,?,?,sysdate)";
+		public static final String STORE_WS_LOG = "INSERT INTO OAS_WS_LOG (processid, rosterid, state, uuid, status, summary, message, datetimestamp) VALUES (?,?,?,?,?,?,?,sysdatetime())";
 
 }
 

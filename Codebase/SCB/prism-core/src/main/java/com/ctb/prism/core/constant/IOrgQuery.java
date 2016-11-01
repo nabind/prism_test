@@ -162,7 +162,7 @@ public interface IOrgQuery {
 			"INSERT INTO STG_ORG_NODE_DIM ",
 			" (ORG_NODEID,ORG_NODE_NAME,ORG_NODE_CODE,ORG_NODE_LEVEL,STRC_ELEMENT,SPECIAL_CODES," ,
 			"  ORG_MODE,PARENT_ORG_NODEID,ORG_NODE_CODE_PATH,EMAIL,ADMINID,CUSTOMERID,CREATED_DATE_TIME,UPDATED_DATE_TIME)",
-			" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, SYSDATE)");
+			" VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, sysdatetime(), sysdatetime())");
 	
 }
 
