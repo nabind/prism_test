@@ -68,7 +68,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 	
 	// query to retrieve tenant id for a particular username
-	public static final String GET_TENANT_ID = "SELECT org_nodeid FROM users users, org_users org WHERE upper(USERNAME) = upper(?) and org.userid = users.userid and rownum = 1 ";
+	public static final String GET_TENANT_ID = "SELECT TOP(1) org_nodeid FROM users users, org_users org WHERE upper(USERNAME) = upper(?) and org.userid = users.userid";
 	
 	// query to retrieve education center id for a particular username
 	public static final String GET_EDU_TENANT_ID = "SELECT EDU.EDU_CENTERID FROM USERS USERS, EDU_CENTER_USER_LINK EDU  WHERE UPPER(USERNAME) = UPPER(?) AND EDU.USERID = USERS.USERID AND ROWNUM = 1";
@@ -362,14 +362,12 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 
 	public static final String GET_USERS_FOR_SSO_ORG = CustomStringUtil.appendString(
-			" select p.customerid CUSTOMERID, org.org_nodeid NODEID from test_program p, org_node_dim org where tp_code = ?",
-			" and  org_node_code = ? and rownum = 1");
+			"   select TOP(1) p.customerid CUSTOMERID, org.org_nodeid NODEID from test_program p, org_node_dim org ",
+			" where tp_code = ? and  org_node_code = ?");
 	
 	public static final String GET_ORG_LEVEL = CustomStringUtil.appendString(
-			" select org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL, customerid CUSTOMERID",
-			" from org_node_dim where org_node_code_path = ? ",
-			//" AND customerid = ( select customerid from test_program where tp_code = ? and rownum = 1) ",
-			" AND org_node_level = ? AND ROWNUM=1");
+			" select TOP(1) org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL, customerid CUSTOMERID ",
+			" from org_node_dim where org_node_code_path = ?  AND org_node_level = ?");
 	
 	public static final String GET_MANAGE_MESSAGE_LIST = "PKG_MANAGE_REPORT.SP_GET_REPORT_MESSAGE_LIST(?,?,?,?,?)";
 	
@@ -1083,18 +1081,16 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			);
 	
 	public static final String GET_ROOT_PATH = CustomStringUtil.appendString(
-			" SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
-			" WHERE lin.customerid = cust.customerid ",
-			" AND lin.productid = prod.productid ",
-			" AND cust.customerid = ? AND prod.productid = ? ",
-			" AND ROWNUM = 1");
+			"  SELECT TOP(1) ISNULL(cust.file_location,'')+ISNULL(prod.file_location,'') ",
+			" FROM customer_info cust, product prod, cust_product_link lin ",
+			" WHERE lin.customerid = cust.customerid  AND lin.productid = prod.productid ",
+			"AND cust.customerid = ? AND prod.productid = ?");
 
 	public static final String GET_CUST_PATH = CustomStringUtil.appendString(
-			" SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
-			" WHERE lin.customerid = cust.customerid ",
-			" AND lin.productid = prod.productid ",
-			" AND cust.customerid = ? AND lin.CUST_PROD_ID = ? ",
-			" AND ROWNUM = 1");
+			"  SELECT TOP(1) ISNULL(cust.file_location,'')+isnull(prod.file_location,'') ",
+			" FROM customer_info cust, product prod, cust_product_link lin  ",
+			" WHERE lin.customerid = cust.customerid  AND lin.productid = prod.productid ",
+			" AND cust.customerid = ? AND lin.CUST_PROD_ID = ?");
 	
 	public static final String GET_CURRENT_ADMIN_YEAR = "SELECT ADMIN_YEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN = 'Y' AND ROWNUM = 1";
 
