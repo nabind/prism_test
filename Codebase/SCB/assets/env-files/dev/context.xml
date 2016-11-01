@@ -20,64 +20,47 @@
 
     <!-- Default set of monitored resources -->
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
-	
-    <Resource name="jdbc/jasperServer"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="jasper55"
-            password="jasper55"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa"
-            maxActive="10"/>
-    <Resource name="jdbc/inors"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="Istep"
-            password="istep14dev"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
-            maxActive="100"
-            maxIdle="20"/> 
-    <Resource name="jdbc/tasc"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="Tasc"
-            password="tasc14dev"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
-            maxActive="100"
-            maxIdle="20"/>         
-	<!--<Resource name="jdbc/usmo"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="missouri"
-            password="missouri14qa"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//oracle-db:1521/prismdev"
-            maxActive="100"
-            maxIdle="20"/> -->
-			
-	<Resource name="jdbc/usmo"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="missourietl"
-            password="missourietl14dev"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
-            maxActive="100"
-            maxIdle="20"/> 
+    
+    <Resource name="jdbc/jasperServer" auth="Container" type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="jaspersvc" password="bdog23@"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=jasperserver;SelectMethod=cursor"
+        factory="com.jaspersoft.jasperserver.tomcat.jndi.JSBasicDataSourceFactory"
+         />
+    
+    <Resource name="jdbc/tasc" auth="Container" type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="drcuser" password="blue57!"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=TASC_report_dev;SelectMethod=cursor"
+        factory="com.jaspersoft.jasperserver.tomcat.jndi.JSBasicDataSourceFactory"
+         />
+    
+    <Resource name="jdbc/usmo" auth="Container" type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="drcuser" password="blue57!"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=Missouri_report_dev;SelectMethod=cursor"
+        factory="com.jaspersoft.jasperserver.tomcat.jndi.JSBasicDataSourceFactory"
+         />
+         
+     <Resource name="jdbc/wisc" auth="Container" type="javax.sql.DataSource"
+        maxActive="100" maxIdle="30" maxWait="10000"
+        username="drcuser" password="blue57!"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        validationQuery="SELECT 1"
+        testOnBorrow="true"
+        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=Wisconsin_report_dev;SelectMethod=cursor"
+        factory="com.jaspersoft.jasperserver.tomcat.jndi.JSBasicDataSourceFactory"
+         />
 
-            
-     <Resource name="jdbc/wisc"
-            auth="Container"
-            type="javax.sql.DataSource"
-            username="wisconsin"
-            password="wisconsin16dev"
-            driverClassName="oracle.jdbc.driver.OracleDriver"
-            url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
-            maxActive="100"
-            maxIdle="20"/>
-            
    <Realm className="org.apache.catalina.realm.MemoryRealm" pathname="conf/tomcat-users.xml" />
                            
 </Context>

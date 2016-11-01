@@ -35,7 +35,7 @@ public abstract class BaseDAO {
 	/**
 	 * JDBC template points to prism database
 	 */
-	@Autowired
+	//@Autowired
 	private JdbcTemplate jdbcTemplateInors;
 	
 	/**

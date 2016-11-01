@@ -713,6 +713,11 @@
     		<artifactId>ojdbc6</artifactId>
     		<version>11.2.0.3</version>
 		</dependency>
+		<dependency>
+    		<groupId>com.microsoft</groupId>
+    		<artifactId>sqljdbc42</artifactId>
+    		<version>4.2</version>
+		</dependency>
 	<!--<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId>
