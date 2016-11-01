@@ -110,6 +110,13 @@
 		$("#saveComment").click(function(){
 			saveComment();
 		});
+		
+		$( "#ghiTab" ).click(function() {
+		  $( "#accordion1" ).toggle( "fast");
+		});
+		$( "#defTab" ).click(function() {
+		  $( "#accordion2" ).toggle( "slow");
+		});
     });
 	
 	function showComments() {
@@ -287,9 +294,9 @@
 		</div>
 	</div>
 	<div id="articlecontent">
-		<div id="accordion" style="margin-top:25px">
-			<!-- panel -->
-			<h3><u>GHI Forms ONLY</u></h3>
+		<h3 style="padding-top:25px;cursor: pointer;" id="ghiTab"><u>GHI Forms ONLY</u></h3>
+		<div id="accordion1" style="margin-top:25px">
+			<!-- panel -->			
 			<h4>Data Compared to Operational (PRISM report data)</h4>
 			<table id="processGhi" width="100%">
 				<thead>
@@ -449,9 +456,16 @@
 			</table>
 			
 			<br/><br/>
-			
-			<!-- panel for DEF-->
-			<h3><u>DEF Forms ONLY</u></h3>
+			<p>
+				<b>Overall Status:</b><br/>
+				<span class="completed legend" title="Completed"></span> = Completed/Success (CO) <br/>
+				<span class="error legend legend2" title="Completed" style="margin-left: -34px;"></span> = Error (Record received by Prism, but there is an error) (ER)</br>
+			</p>
+		</div>
+		<br/><br/>
+		<!-- panel for DEF-->
+		<h3 id="defTab" style="cursor: pointer;"><u>DEF Forms ONLY</u></h3>
+		<div id="accordion2" >
 			<h4>ER Data Compared to Operational (PRISM report data)</h4>
 			<table id="process" width="100%">
 			<thead>
