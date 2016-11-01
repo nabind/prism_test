@@ -40,6 +40,7 @@
 	-->
 
 	<tx:annotation-driven transaction-manager="txManager"/>
+	<!--  for jndi connection, no need to specify txManager? -->
 	<!-- <bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSourceInors" />
