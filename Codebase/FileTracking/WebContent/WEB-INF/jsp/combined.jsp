@@ -59,7 +59,7 @@
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
 			"sScrollX": '100%',
-			"aaSorting": [[ 22, "desc" ]],
+			"aaSorting": [[ 21, "desc" ]],
 			"aoColumnDefs": [ 
 							  { "bVisible": false, "aTargets": [ 0 ] },
 							  { "width": "30%", "aTargets":  [10] }
@@ -400,7 +400,6 @@
 					<th>Test Language</th>
 					<th>Litho Code</th>
 					<th>Field Test Form</th>
-					<th>Test Event Update Date</th>
 					<th>Last Updated Doc Date</th>
 					<th>Org Code Path</th>
 					<th>Prism Process Date</th>
@@ -435,7 +434,6 @@
 					<td><%=docStatusTo.getTestLanguage() %></td>
 					<td><%=docStatusTo.getLithoCode() %></td>
 					<td><%=docStatusTo.getFieldTestForm() %></td>
-					<td><%=docStatusTo.getTestEventUpdateDate() %></td>
 					<td><%=docStatusTo.getTestEventUpdateDate() %></td>
 					<td><%=docStatusTo.getOrgCodePath() %></td>
 					<td><%=docStatusTo.getProcesDate() %></td>
