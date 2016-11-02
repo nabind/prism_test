@@ -63,26 +63,6 @@ public interface IUserQuery {
 			"FROM users users ",
 			"WHERE upper(users.username) = upper(?) ");
 	
-	/*public static final String GET_USER_DETAILS_ON_FIRST_LOAD = CustomStringUtil
-	.appendString(" SELECT ABC.USERROWID, ABC.USERID AS USER_ID, ABC.USERNAME, ",
-			" ABC.FULLNAME, ABC.STATUS, ABC.ORG_NODE_NAME AS ORG_NAME, ABC.ORG_NODEID AS ORG_ID, ABC.PARENT_ORG_NODEID AS ORG_PARENT_ID " ,
-			//", ABC.USER_TYPE  ",
-			" FROM (SELECT ROWIDTOCHAR(USR.ROWID) AS USERROWID ,  ",
-			" USR.USERID, USR.USERNAME,  ",
-			" USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME,  ",
-			" USR.ACTIVATION_STATUS AS STATUS, HIER.ORG_NODE_NAME,  ",
-			" HIER.ORG_nodeID,  HIER.PARENT_ORG_NODEID ",
-		//	" , USR.USER_TYPE ",
-			" FROM USERS USR, org_users orgUser, (SELECT *  FROM org_node_dim ",
-			" START WITH ORG_nodeID = ?   ",
-			" CONNECT BY PRIOR ORG_nodeID = PARENT_ORG_NODEID ", 
-			" ) HIER  ",
-			" WHERE orguser.userid = usr.userid and HIER.ORG_NODEID = orguser.ORG_NODEID AND orguser.ORG_NODE_LEVEL <> 0 ", 
-			" AND orguser.adminid = ?  AND  USR.ACTIVATION_STATUS != 'SS' ",
-			" ORDER BY UPPER(USR.USERNAME)) ABC ",
-			" WHERE ROWNUM <= 15 ",
-			" ORDER BY UPPER(ABC.USERNAME)");*/	
-	
 	public static final String GET_USER_DETAILS_ON_FIRST_LOAD = CustomStringUtil.appendString(
 			" SELECT ABC.USERROWID,",
 			" ABC.USERID AS USER_ID,",
@@ -239,12 +219,11 @@ public interface IUserQuery {
 			" AND RLE.ROLE_NAME NOT IN (? ,? ,?)",
 			" ORDER BY RLE.ROLEID");*/
 	
-	public static final String GET_USER_ORG_LEVEL = " SELECT ORG_NODE_LEVEL FROM USERS USR, ORG_USERS ORG WHERE ORG.USERID = USR.USERID AND USR.USERID = ? AND rownum = 1 ";
+	public static final String GET_USER_ORG_LEVEL = " SELECT TOP(1) ORG_NODE_LEVEL FROM USERS USR, ORG_USERS ORG WHERE ORG.USERID = USR.USERID AND USR.USERID = ? ";
 		
 	public static final String UPDATE_USER = CustomStringUtil.appendString(
-			" UPDATE USERS  SET USERNAME     = ?, ",
-			" DISPLAY_USERNAME     = ?,  EMAIL_ADDRESS = ?, ",
-			" ACTIVATION_STATUS    = ?,  updated_date_time = SYSDATE WHERE USERID = ?");
+			" UPDATE USERS  SET USERNAME     = ?,  DISPLAY_USERNAME     = ?,  EMAIL_ADDRESS = ?,  ACTIVATION_STATUS    = ?, ",
+			" updated_date_time = SYSDATETIME() WHERE USERID = ?");
 	
 	public static final String DELETE_USER = "DELETE FROM USERS WHERE USERID = ? ";
 	
@@ -262,9 +241,7 @@ public interface IUserQuery {
 	.appendString(" DELETE FROM PASSWORD_HISTORY WHERE USERID = ? ");
 	
 	public static final String INSERT_USER_ROLE = CustomStringUtil
-			.appendString("INSERT INTO USER_ROLE (ROLEID, USERID, CREATED_DATE_TIME) ",
-						  " VALUES ((SELECT ROLEID FROM ROLE " +
-						  "	WHERE ROLE_NAME = ?), ?, SYSDATE)");
+			.appendString("INSERT INTO USER_ROLE (ROLEID, USERID, CREATED_DATE_TIME)  SELECT (SELECT ROLEID FROM ROLE   WHERE ROLE_NAME = ?), ?, SYSDATETIME()");
 	
 	public static final String INSERT_USER = CustomStringUtil.appendString(
 			" INSERT INTO USERS (USERID, USERNAME, ",
@@ -273,12 +250,12 @@ public interface IUserQuery {
 			" (?, ?, ?, ?, ?, ?, ?, ?)");
 	
 	public static final String INSERT_ORG_USER = CustomStringUtil.appendString(
-			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
-			" (?, ?, ?, ?, (select adminid from cust_product_link where cust_prod_id=?),?, sysdate )");
+			"  INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) ",
+			" SELECT ?, ?, ?, ?, (select adminid from cust_product_link where cust_prod_id=?),?, sysdatetime()");
 	
 	public static final String INSERT_ORG_USER_SSO = CustomStringUtil.appendString(
-			" INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) VALUES ",
-			" (?, ?, ?, ?, ? ,?, sysdate )");
+			"  INSERT INTO ORG_USERS (ORG_USER_ID, USERID, ORG_NODEID, ORG_NODE_LEVEL, ADMINID, ACTIVATION_STATUS,CREATED_DATE_TIME) ",
+			" VALUES  (?, ?, ?, ?, ? ,?, sysdatetime() )");
 	
 	public static final String INSERT_USER_WITH_PASSWORD = CustomStringUtil.appendString(
 			" INSERT INTO USERS (USERID, USERNAME, ",
@@ -286,11 +263,11 @@ public interface IUserQuery {
 			" IS_FIRSTTIME_LOGIN, PASSWORD, SALT, IS_NEW_USER, customerid ) VALUES ",
 			" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	
-	public static final String USER_SEQ_ID = "SELECT USER_ID_SEQ.NEXTVAL AS PARENT_SEQ_ID FROM DUAL";
+	public static final String USER_SEQ_ID = "SELECT NEXT VALUE FOR USER_ID_SEQ AS PARENT_SEQ_ID";
 	
-	public static final String ORGUSER_SEQ_ID = "SELECT ORG_USER_ID_SEQ.NEXTVAL AS ORGUSER_SEQ_ID FROM DUAL";
+	public static final String ORGUSER_SEQ_ID = "SELECT NEXT VALUE FOR ORG_USER_ID_SEQ AS ORGUSER_SEQ_ID";
 	
-	public static final String DB_REPORT_SEQ_ID = "SELECT DB_REPORT_ID_SEQ.NEXTVAL AS REPORT_SEQ_ID FROM DUAL";
+	public static final String DB_REPORT_SEQ_ID = "SELECT NEXT VALUE FOR DB_REPORT_ID_SEQ AS REPORT_SEQ_ID";
 	
 	public static final String CHECK_EXISTING_USER = "SELECT userid as USER_ID FROM USERS WHERE upper(USERNAME) = upper(?)";
 	public static final String CHECK_EXISTING_REPORT = "SELECT DB_REPORTID AS DB_REPORT_ID FROM DASH_REPORTS  WHERE REPORT_NAME=? AND report_folder_uri=?";
@@ -324,18 +301,13 @@ public interface IUserQuery {
 	
 	
 	public static final String SEARCH_EDU_USER = CustomStringUtil.appendString(
-			"SELECT ROWIDTOCHAR(USR.ROWID) AS USERROWID, USR.USERID AS USERID,",
-            " USR.USERNAME AS USERNAME, USR.LAST_NAME || ' ' || USR.FIRST_NAME AS FULLNAME,",
-            " USR.LAST_NAME,USR.FIRST_NAME, USR.ACTIVATION_STATUS AS STATUS,",
-            " EDC.EDU_CENTER_NAME AS EDU_CENTER_NAME,EDC.EDU_CENTER_CODE EDU_CENTER_CODE,",
-            " EDC.EDU_CENTERID AS EDU_CENTERID ",
-            " FROM USERS USR,EDU_CENTER_USER_LINK EDU, EDU_CENTER_DETAILS EDC",
-            " WHERE (UPPER(USR.USERNAME) LIKE UPPER(?) OR",
-            " UPPER(USR.LAST_NAME) LIKE UPPER(?) OR UPPER(USR.FIRST_NAME) LIKE UPPER(?))",
-            " AND USR.USERID = EDU.USERID ",
-            " AND EDU.EDU_CENTERID = EDC.EDU_CENTERID",
-            " AND EDU.EDU_CENTERID =?",
-            " AND ROWNUM <= ?");
+			"SELECT USERID, USERNAME, FULLNAME, LAST_NAME, FIRST_NAME, STATUS, EDU_CENTER_NAME, EDU_CENTER_CODE, ",
+			" EDU_CENTERID FROM (SELECT CAST(USR.USERID AS varchar(18)) AS USERROWID, USR.USERID AS USERID, USR.USERNAME AS USERNAME, ",
+			" ISNULL(USR.LAST_NAME,'')+' '+ISNULL(USR.FIRST_NAME,'') AS FULLNAME, USR.LAST_NAME,USR.FIRST_NAME, USR.ACTIVATION_STATUS AS STATUS, ",
+			" EDC.EDU_CENTER_NAME AS EDU_CENTER_NAME,EDC.EDU_CENTER_CODE EDU_CENTER_CODE, EDC.EDU_CENTERID AS EDU_CENTERID, ",
+			" ROW_NUMBER() OVER (ORDER BY (SELECT 1)) ROWNUM  FROM USERS USR,EDU_CENTER_USER_LINK EDU, EDU_CENTER_DETAILS EDC ",
+			" WHERE (UPPER(USR.USERNAME) LIKE UPPER(?) OR UPPER(USR.LAST_NAME) LIKE UPPER(?) OR UPPER(USR.FIRST_NAME) LIKE UPPER(?)) ",
+			" AND USR.USERID = EDU.USERID  AND EDU.EDU_CENTERID = EDC.EDU_CENTERID AND EDU.EDU_CENTERID =?) a WHERE ROWNUM <= ?");
 	
 	public static final String SEARCH_USER_EXACT = CustomStringUtil
 	.appendString( " SELECT ROWIDTOCHAR(USR.ROWID) AS USERROWID , ",

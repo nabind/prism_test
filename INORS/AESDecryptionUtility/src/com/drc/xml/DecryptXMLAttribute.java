@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.RollingFileAppender;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -86,7 +87,13 @@ public class DecryptXMLAttribute {
 										if (encryptedAttribute.getNodeName().equals(prop.get(ApplicationConstants.VALIDATE_SSN_ATTR_KEY))) {
 											decryptedValue = decryptedValue.replace("-", "");											
 										}
-										encryptedAttribute.setNodeValue(decryptedValue);
+										
+										if(decryptedValue.trim().length()==0) {
+											attributes.removeNamedItem(encryptedAttribute.getNodeName());																															
+										} else {
+											encryptedAttribute.setNodeValue(decryptedValue);
+										}
+										
 									}
 								}
 								
