@@ -754,6 +754,7 @@ public class TascController {
                         /** this is to fetch GHI record **/
                         Map<String,List> mapGhi = stageDao.getCombinedGhi(process);
                         request.setAttribute("combinedGhiList", (List<StudentDetailsTO>)mapGhi.get("op"));
+                        request.setAttribute("docStatusGhi", (List<StudentDetailsGhiTO>)mapGhi.get("docStatusGhi"));
                         request.setAttribute("errorGhi", (List<StudentDetailsGhiTO>)mapGhi.get("er"));
                        
                         convertProcessToJson(studentDetailsTOList);

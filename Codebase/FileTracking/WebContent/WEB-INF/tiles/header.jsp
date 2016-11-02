@@ -49,8 +49,8 @@ function refreshList(adminid, url) {
 			<span><a id="toproot1" class="off" href="trackErrorSearch.htm">&nbsp; Track Error - GHI&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
 			
-			<span><a id="toproot1" class="off" href="combinedGhi.htm">&nbsp; Check single student - GHI&nbsp;</a></span>
-			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">
+			<!-- <span><a id="toproot1" class="off" href="combinedGhi.htm">&nbsp; Check single student - GHI&nbsp;</a></span>
+			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3"> -->
 			
 			<span><a id="toproot2" class="off" href="tascSearch.htm">&nbsp;Search TASC Process&nbsp;</a></span>
 			<img src="css/nav-divider.gif" alt="" class="divider" border="0" height="29" width="3">

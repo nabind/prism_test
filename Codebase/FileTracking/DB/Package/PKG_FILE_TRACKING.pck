@@ -86,19 +86,19 @@ CREATE OR REPLACE PACKAGE PKG_FILE_TRACKING AS
                                     P_OUT_CUR_DATA      OUT GET_REFCURSOR,
                                     P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
-  PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID              IN VARCHAR2,
-                                   P_STATE_CODE        IN VARCHAR2,
-                                   P_DRC_STUDENT_ID    IN VARCHAR2,
-                                   P_LEVEL1_ORG_CODE   IN VARCHAR2,
-                                   P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
-                                   P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
-                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
-                                    
-  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM          IN VARCHAR2,
-                                    P_DATE_TO            IN VARCHAR2,
-                                    P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA   OUT GET_REFCURSOR,
-                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2);
+  PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID                    IN VARCHAR2,
+                                   P_DRC_STUDENT_ID          IN VARCHAR2,
+                                   P_LEVEL1_ORG_CODE         IN VARCHAR2,
+                                   P_OUT_CUR_DATA_OP         OUT GET_REFCURSOR,
+                                   P_OUT_CUR_DATA_DOC_STATUS OUT GET_REFCURSOR,
+                                   P_OUT_CUR_DATA_ER         OUT GET_REFCURSOR,
+                                   P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2);
+
+  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM         IN VARCHAR2,
+                                P_DATE_TO           IN VARCHAR2,
+                                P_SOURCE_SYSTEM     IN VARCHAR2,
+                                P_OUT_CUR_DATA      OUT GET_REFCURSOR,
+                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2);
 
 END PKG_FILE_TRACKING;
 /
@@ -1390,17 +1390,18 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_GHI_HISTORY;
 
-  PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID              IN VARCHAR2,
-                                   P_STATE_CODE        IN VARCHAR2,
-                                   P_DRC_STUDENT_ID    IN VARCHAR2,
-                                   P_LEVEL1_ORG_CODE   IN VARCHAR2,
-                                   P_OUT_CUR_DATA_OP   OUT GET_REFCURSOR,
-                                   P_OUT_CUR_DATA_ER   OUT GET_REFCURSOR,
-                                   P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
+  PROCEDURE SP_GET_DATA_GHI_SINGLE(P_UUID                    IN VARCHAR2,
+                                   P_DRC_STUDENT_ID          IN VARCHAR2,
+                                   P_LEVEL1_ORG_CODE         IN VARCHAR2,
+                                   P_OUT_CUR_DATA_OP         OUT GET_REFCURSOR,
+                                   P_OUT_CUR_DATA_DOC_STATUS OUT GET_REFCURSOR,
+                                   P_OUT_CUR_DATA_ER         OUT GET_REFCURSOR,
+                                   P_OUT_EXCEP_ERR_MSG       OUT VARCHAR2) IS
   
-    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
-    P_OUT_TOTAL_RECORD_COUNT NUMBER(4) := 0;
-    P_OUT_CUR_DATA           GET_REFCURSOR;
+    V_QUERY_ACTUAL_OP         VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_DOC_STATUS VARCHAR2(4000) := '';
+    P_OUT_TOTAL_RECORD_COUNT  NUMBER(4) := 0;
+    P_OUT_CUR_DATA            GET_REFCURSOR;
   BEGIN
     V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
                          'SELECT SBD.INT_STUDENT_ID DRC_STUDENT_ID,
@@ -1459,11 +1460,6 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                            '%''';
     END IF;
   
-    /*IF P_STATE_CODE <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                           ' AND CI.CUSTOMER_CODE =  ''' || P_STATE_CODE || '''';
-    END IF;*/
-  
     IF P_DRC_STUDENT_ID <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
                            ' AND SBD.INT_STUDENT_ID = ''' ||
@@ -1482,6 +1478,103 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     --DBMS_OUTPUT.PUT_LINE('V_QUERY_ACTUAL_OP: ' || V_QUERY_ACTUAL_OP);
   
     OPEN P_OUT_CUR_DATA_OP FOR V_QUERY_ACTUAL_OP;
+  
+    V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
+                                 'SELECT (SELECT ORG_NODE_CODE
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODE_LEVEL = 1
+                   AND CUSTOMERID = SRI.CUSTOMERID) STATE_CODE,
+               SDI.TEST_MODE TESTMODE,
+               SRI.LAST_NAME || '','' || SRI.FIRST_NAME || '' '' || SRI.MIDDLE_NAME STUDENT_NAME,
+               SRI.EXAMINEE_ID EXAMINEEID,
+               SRI.DRC_STUDENTID DRC_STUDENTID,
+               DECODE(SDI.DOC_PROCESS_STATUS,
+                      ''CHI'',
+                      ''Checked-In'',
+                      ''TES'',
+                      ''Score Populated'',
+                      ''SCH'',
+                      ''Scheduled'',
+                      ''EXP'',
+                      ''Expired'') DOC_PROCESS_STATUS,
+               TO_CHAR(SDI.EXPIRED_DATE, ''MM/DD/YYYY HH24:MI:SS'') EXPIRED_DATE,
+               TO_CHAR(SDI.CHECKIN_DATE, ''MM/DD/YYYY HH24:MI:SS'') CHECKIN_DATE,
+               SDI.BARCODE_ID BARCODEID,
+               SDI.SCHEDULE_ID SCHEDULEID,
+               SDI.TCA_SCHEDULED_DATE TCA_SCHEDULED_DATE,
+               (SELECT SSF.TEST_DATE
+                  FROM SUBTEST_SCORE_FACT SSF, SUBTEST_DIM SD
+                 WHERE SSF.SUBTESTID = SD.SUBTESTID
+                   AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
+                   AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID) DATETESTTAKEN,
+               SDI.FORM FORM,
+               (SELECT SUBTEST_NAME
+                  FROM SUBTEST_DIM
+                 WHERE SUBTEST_CODE = SDI.CONTENT_CODE) CONTENTNAME,
+               (SELECT DEMO_VALUE
+                  FROM STU_SUBTEST_DEMO_VALUES
+                 WHERE STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
+                   AND SUBTESTID =
+                       (SELECT SUBTESTID
+                          FROM SUBTEST_DIM
+                         WHERE SUBTEST_CODE = SDI.CONTENT_CODE)
+                   AND DEMOID =
+                       (SELECT DEMOID
+                          FROM DEMOGRAPHIC
+                         WHERE DEMO_CODE LIKE ''Cont_Tst_Cd%''
+                           AND CUSTOMERID = SDI.CUSTOMERID
+                           AND SUBTESTID =
+                               (SELECT SUBTESTID
+                                  FROM SUBTEST_DIM
+                                 WHERE SUBTEST_CODE = SDI.CONTENT_CODE))
+                   AND ROWNUM = 1) CONTENT_TEST_CODE,
+               SDI.TEST_LANGUAGE TESTLANGUAGE,
+               SDI.LITHOCODE LITHOCODE,
+               SDI.FIELD_TEST_FORM,
+               TO_CHAR(SDI.TEST_EVENT_UPDATE_DATE, ''MM/DD/YYYY HH24:MI:SS'') TEST_EVENT_UPDATE_DATE,
+               (SELECT ORG_NODE_CODE_PATH
+                  FROM ORG_NODE_DIM
+                 WHERE ORG_NODEID = SDI.ORG_NODEID
+                   AND CUSTOMERID = SDI.CUSTOMERID) ORGPATH,
+               CASE
+                 WHEN SDI.UPDATED_DATE_TIME IS NULL THEN
+                  TO_CHAR(SDI.CREATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
+                 ELSE
+                  TO_CHAR(SDI.UPDATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
+               END AS PRISM_PROCESS_DATE,
+               TO_CHAR(SDI.DOCUMENTID) DOCUMENTID,
+               SDI.STUDENT_BIO_ID STUDENT_BIO_ID,
+               (SELECT FILE_NAME
+                  FROM STG_TASK_STATUS
+                 WHERE TASK_ID =
+                       (SELECT MAX(TASK_ID)
+                          FROM SUBTEST_SCORE_FACT_HIST SSFH, SUBTEST_DIM SD
+                         WHERE SSFH.SUBTESTID = SD.SUBTESTID
+                           AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
+                           AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID)) FILE_NAME,
+               TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME
+          FROM STUDENT_REG_INFO SRI, STUDENT_DOC_INFO SDI
+         WHERE SRI.STUDENT_REGID = SDI.STUDENT_REGID';
+  
+    IF P_UUID <> '-1' THEN
+      V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
+                                   ' AND SRI.EXAMINEE_ID LIKE ''%' ||
+                                   P_UUID || '%''';
+    END IF;
+  
+    IF P_DRC_STUDENT_ID <> '-1' THEN
+      V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
+                                   ' AND SRI.DRC_STUDENTID = ''' ||
+                                   P_DRC_STUDENT_ID || '''';
+    END IF;
+  
+    IF P_LEVEL1_ORG_CODE <> '-1' THEN
+      V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
+                                   ' AND SUBSTR(SRI.ORG_NODE_CODE_PATH, 3, 3) = ''' ||
+                                   P_LEVEL1_ORG_CODE || '''';
+    END IF;
+  
+    OPEN P_OUT_CUR_DATA_DOC_STATUS FOR V_QUERY_ACTUAL_DOC_STATUS;
   
     SP_GET_DATA_GHI('-1', --P_PROCESS_STATUS,
                     '-1', --P_DATE_FROM              IN VARCHAR2,
@@ -1508,19 +1601,19 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     WHEN OTHERS THEN
       P_OUT_EXCEP_ERR_MSG := UPPER(SUBSTR(SQLERRM, 12, 255));
   END SP_GET_DATA_GHI_SINGLE;
-    
-  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM          IN VARCHAR2,
-                                    P_DATE_TO            IN VARCHAR2,
-                                    P_SOURCE_SYSTEM      IN VARCHAR2,
-                                    P_OUT_CUR_DATA   OUT GET_REFCURSOR,
-                                    P_OUT_EXCEP_ERR_MSG  OUT VARCHAR2) IS
+
+  PROCEDURE SP_GET_TASC_PROCESS(P_DATE_FROM         IN VARCHAR2,
+                                P_DATE_TO           IN VARCHAR2,
+                                P_SOURCE_SYSTEM     IN VARCHAR2,
+                                P_OUT_CUR_DATA      OUT GET_REFCURSOR,
+                                P_OUT_EXCEP_ERR_MSG OUT VARCHAR2) IS
   
-    V_QUERY_ACTUAL_DEF        VARCHAR2(4000) := '';
-    V_QUERY_ACTUAL_GHI        VARCHAR2(4000) := '';
-    V_QUERY_ACTUAL_OP        VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_DEF VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_GHI VARCHAR2(4000) := '';
+    V_QUERY_ACTUAL_OP  VARCHAR2(4000) := '';
   BEGIN
     V_QUERY_ACTUAL_DEF := V_QUERY_ACTUAL_DEF ||
-                         'SELECT PROCESS_ID,
+                          'SELECT PROCESS_ID,
                              FILE_NAME,
                              SOURCE_SYSTEM,
                              '''' REG_VALIDATION,
@@ -1537,9 +1630,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              ER_VALIDATION
                         FROM STG_PROCESS_STATUS
                         WHERE 1 = 1';
-                        
+  
     V_QUERY_ACTUAL_GHI := V_QUERY_ACTUAL_GHI ||
-                         'SELECT PROCESS_ID,
+                          'SELECT PROCESS_ID,
                              FILE_NAME,
                              SOURCE_SYSTEM,
                              REG_VALIDATION,
@@ -1556,33 +1649,32 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              ''''ER_VALIDATION
                         FROM TASC_PROCESS_STATUS
                         WHERE 1 = 1';
-    
+  
     -- checking the source system and using the query accordingly                       
     V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_DEF;
-    
+  
     IF P_SOURCE_SYSTEM <> '-1' AND P_SOURCE_SYSTEM = 'UDB' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_GHI;
     END IF;
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                        ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
-                        P_DATE_FROM || ''', ''MM/DD/YYYY'')';
+                           ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
+                           P_DATE_FROM || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_DATE_TO <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                        ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
-                        P_DATE_TO || ''', ''MM/DD/YYYY'')';
+                           ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
+                           P_DATE_TO || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_SOURCE_SYSTEM <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                           ' AND SOURCE_SYSTEM =  ''' || P_SOURCE_SYSTEM || '''';
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' AND SOURCE_SYSTEM =  ''' ||
+                           P_SOURCE_SYSTEM || '''';
     END IF;
   
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                         ' ORDER BY PROCESS_ID DESC';
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' ORDER BY PROCESS_ID DESC';
   
     OPEN P_OUT_CUR_DATA FOR V_QUERY_ACTUAL_OP;
   
