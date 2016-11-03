@@ -1480,81 +1480,72 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     OPEN P_OUT_CUR_DATA_OP FOR V_QUERY_ACTUAL_OP;
   
     V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
-                                 'SELECT (SELECT ORG_NODE_CODE
-                  FROM ORG_NODE_DIM
-                 WHERE ORG_NODE_LEVEL = 1
-                   AND CUSTOMERID = SRI.CUSTOMERID) STATE_CODE,
-               SDI.TEST_MODE TESTMODE,
-               SRI.LAST_NAME || '','' || SRI.FIRST_NAME || '' '' || SRI.MIDDLE_NAME STUDENT_NAME,
-               SRI.EXAMINEE_ID EXAMINEEID,
-               SRI.DRC_STUDENTID DRC_STUDENTID,
-               DECODE(SDI.DOC_PROCESS_STATUS,
-                      ''CHI'',
-                      ''Checked-In'',
-                      ''TES'',
-                      ''Score Populated'',
-                      ''SCH'',
-                      ''Scheduled'',
-                      ''EXP'',
-                      ''Expired'') DOC_PROCESS_STATUS,
-               TO_CHAR(SDI.EXPIRED_DATE, ''MM/DD/YYYY HH24:MI:SS'') EXPIRED_DATE,
-               TO_CHAR(SDI.CHECKIN_DATE, ''MM/DD/YYYY HH24:MI:SS'') CHECKIN_DATE,
-               SDI.BARCODE_ID BARCODEID,
-               SDI.SCHEDULE_ID SCHEDULEID,
-               SDI.TCA_SCHEDULED_DATE TCA_SCHEDULED_DATE,
-               (SELECT SSF.TEST_DATE
-                  FROM SUBTEST_SCORE_FACT SSF, SUBTEST_DIM SD
-                 WHERE SSF.SUBTESTID = SD.SUBTESTID
-                   AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
-                   AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID) DATETESTTAKEN,
-               SDI.FORM FORM,
-               (SELECT SUBTEST_NAME
-                  FROM SUBTEST_DIM
-                 WHERE SUBTEST_CODE = SDI.CONTENT_CODE) CONTENTNAME,
-               (SELECT DEMO_VALUE
-                  FROM STU_SUBTEST_DEMO_VALUES
-                 WHERE STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
-                   AND SUBTESTID =
-                       (SELECT SUBTESTID
-                          FROM SUBTEST_DIM
-                         WHERE SUBTEST_CODE = SDI.CONTENT_CODE)
-                   AND DEMOID =
-                       (SELECT DEMOID
-                          FROM DEMOGRAPHIC
-                         WHERE DEMO_CODE LIKE ''Cont_Tst_Cd%''
-                           AND CUSTOMERID = SDI.CUSTOMERID
-                           AND SUBTESTID =
-                               (SELECT SUBTESTID
-                                  FROM SUBTEST_DIM
-                                 WHERE SUBTEST_CODE = SDI.CONTENT_CODE))
-                   AND ROWNUM = 1) CONTENT_TEST_CODE,
-               SDI.TEST_LANGUAGE TESTLANGUAGE,
-               SDI.LITHOCODE LITHOCODE,
-               SDI.FIELD_TEST_FORM,
-               TO_CHAR(SDI.TEST_EVENT_UPDATE_DATE, ''MM/DD/YYYY HH24:MI:SS'') TEST_EVENT_UPDATE_DATE,
-               (SELECT ORG_NODE_CODE_PATH
-                  FROM ORG_NODE_DIM
-                 WHERE ORG_NODEID = SDI.ORG_NODEID
-                   AND CUSTOMERID = SDI.CUSTOMERID) ORGPATH,
-               CASE
-                 WHEN SDI.UPDATED_DATE_TIME IS NULL THEN
-                  TO_CHAR(SDI.CREATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
-                 ELSE
-                  TO_CHAR(SDI.UPDATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
-               END AS PRISM_PROCESS_DATE,
-               TO_CHAR(SDI.DOCUMENTID) DOCUMENTID,
-               SDI.STUDENT_BIO_ID STUDENT_BIO_ID,
-               (SELECT FILE_NAME
-                  FROM STG_TASK_STATUS
-                 WHERE TASK_ID =
-                       (SELECT MAX(TASK_ID)
-                          FROM SUBTEST_SCORE_FACT_HIST SSFH, SUBTEST_DIM SD
-                         WHERE SSFH.SUBTESTID = SD.SUBTESTID
-                           AND SD.SUBTEST_CODE = SDI.CONTENT_CODE
-                           AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID)) FILE_NAME,
-               TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME
-          FROM STUDENT_REG_INFO SRI, STUDENT_DOC_INFO SDI
-         WHERE SRI.STUDENT_REGID = SDI.STUDENT_REGID';
+                                 'SELECT SDI.CUSTOMERID,
+                     SDI.CONTENT_CODE,
+                     SDI.STUDENT_BIO_ID STUDENT_BIO_ID,
+                     (SELECT ORG_NODE_CODE
+                        FROM ORG_NODE_DIM
+                       WHERE ORG_NODE_LEVEL = 1
+                         AND CUSTOMERID = SRI.CUSTOMERID) STATE_CODE,
+                     SDI.TEST_MODE TESTMODE,
+                     SRI.LAST_NAME || '','' || SRI.FIRST_NAME || '' '' || SRI.MIDDLE_NAME STUDENT_NAME,
+                     SRI.EXAMINEE_ID EXAMINEEID,
+                     SRI.DRC_STUDENTID DRC_STUDENTID,
+                     DECODE(SDI.DOC_PROCESS_STATUS,
+                            ''CHI'',
+                            ''Checked-In'',
+                            ''TES'',
+                            ''Score Populated'',
+                            ''SCH'',
+                            ''Scheduled'',
+                            ''EXP'',
+                            ''Expired'') DOC_PROCESS_STATUS,
+                     TO_CHAR(SDI.EXPIRED_DATE, ''MM/DD/YYYY HH24:MI:SS'') EXPIRED_DATE,
+                     TO_CHAR(SDI.CHECKIN_DATE, ''MM/DD/YYYY HH24:MI:SS'') CHECKIN_DATE,
+                     SDI.BARCODE_ID BARCODEID,
+                     SDI.SCHEDULE_ID SCHEDULEID,
+                     SDI.TCA_SCHEDULED_DATE TCA_SCHEDULED_DATE,
+                     (SELECT SSF.TEST_DATE
+                        FROM SUBTEST_SCORE_FACT SSF
+                       WHERE SSF.SUBTESTID = SD.SUBTESTID
+                         AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID) DATETESTTAKEN,
+                     SDI.FORM FORM,
+                     SD.SUBTEST_NAME CONTENTNAME,
+                     (SELECT SSDV.DEMO_VALUE
+                        FROM STU_SUBTEST_DEMO_VALUES SSDV, DEMOGRAPHIC DEMO
+                       WHERE SSDV.STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
+                         AND SD.SUBTESTID = SSDV.SUBTESTID
+                         AND SSDV.SUBTESTID = DEMO.SUBTESTID
+                         AND SSDV.DEMOID = DEMO.DEMOID
+                         AND DEMO.DEMO_CODE LIKE ''Cont_Tst_Cd%''
+                         AND DEMO.CUSTOMERID = SDI.CUSTOMERID
+                         AND ROWNUM = 1) CONTENT_TEST_CODE,
+                     SDI.TEST_LANGUAGE TESTLANGUAGE,
+                     SDI.LITHOCODE LITHOCODE,
+                     SDI.FIELD_TEST_FORM,
+                     TO_CHAR(SDI.TEST_EVENT_UPDATE_DATE, ''MM/DD/YYYY HH24:MI:SS'') TEST_EVENT_UPDATE_DATE,
+                     (SELECT ORG_NODE_CODE_PATH
+                        FROM ORG_NODE_DIM
+                       WHERE ORG_NODEID = SDI.ORG_NODEID
+                         AND CUSTOMERID = SDI.CUSTOMERID) ORGPATH,
+                     CASE
+                       WHEN SDI.UPDATED_DATE_TIME IS NULL THEN
+                        TO_CHAR(SDI.CREATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
+                       ELSE
+                        TO_CHAR(SDI.UPDATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
+                     END AS PRISM_PROCESS_DATE,
+                     TO_CHAR(SDI.DOCUMENTID) DOCUMENTID,
+                     (SELECT FILE_NAME
+                        FROM STG_TASK_STATUS
+                       WHERE TASK_ID =
+                             (SELECT MAX(TASK_ID)
+                                FROM SUBTEST_SCORE_FACT_HIST SSFH
+                               WHERE SSFH.SUBTESTID = SD.SUBTESTID
+                                 AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID)) FILE_NAME,
+                     TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME
+                FROM STUDENT_REG_INFO SRI, STUDENT_DOC_INFO SDI, SUBTEST_DIM SD
+               WHERE SRI.STUDENT_REGID = SDI.STUDENT_REGID
+                 AND SDI.CONTENT_CODE = SD.SUBTEST_CODE';
   
     IF P_UUID <> '-1' THEN
       V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
@@ -1573,6 +1564,9 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                                    ' AND SUBSTR(SRI.ORG_NODE_CODE_PATH, 3, 3) = ''' ||
                                    P_LEVEL1_ORG_CODE || '''';
     END IF;
+  
+    V_QUERY_ACTUAL_DOC_STATUS := V_QUERY_ACTUAL_DOC_STATUS ||
+                                 ' ORDER BY PRISM_PROCESS_DATE DESC';
   
     OPEN P_OUT_CUR_DATA_DOC_STATUS FOR V_QUERY_ACTUAL_DOC_STATUS;
   
