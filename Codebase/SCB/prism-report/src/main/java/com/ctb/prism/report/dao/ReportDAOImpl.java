@@ -654,8 +654,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs.setString(2, roles);
 				cs.setLong(3, orgNodeLevel);
 				cs.setLong(4, custProdId);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -663,39 +663,41 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				ResultSet data = null;
 				List<AssessmentTO> assessmentList = new ArrayList<AssessmentTO>();
 				try {
-					cs.execute();
-					data = (ResultSet) cs.getObject(5);
-					Utils.logError(cs.getString(6));
-					long oldAssessmentId = -1;
-					AssessmentTO assessmentTO = null;
-					while (data.next()) {
-						long assessmentId = Long.valueOf(data.getString("MENU_ID"));
-						if (oldAssessmentId != assessmentId) {
-							oldAssessmentId = assessmentId;
-							assessmentTO = new AssessmentTO();
-							assessmentTO.setAssessmentId(assessmentId);
-							assessmentTO.setAssessmentName(data.getString("MENU_NAME"));
-							assessmentList.add(assessmentTO);
-						}
-						ReportTO reportTO = new ReportTO();
-						reportTO.setReportId(Long.valueOf(data.getString("REPORT_ID")));
-						reportTO.setReportName(data.getString("REPORT_NAME"));
-						reportTO.setReportUrl(data.getString("REPORT_FOLDER_URI"));
-						reportTO.setEnabled(data.getString("STATUS").equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
-						String strRoles = getListOfRoles(reportTO.getReportId());
-						reportTO.setAllRoles(strRoles);
-						if (strRoles != null && strRoles.length() > 0) {
-							String[] roles = strRoles.split(",");
-							for (String role : roles) {
-								ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
-								if (user_TYPE != null) {
-									reportTO.addRole(user_TYPE);
+					if(cs.execute()) {
+					//data = (ResultSet) cs.getObject(5);
+						data = cs.getResultSet();
+						Utils.logError(cs.getString(5));
+						long oldAssessmentId = -1;
+						AssessmentTO assessmentTO = null;
+						while (data.next()) {
+							long assessmentId = Long.valueOf(data.getString("MENU_ID"));
+							if (oldAssessmentId != assessmentId) {
+								oldAssessmentId = assessmentId;
+								assessmentTO = new AssessmentTO();
+								assessmentTO.setAssessmentId(assessmentId);
+								assessmentTO.setAssessmentName(data.getString("MENU_NAME"));
+								assessmentList.add(assessmentTO);
+							}
+							ReportTO reportTO = new ReportTO();
+							reportTO.setReportId(Long.valueOf(data.getString("REPORT_ID")));
+							reportTO.setReportName(data.getString("REPORT_NAME"));
+							reportTO.setReportUrl(data.getString("REPORT_FOLDER_URI"));
+							reportTO.setEnabled(data.getString("STATUS").equals(IApplicationConstants.ACTIVE_FLAG) ? true : false);
+							String strRoles = getListOfRoles(reportTO.getReportId());
+							reportTO.setAllRoles(strRoles);
+							if (strRoles != null && strRoles.length() > 0) {
+								String[] roles = strRoles.split(",");
+								for (String role : roles) {
+									ROLE_TYPE user_TYPE = Utils.getRoles(role);// Utils.getRole(role);
+									if (user_TYPE != null) {
+										reportTO.addRole(user_TYPE);
+									}
 								}
 							}
+							reportTO.setReportType(data.getString("TYPE"));
+							reportTO.setOrgLevel(data.getString("ORGLEVEL") != null ? data.getString("ORGLEVEL") : "");
+							assessmentTO.addReport(reportTO);
 						}
-						reportTO.setReportType(data.getString("TYPE"));
-						reportTO.setOrgLevel(data.getString("ORGLEVEL") != null ? data.getString("ORGLEVEL") : "");
-						assessmentTO.addReport(reportTO);
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();

@@ -14,7 +14,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 													" WHERE USR.USER_EMAIL = ?";
 	
 	//To retrieve prelogin message dynamically
-	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE = "PKG_MANAGE_REPORT.SP_GET_SYSTEM_MESSAGE(?,?,?,?,?,?)";
+	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE = "FACT.PKG_MANAGE_REPORT$SP_GET_SYSTEM_MESSAGE(?,?,?,?,?)";
 	
 	// query to retrieve more info message dynamically
 	public static final String GET_SYSTEM_CONFIGURATION_MESSAGE_REPORT_SPECIFIC =  CustomStringUtil.appendString(
@@ -1242,14 +1242,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		public static final String SP_GET_USER_RESET_PASSWORD = "{CALL PKG_MANAGE_USERS.SP_GET_USER_RESET_PASSWORD(?, ?, ?)}";
 		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL PKG_MANAGE_USERS.SP_GET_USER_PWD_HINT_LIST(?, ?, ?)}";
 
-		public static final String SP_GET_MENU_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_MENU_MAP(?, ?, ?, ?, ?)}";
+		public static final String SP_GET_MENU_MAP = "{CALL FACT.PKG_MENU_ACCESS$SP_GET_MENU_MAP(?, ?, ?, ?)}";
 		
-		public static final String SP_GET_ACTION_MAP = "{CALL PKG_MENU_ACCESS.SP_GET_ACTION_MAP(?, ?, ?, ?, ?)}";
+		public static final String SP_GET_ACTION_MAP = "{CALL FACT.PKG_MENU_ACCESS$SP_GET_ACTION_MAP(?, ?,  ?, ?)}";
 
 		public static final String GET_FILE_SIZE = CustomStringUtil.appendString(" SELECT JOB_ID,REQUEST_FILENAME,FILE_SIZE FROM JOB_TRACKING WHERE JOB_ID = ?");
 		public static final String UPDATE_FILE_SIZE = CustomStringUtil.appendString("UPDATE JOB_TRACKING SET FILE_SIZE = ? WHERE JOB_ID = ?");
 		
-		public static final String SP_GET_PROPERTY = "{CALL PKG_CONTRACT_PROPERTY.SP_GET_PROPERTY(?, ?)}";
+		public static final String SP_GET_PROPERTY = "{CALL FACT.PKG_CONTRACT_PROPERTY$SP_GET_PROPERTY(?)}";
 
 		public static final String GET_PRODUCTS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_PRODUCTS_EDIT_ACTIONS(?, ?, ?, ?)}";
 		public static final String GET_ACTIONS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_ACTIONS_EDIT_ACTIONS(?, ?, ?, ?)}";

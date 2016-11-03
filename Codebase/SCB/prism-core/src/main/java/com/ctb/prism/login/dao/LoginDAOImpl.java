@@ -373,11 +373,11 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS);
 							cs.setString(1, username);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.DATE);
-							cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.DATE);
+							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -385,33 +385,34 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							ResultSet rs = null;
 							UserTO user = new UserTO();
 							try {
-								cs.execute();
-								rs = (ResultSet) cs.getObject(2);
-								while (rs.next()) {
-									user.setFirstTimeLogin(rs.getString("IS_FIRSTTIME_LOGIN"));
-									user.setUserId(String.valueOf(rs.getLong("USERID")));
-									user.setOrgId(String.valueOf(rs.getLong("ORG_NODEID")));
-									user.setOrgNodeLevel(rs.getLong("ORG_NODE_LEVEL"));
-									user.setDisplayName(rs.getString("DISPLAY_USERNAME") != null ? rs.getString("DISPLAY_USERNAME") : "Anonymous");
-									user.setUserStatus(rs.getString("ACTIVATION_STATUS"));
-									user.setUserName(username);
-
-									user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
-									user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
-									user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
-									user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
-									user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
-									user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
-									user.setUserType(userType);
-									user.setOrgMode(rs.getString("ORG_MODE"));
-									user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
-									user.setLastLoginTime(rs.getTimestamp("LAST_LOGIN_DATE"));
+								if (cs.execute()) {
+									//rs = (ResultSet) cs.getObject(2);
+									rs = (ResultSet) cs.getResultSet();
+									while (rs.next()) {
+										user.setFirstTimeLogin(rs.getString("IS_FIRSTTIME_LOGIN"));
+										user.setUserId(String.valueOf(rs.getLong("USERID")));
+										user.setOrgId(String.valueOf(rs.getLong("ORG_NODEID")));
+										user.setOrgNodeLevel(rs.getLong("ORG_NODE_LEVEL"));
+										user.setDisplayName(rs.getString("DISPLAY_USERNAME") != null ? rs.getString("DISPLAY_USERNAME") : "Anonymous");
+										user.setUserStatus(rs.getString("ACTIVATION_STATUS"));
+										user.setUserName(username);
+	
+										user.setPassword(rs.getString("PASSWORD") != null ? rs.getString("PASSWORD") : "");
+										user.setSalt(Utils.getSaltWithUser(username, (rs.getString("SALT") != null) ? rs.getString("SALT") : ""));
+										user.setRoles(getGrantedAuthorities(username, user.getOrgNodeLevel(), userType, resolvedContractName));
+										user.setIsAdminFlag(IApplicationConstants.FLAG_Y);
+										user.setCustomerId(String.valueOf(rs.getLong("CUSTID")));
+										user.setUserEmail(rs.getString("EMAIL") != null ? rs.getString("EMAIL") : "");
+										user.setUserType(userType);
+										user.setOrgMode(rs.getString("ORG_MODE"));
+										user.setDefultCustProdId(rs.getLong("DEFAULT_CUST_PROD_ID"));
+										user.setLastLoginTime(rs.getTimestamp("LAST_LOGIN_DATE"));
+									}
+									user.setIsPasswordExpired(cs.getString(2));
+									user.setIsPasswordWarning(cs.getString(3));
+									user.setPwdChangedSince(String.valueOf(cs.getDate(4)));
+									Utils.logError(cs.getString(5));
 								}
-								user.setIsPasswordExpired(cs.getString(3));
-								user.setIsPasswordWarning(cs.getString(4));
-								user.setPwdChangedSince(String.valueOf(cs.getDate(5)));
-								Utils.logError(cs.getString(6));
-								
 							} catch (SQLException e) {
 								e.printStackTrace();
 							}
@@ -533,8 +534,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(2, messageType);
 					cs.setString(3, messageName);
 					cs.setLong(4, custProdId);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -542,10 +543,16 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					ResultSet rs = null;
 					String systemMessageResult = "";
 					try {
-						cs.execute();
+						/*cs.execute();
 						rs = (ResultSet) cs.getObject(5);
 						if (rs.next()) {
 							systemMessageResult = rs.getString("REPORT_MSG");
+						}*/
+						if (cs.execute()) {
+                            rs = (ResultSet) cs.getResultSet();
+                            if (rs.next()) {
+                                   systemMessageResult = rs.getString("REPORT_MSG");
+                            }
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -975,8 +982,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				cs.setString(1, roles);
 				cs.setLong(2, orgNodeLevel);
 				cs.setLong(3, custProdId);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -984,23 +991,26 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				ResultSet rs = null;
 				Set<MenuTO> menuSet = new LinkedHashSet<MenuTO>();
 				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(4);
-					while (rs.next()) {
-						MenuTO to = new MenuTO();
-						String menuName = rs.getString("MENU_NAME");
-						String key = rs.getString("KEY");
-						String value = rs.getString("VALUE");
-						String menuSeq = rs.getString("MENU_SEQ");
-						String reportSeq = rs.getString("REPORT_SEQ");
-						to.setMenuName(menuName);
-						to.setReportName(key);
-						to.setReportFolderUri(value);
-						to.setMenuSequence(menuSeq);
-						to.setReportSequence(reportSeq);
-						menuSet.add(to);
+					if (cs.execute()) {
+                        rs = (ResultSet) cs.getResultSet();
+						//cs.execute();
+						//rs = (ResultSet) cs.getObject(4);
+						while (rs.next()) {
+							MenuTO to = new MenuTO();
+							String menuName = rs.getString("MENU_NAME");
+							String key = rs.getString("KEY");
+							String value = rs.getString("VALUE");
+							String menuSeq = rs.getString("MENU_SEQ");
+							String reportSeq = rs.getString("REPORT_SEQ");
+							to.setMenuName(menuName);
+							to.setReportName(key);
+							to.setReportFolderUri(value);
+							to.setMenuSequence(menuSeq);
+							to.setReportSequence(reportSeq);
+							menuSet.add(to);
+						}
+						Utils.logError(cs.getString(4));
 					}
-					Utils.logError(cs.getString(5));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -1037,8 +1047,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				cs.setString(1, roles);
 				cs.setLong(2, orgNodeLevel);
 				cs.setLong(3, custProdId);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -1046,12 +1056,15 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				ResultSet rs = null;
 				Map<String,String> actionMap = new LinkedHashMap<String,String>();
 				try {
-					cs.execute();
-					rs = (ResultSet) cs.getObject(4);
-					while (rs.next()) {
-						actionMap.put(rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"));
+					if (cs.execute()) {
+                        rs = (ResultSet) cs.getResultSet();
+						//cs.execute();
+						//rs = (ResultSet) cs.getObject(4);
+						while (rs.next()) {
+							actionMap.put(rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"));
+						}
+						Utils.logError(cs.getString(4));
 					}
-					Utils.logError(cs.getString(5));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -1082,8 +1095,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
-					cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(1, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1091,12 +1104,19 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					Map<String, Object> propertyMap = new HashMap<String, Object>();
 					ResultSet rs = null;
 					try {
-						cs.execute();
+						/*cs.execute();
 						rs = (ResultSet) cs.getObject(1);
 						while (rs.next()) {
 							propertyMap.put(rs.getString("PROPERY_NAME"), rs.getString("PROPERY_VALUE"));
 						}
-						Utils.logError(cs.getString(2));
+						Utils.logError(cs.getString(2));*/
+						if (cs.execute()) {
+                            rs = (ResultSet) cs.getResultSet();
+                            while (rs.next()) {
+                            	propertyMap.put(rs.getString("PROPERY_NAME"), rs.getString("PROPERY_VALUE"));
+                            }
+						}
+						Utils.logError(cs.getString(1));
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
