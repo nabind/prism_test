@@ -38,6 +38,11 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String statusCodeContentArea;
 	private String prismProcessStatus;
 	private String testEventUpdateDate;
+	private String docProcessStatus;
+	private String expiredDate;
+	private String checkinDate;
+	private String fieldTestForm;
+	
 	
 	public String getFileName() {
 		return fileName;
@@ -271,6 +276,30 @@ public class StudentDetailsGhiTO implements Serializable {
 		.append(",").append("\"").append(fileName).append("\"")
 		.append(",").append("\"").append(fileGenDateTime).append("\"");
 		return buffer.toString();
+	}
+	public String getDocProcessStatus() {
+		return docProcessStatus;
+	}
+	public void setDocProcessStatus(String docProcessStatus) {
+		this.docProcessStatus = docProcessStatus;
+	}
+	public String getExpiredDate() {
+		return expiredDate;
+	}
+	public void setExpiredDate(String expiredDate) {
+		this.expiredDate = expiredDate;
+	}
+	public String getCheckinDate() {
+		return checkinDate;
+	}
+	public void setCheckinDate(String checkinDate) {
+		this.checkinDate = checkinDate;
+	}
+	public String getFieldTestForm() {
+		return fieldTestForm;
+	}
+	public void setFieldTestForm(String fieldTestForm) {
+		this.fieldTestForm = fieldTestForm;
 	}
 	
 }

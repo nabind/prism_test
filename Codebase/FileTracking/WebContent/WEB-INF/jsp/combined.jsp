@@ -55,6 +55,17 @@
 							]
 		});
 		
+		oTable21 = $('#docStatusGhi').dataTable({
+			"bJQueryUI": true,
+			"sPaginationType": "full_numbers",
+			"sScrollX": '100%',
+			"aaSorting": [[ 21, "desc" ]],
+			"aoColumnDefs": [ 
+							  { "bVisible": false, "aTargets": [ 0 ] },
+							  { "width": "30%", "aTargets":  [10] }
+							]
+		});
+		
 		oTable22 = $('#errorGhi').dataTable({
 			"bJQueryUI": true,
 			"sPaginationType": "full_numbers",
@@ -359,6 +370,78 @@
 					<td><%=process.getTcaScheduleDate() %></td>
 					<td><%=process.getTestLanguage() %></td>
 				</tr>
+			<%}
+			}
+			%>
+			</tbody>
+			</table>
+			
+			<br/><br/>
+			<h4> Document Status: </h4>
+			<table id="docStatusGhi" width="100%">
+			<thead>
+				<tr>
+					<th>&nbsp;</th>
+					<th>State Prefix</th>
+					<th>Test Mode</th>
+					<th>Student Name</th>
+					<th>Examinee ID (UUID)</th>
+					<th>DRC Student ID</th>
+					<th>Doc Process Status</th>
+					<th>Expired Date</th>
+					<th>Check-in Date</th>
+					<th>Barcode ID</th>
+					<th>Schedule ID</th>
+					<th>TCA Schedule Date</th>
+					<th>Date Test Taken</th>
+					<th>Form</th>
+					<th>Content Name</th>
+					<th>Content Test Code</th>
+					<th>Test Language</th>
+					<th>Litho Code</th>
+					<th>Field Test Form</th>
+					<th>Last Updated Doc Date</th>
+					<th>Org Code Path</th>
+					<th>Prism Process Date</th>
+					<th>Doc ID</th>
+					<th>File Name</th>
+					<th>File Generation Date-Time</th>
+				</tr>
+				</thead>
+				<tbody>
+			<% 
+			java.util.List<StudentDetailsGhiTO> docStatusGhi = (ArrayList) request.getAttribute("docStatusGhi");
+			if(docStatusGhi != null) {
+			for(StudentDetailsGhiTO docStatusTo : docStatusGhi) {
+			%>
+				<tr>
+					<td>&nbsp;</td>
+					<td><%=docStatusTo.getStateCode() %></td>
+					<td><%=docStatusTo.getTestMode() %></td>
+					<td><%=docStatusTo.getStudentName() %></td>
+					<td><%=docStatusTo.getExamineeID() %></td>
+					<td><%=docStatusTo.getDrcStudentID() %></td>
+					<td><%=docStatusTo.getDocProcessStatus() %></td>
+					<td><%=docStatusTo.getExpiredDate() %></td>
+					<td><%=docStatusTo.getCheckinDate() %></td>
+					<td><%=docStatusTo.getBarcodeID() %></td>
+					<td><%=docStatusTo.getScheduleID() %></td>
+					<td><%=docStatusTo.getTcaScheduleDate() %></td>
+					<td><%=docStatusTo.getDateTestTaken() %></td>
+					<td><%=docStatusTo.getForm() %></td>
+					<td><%=docStatusTo.getContentName() %></td>
+					<td><%=docStatusTo.getContentTestCode() %></td>
+					<td><%=docStatusTo.getTestLanguage() %></td>
+					<td><%=docStatusTo.getLithoCode() %></td>
+					<td><%=docStatusTo.getFieldTestForm() %></td>
+					<td><%=docStatusTo.getTestEventUpdateDate() %></td>
+					<td><%=docStatusTo.getOrgCodePath() %></td>
+					<td><%=docStatusTo.getProcesDate() %></td>
+					<td><%=docStatusTo.getDocumentID() %></td>
+					<td><%=docStatusTo.getFileName() %></td>
+					<td><%=docStatusTo.getFileGenDateTime() %></td>
+				</tr>
+			
 			<%}
 			}
 			%>

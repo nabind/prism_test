@@ -1867,9 +1867,11 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 		Connection conn = null;
 		CallableStatement cs = null;
 		ResultSet rsOp = null;
+		ResultSet rsDocStatusGhi = null;
 		ResultSet rsEr = null;
 		Map<String,List> returnMap = new HashMap<String,List>();
 		List<StudentDetailsTO> processListOp = new ArrayList<StudentDetailsTO>();
+		List<StudentDetailsGhiTO> processListDocStatus = new ArrayList<StudentDetailsGhiTO>();
 		List<StudentDetailsGhiTO> processListEr = new ArrayList<StudentDetailsGhiTO>();
 		StringBuffer queryBuff = new StringBuffer();
 		queryBuff.append("{call PKG_FILE_TRACKING.SP_GET_DATA_GHI_SINGLE(?,?,?,?,?,?,?)}");
@@ -1888,11 +1890,6 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			}else{
 				cs.setString(++count, "-1");
 			}
-			if(searchProcess.getStateCode() != null && searchProcess.getStateCode().trim().length() > 0){
-				cs.setString(++count, searchProcess.getStateCode());
-			}else{
-				cs.setString(++count, "-1");
-			}
 			if(searchProcess.getDRCStudentId() != null && searchProcess.getDRCStudentId().trim().length() > 0){
 				cs.setString(++count, searchProcess.getDRCStudentId());
 			}else{
@@ -1905,13 +1902,15 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			}
 			cs.registerOutParameter(++count, OracleTypes.CURSOR);
 			cs.registerOutParameter(++count, OracleTypes.CURSOR);
+			cs.registerOutParameter(++count, OracleTypes.CURSOR);
 			cs.registerOutParameter(++count, OracleTypes.VARCHAR);
 			cs.execute();
 			
-			String errorMessage = cs.getString(7);
+			String errorMessage = cs.getString(count);
 			if (errorMessage == null || errorMessage.isEmpty()) {
-				rsOp = (ResultSet) cs.getObject(5);
-				rsEr = (ResultSet) cs.getObject(6);
+				rsEr = (ResultSet) cs.getObject(--count);
+				rsDocStatusGhi = (ResultSet) cs.getObject(--count);
+				rsOp = (ResultSet) cs.getObject(--count);
 				logger.info("Fetching data for Online Display");
 			}else{
 				logger.error("errorMessage: "+errorMessage);
@@ -1942,6 +1941,35 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				processTO.setTcaScheduleDate(rsOp.getString("TCA_SCHEDULED_DATE")!=null?rsOp.getString("TCA_SCHEDULED_DATE"):"");
 				processTO.setTestLanguage(rsOp.getString("TEST_LANGUAGE")!=null?rsOp.getString("TEST_LANGUAGE"):"");
 				processListOp.add(processTO);
+			}
+			
+			while(rsDocStatusGhi.next()) {
+				StudentDetailsGhiTO studentDetailsTO = new StudentDetailsGhiTO();
+				studentDetailsTO.setStateCode(rsDocStatusGhi.getString("STATE_CODE")!=null ? rsDocStatusGhi.getString("STATE_CODE") : "");
+				studentDetailsTO.setTestMode(rsDocStatusGhi.getString("TESTMODE")!=null ? rsDocStatusGhi.getString("TESTMODE") : "");
+				studentDetailsTO.setStudentName(rsDocStatusGhi.getString("STUDENT_NAME")!=null ? rsDocStatusGhi.getString("STUDENT_NAME") : "");
+				studentDetailsTO.setExamineeID(rsDocStatusGhi.getString("EXAMINEEID")!=null ? rsDocStatusGhi.getString("EXAMINEEID") : "");
+				studentDetailsTO.setDrcStudentID(rsDocStatusGhi.getString("DRC_STUDENTID")!=null ? rsDocStatusGhi.getString("DRC_STUDENTID") : "");
+				studentDetailsTO.setDocProcessStatus(rsDocStatusGhi.getString("DOC_PROCESS_STATUS")!=null ? rsDocStatusGhi.getString("DOC_PROCESS_STATUS") : "");
+				studentDetailsTO.setExpiredDate(rsDocStatusGhi.getString("EXPIRED_DATE")!=null ? rsDocStatusGhi.getString("EXPIRED_DATE") : "");
+				studentDetailsTO.setCheckinDate(rsDocStatusGhi.getString("CHECKIN_DATE")!=null ? rsDocStatusGhi.getString("CHECKIN_DATE") : "");
+				studentDetailsTO.setBarcodeID(rsDocStatusGhi.getString("BARCODEID")!=null ? rsDocStatusGhi.getString("BARCODEID") : "");
+				studentDetailsTO.setScheduleID(rsDocStatusGhi.getString("SCHEDULEID")!=null ? rsDocStatusGhi.getString("SCHEDULEID") : "");
+				studentDetailsTO.setTcaScheduleDate(rsDocStatusGhi.getString("TCA_SCHEDULED_DATE")!=null?rsDocStatusGhi.getString("TCA_SCHEDULED_DATE"):"");
+				studentDetailsTO.setDateTestTaken(rsDocStatusGhi.getString("DATETESTTAKEN")!=null ? rsDocStatusGhi.getString("DATETESTTAKEN") : "");
+				studentDetailsTO.setForm(rsDocStatusGhi.getString("FORM")!=null ? rsDocStatusGhi.getString("FORM") : "");
+				studentDetailsTO.setContentName(rsDocStatusGhi.getString("CONTENTNAME")!=null ? rsDocStatusGhi.getString("CONTENTNAME") : "");
+				studentDetailsTO.setContentTestCode(rsDocStatusGhi.getString("CONTENT_TEST_CODE")!=null ? rsDocStatusGhi.getString("CONTENT_TEST_CODE") : "");
+				studentDetailsTO.setTestLanguage(rsDocStatusGhi.getString("TESTLANGUAGE")!=null ? rsDocStatusGhi.getString("TESTLANGUAGE") : "");
+				studentDetailsTO.setLithoCode(rsDocStatusGhi.getString("LITHOCODE")!=null ? rsDocStatusGhi.getString("LITHOCODE") : "");
+				studentDetailsTO.setFieldTestForm(rsDocStatusGhi.getString("FIELD_TEST_FORM")!=null ? rsDocStatusGhi.getString("FIELD_TEST_FORM") : "");
+				studentDetailsTO.setTestEventUpdateDate(rsDocStatusGhi.getString("TEST_EVENT_UPDATE_DATE")!=null ? rsDocStatusGhi.getString("TEST_EVENT_UPDATE_DATE") : "");
+				studentDetailsTO.setOrgCodePath(rsDocStatusGhi.getString("ORGPATH")!=null ? rsDocStatusGhi.getString("ORGPATH") : "");
+				studentDetailsTO.setProcesDate(rsDocStatusGhi.getString("PRISM_PROCESS_DATE")!=null ? rsDocStatusGhi.getString("PRISM_PROCESS_DATE") : "");
+				studentDetailsTO.setDocumentID(rsDocStatusGhi.getString("DOCUMENTID")!=null ? rsDocStatusGhi.getString("DOCUMENTID") : "");
+				studentDetailsTO.setFileName(rsDocStatusGhi.getString("FILE_NAME")!=null ? rsDocStatusGhi.getString("FILE_NAME") : "");
+				studentDetailsTO.setFileGenDateTime(rsDocStatusGhi.getString("FILE_GENERATION_DATE_TIME")!=null ? rsDocStatusGhi.getString("FILE_GENERATION_DATE_TIME") : "");
+				processListDocStatus.add(studentDetailsTO);
 			}
 			
 			while(rsEr.next()) {
@@ -1983,6 +2011,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				processListEr.add(studentDetailsTO);
 			}
 			returnMap.put("op", processListOp);
+			returnMap.put("docStatusGhi", processListDocStatus);
 			returnMap.put("er", processListEr);
 			
 		} catch (SQLException e) {
