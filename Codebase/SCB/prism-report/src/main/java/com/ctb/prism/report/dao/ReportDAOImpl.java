@@ -666,7 +666,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					if(cs.execute()) {
 					//data = (ResultSet) cs.getObject(5);
 						data = cs.getResultSet();
-						Utils.logError(cs.getString(5));
+						//Utils.logError(cs.getString(5));
 						long oldAssessmentId = -1;
 						AssessmentTO assessmentTO = null;
 						while (data.next()) {
@@ -698,6 +698,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 							reportTO.setOrgLevel(data.getString("ORGLEVEL") != null ? data.getString("ORGLEVEL") : "");
 							assessmentTO.addReport(reportTO);
 						}
+						Utils.logError(cs.getString(5));
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
