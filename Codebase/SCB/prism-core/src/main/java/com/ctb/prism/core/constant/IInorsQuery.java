@@ -41,23 +41,23 @@ public interface IInorsQuery {
 	
 	public static final String GET_NODE_NAME = "SELECT ORG_NODE_NAME ORG_NAME FROM ORG_NODE_DIM WHERE ORG_NODEID = ?";
 	
-	public static final String GET_DISTRICTS = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_ORG_NODE_DETAILS_DISTRICT(?, ?, ?)}";
+	public static final String GET_DISTRICTS = "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_ORG_NODE_DETAILS_DISTRICT(?, ?)}";
 	
-	public static final String GET_SCHOOLS = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_ORG_NODE_DETAILS_SCHOOL(?, ?, ?, ?)}";
+	public static final String GET_SCHOOLS = "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_ORG_NODE_DETAILS_SCHOOL(?, ?, ?)}";
 	
-	public static final String GET_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?, ?)}";
+	public static final String GET_RESULTS_GRT = "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_GET_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?)}";
 	
-	public static final String GET_ALL_RESULTS_GRT = "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_ALL_MIG_RESULT_GRT(?, ?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_RESULTS_GRT = "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_GET_ALL_MIG_RESULT_GRT(?, ?, ?, ?, ?)}";
 	
-	public static final String GET_IC= "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_INVITATION_DETAILS(?, ?, ?, ?, ?)}";
+	public static final String GET_IC= "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_GET_INVITATION_DETAILS(?, ?, ?, ?)}";
 	
-	public static final String GET_ALL_IC= "{CALL PKG_GET_MIG_RESULTS_GRT.SP_GET_ALL_INVITATION_DETAILS(?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_IC= "{CALL FACT.PKG_GET_MIG_RESULTS_GRT$SP_GET_ALL_INVITATION_DETAILS(?, ?, ?, ?)}";
 	
 	public static final String GET_PRODUCT_NAME_BY_ID = "SELECT TOP(1) PRODUCT_NAME FROM PRODUCT WHERE PRODUCTID = ?";
 	
-	public static final String GET_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_CODE(?, ?, ?, ?)}";
+	public static final String GET_CODE= "{CALL FACT.PKG_GROUP_DOWNLOADS_MO$SP_GET_CODE(?, ?, ?)}";
 	
-	public static final String GET_TP_CODE= "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_TP_CODE(?, ?, ?)}";
+	public static final String GET_TP_CODE= "{CALL FACT.PKG_GROUP_DOWNLOADS_MO$SP_GET_TP_CODE(?, ?)}";
 	
 	public static final String CREATE_STUDENT_PDF_LOG = CustomStringUtil.appendString(
 			"INSERT INTO STUDENT_PDF_LOG (STUDENT_BIO_ID,SUBTESTID,ORG_NODEID,FILENAME,CREATED_DATE_TIME) ",

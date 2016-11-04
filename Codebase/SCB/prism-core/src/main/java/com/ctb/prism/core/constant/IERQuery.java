@@ -12,7 +12,7 @@ import com.ctb.prism.core.util.CustomStringUtil;
 public interface IERQuery {
 	
 	public static final String CREATE_SP_HISTORY = CustomStringUtil.appendString(
-			"PKG_ER_MODULE.SP_CREATE_HISTORY(",
+			"FACT.PKG_ER_MODULE$SP_CREATE_HISTORY(",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?,?,?,?,?,?,",
@@ -20,18 +20,18 @@ public interface IERQuery {
 			"?,?,?,?,?,?,?,?,?)");
 	
 	public static final String CREATE_SP_EXCEPTION = CustomStringUtil.appendString(
-			"PKG_ER_MODULE.SP_CREATE_EXCEPTION(",
+			"FACT.PKG_ER_MODULE$SP_CREATE_EXCEPTION(",
 			"?,?,?,?,?,?,?,?,?)");
 	
 	public static final String CREATE_UPDATE_SP_BIO = CustomStringUtil.appendString(
-			"PKG_ER_MODULE.SP_CREATE_STUDENT_DEMO(",
+			"FACT.PKG_ER_MODULE$SP_CREATE_STUDENT_DEMO(",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?)");
 	
 	public static final String CREATE_UPDATE_SP_SCHEDULE = CustomStringUtil.appendString(
-			"PKG_ER_MODULE.SP_CREATE_TEST_SCHEDULE(",
+			"FACT.PKG_ER_MODULE$SP_CREATE_TEST_SCHEDULE(",
 			"?,?,?,?,?,?,?,?,?,?,",
 			"?,?,?,?,?,?,?,?,?,?,?)");
 	

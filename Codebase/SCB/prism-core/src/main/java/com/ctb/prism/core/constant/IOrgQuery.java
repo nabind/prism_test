@@ -16,7 +16,7 @@ public interface IOrgQuery {
 			" WHERE ORG_NODEID = ? AND CUSTOMERID = ?",
 			" ORDER BY ORG_NODE_NAME");*/
 	
-	public static final String SP_GET_CURR_TENANT_DETAILS = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_CURR_TENANT_DETAILS(?, ?, ?, ?)}";
+	public static final String SP_GET_CURR_TENANT_DETAILS = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_CURR_TENANT_DETAILS(?, ?, ?)}";
 	
 	public static final String GET_CURR_EDUCATION_DETAILS = CustomStringUtil
 	.appendString(" select ecd.EDU_CENTER_CODE,ecd.EDU_CENTERID from EDU_CENTER_DETAILS ecd " +
@@ -43,12 +43,12 @@ public interface IOrgQuery {
 			" WHERE OPL.ORG_NODEID = OND.ORG_NODEID AND OPL.CUST_PROD_ID = ? " +
 			" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");*/
 	
-	public static final String SP_GET_TENANT_DETAILS = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS(?, ?, ?, ?, ?)}";
+	public static final String SP_GET_TENANT_DETAILS = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_TENANT_DETAILS(?, ?,  ?, ?)}";
 	
 	// get all organization list based on tenantId
-	public static final String SP_GET_ORGANIZATION_LIST = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORGANIZATION_LIST(?, ?, ?, ?, ?)}";
+	public static final String SP_GET_ORGANIZATION_LIST = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_ORGANIZATION_LIST(?, ?, ?, ?)}";
 	// retrieves the organization list children for the org tree based on the org parent id
-	public static final String SP_GET_ORG_CHILDREN_LIST = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_CHILDREN_LIST(?, ?, ?, ?, ?)}";
+	public static final String SP_GET_ORG_CHILDREN_LIST = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_ORG_CHILDREN_LIST(?, ?, ?,  ?)}";
 		
 	public static final String GET_TENANT_DETAILS_NON_ROOT = CustomStringUtil
 			.appendString("SELECT OND.ORG_NODEID,OND.ORG_NODE_NAME ,OND.PARENT_ORG_NODEID,OND.ORG_NODE_LEVEL, OND.ORG_MODE " +
@@ -56,7 +56,7 @@ public interface IOrgQuery {
 					" WHERE OPL.ORG_NODEID = OND.ORG_NODEID AND OPL.CUST_PROD_ID = ? " +
 					" AND PARENT_ORG_NODEID = ? AND CUSTOMERID = ? AND OND.ORG_MODE = ?	AND OND.ORG_NODE_LEVEL <> 0	ORDER BY ORG_NODE_NAME");
 	
-	public static final String SP_GET_TENANT_DETAILS_NON_ROOT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS_NON_ROOT(?, ?, ?, ?, ?, ?)}";
+	public static final String SP_GET_TENANT_DETAILS_NON_ROOT = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_TENANT_DETAILS_NON_ROOT(?, ?, ?, ?,  ?)}";
 	
 	/*public static final String GET_TENANT_DETAILS_NON_ACSI = CustomStringUtil
 	.appendString(" SELECT ORG_NODEID,",
@@ -102,7 +102,7 @@ public interface IOrgQuery {
 							" AND OND.ORG_NODE_LEVEL = 1",
 							" ORDER BY ORG_NODE_NAME ");*/
 	
-	public static final String SP_GET_TENANT_DETAILS_NON_ACSI = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_TENANT_DETAILS_NON_ACSI(?, ?, ?, ?, ?, ?, ?)}";
+	public static final String SP_GET_TENANT_DETAILS_NON_ACSI = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_TENANT_DETAILS_NON_ACSI(?, ?, ?, ?, ?,  ?)}";
 	
 /*	public static final String GET_ORG_HIERARCHY_ON_REDIRECT = CustomStringUtil
 	.appendString("SELECT TO_CHAR(O.ORG_NODEID) AS ORG_ID,O.ORG_NODE_NAME,O.PARENT_ORG_NODEID,O.ORG_NODE_LEVEL",
@@ -116,7 +116,7 @@ public interface IOrgQuery {
                                         " AND U.USERID = ?)",
                   " ORDER BY O.ORG_NODE_LEVEL, O.PARENT_ORG_NODEID, O.ORG_NODE_NAME");*/
 	
-    public static final String SP_GET_ORG_HIER_ON_REDIRECT = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_GET_ORG_HIER_ON_REDIRECT(?, ?, ?, ?, ?)}";
+    public static final String SP_GET_ORG_HIER_ON_REDIRECT = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_GET_ORG_HIER_ON_REDIRECT(?, ?, ?,  ?)}";
 	
 	
 
@@ -138,7 +138,7 @@ public interface IOrgQuery {
 			" AND O.ORG_NODE_LEVEL  > = (SELECT ORG_NODE_LEVEL  FROM ORG_NODE_DIM WHERE ORG_NODEID  = ?) ",
 			" CONNECT BY NOCYCLE PRIOR O.ORG_NODEID = PARENT_ORG_NODEID START WITH ORG_NODEID = ? ");*/
 	
-	public static final String SP_SEARCH_ORGANNIZATION = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_SEARCH_ORGANNIZATION(?, ?, ?, ?, ?, ?, ?)}";
+	public static final String SP_SEARCH_ORGANNIZATION = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_SEARCH_ORGANNIZATION(?, ?, ?, ?, ?,  ?)}";
 	
 	
 	// search organization auto complete
@@ -156,7 +156,7 @@ public interface IOrgQuery {
 			" WHERE UPPER(ABC.ORG_NODE_NAME) LIKE UPPER(?) ",
 			" AND ROWNUM <= 100");*/
 			
-	public static final String SP_SEARCH_ORG_AUTO_COMPLETE = "{CALL PKG_MANAGE_ORGANIZATIONS.SP_SEARCH_ORG_AUTO_COMPLETE(?, ?, ?, ?, ?, ?, ?)}";			
+	public static final String SP_SEARCH_ORG_AUTO_COMPLETE = "{CALL FACT.PKG_MANAGE_ORGANIZATIONS$SP_SEARCH_ORG_AUTO_COMPLETE(?, ?, ?, ?, ?,  ?)}";			
 	
 	public static final String INSERT_STG_ORG_NODE = CustomStringUtil.appendString(
 			"INSERT INTO STG_ORG_NODE_DIM ",

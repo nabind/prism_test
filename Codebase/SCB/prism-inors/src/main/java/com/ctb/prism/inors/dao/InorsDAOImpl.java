@@ -232,8 +232,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setString(4, testProgram);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -241,9 +241,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(5);
-							grtTOResult = getGrtListFromResultSet(rs);
+							if (cs.execute()) {								
+								rs = (ResultSet) cs.getResultSet();
+								grtTOResult = getGrtListFromResultSet(rs);
+							}
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -261,8 +262,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setLong(4, Long.parseLong(schoolId));
 						cs.setString(5, testProgram);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -270,9 +271,11 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						List<GrtTO> grtTOResult = new ArrayList<GrtTO>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(6);
-							grtTOResult = getGrtListFromResultSet(rs);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								grtTOResult = getGrtListFromResultSet(rs);
+							}							
+							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -319,8 +322,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(2, customerId);
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setString(4, testProgram);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -328,9 +331,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						ArrayList<ArrayList<String>> grtTOResult = new ArrayList<ArrayList<String>>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(5);
-							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							}							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -348,8 +352,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(3, Long.parseLong(districtId));
 						cs.setLong(4, Long.parseLong(schoolId));
 						cs.setString(5, testProgram);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -357,9 +361,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						ArrayList<ArrayList<String>> grtTOResult = new ArrayList<ArrayList<String>>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(6);
-							grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								grtTOResult = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							}							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -705,8 +710,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(1, Long.parseLong(productId));
 						cs.setLong(2, Long.parseLong(districtId));
 						cs.setLong(3, Long.parseLong(testProgram));
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -714,9 +719,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(4);
-							icTOList = getICTOList(rs);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								icTOList = getICTOList(rs);
+							}							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -731,8 +737,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(1, Long.parseLong(productId));
 						cs.setLong(2, Long.parseLong(schoolId));
 						cs.setLong(3, Long.parseLong(testProgram));
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -740,9 +746,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						List<InvitationCodeTO> icTOList = new ArrayList<InvitationCodeTO>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(4);
-							icTOList = getICTOList(rs);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								icTOList = getICTOList(rs);
+							}							
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -787,8 +794,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(1, Long.parseLong(productId));
 						cs.setLong(2, Long.parseLong(districtId));
 						cs.setLong(3, Long.parseLong(testProgram));
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -796,9 +803,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						ArrayList<ArrayList<String>> icTOList = new ArrayList<ArrayList<String>>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(4);
-							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							}
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -813,8 +821,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						cs.setLong(1, Long.parseLong(productId));
 						cs.setLong(2, Long.parseLong(schoolId));
 						cs.setLong(3, Long.parseLong(testProgram));
-						cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -822,9 +830,10 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 						ResultSet rs = null;
 						ArrayList<ArrayList<String>> icTOList = new ArrayList<ArrayList<String>>();
 						try {
-							cs.execute();
-							rs = (ResultSet) cs.getObject(4);
-							icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							if (cs.execute()) {
+								rs = (ResultSet) cs.getResultSet();
+								icTOList = InorsDownloadUtil.getTableDataFromResultSet(rs, aliasList, headerList);
+							}
 						} catch (SQLException e) {
 							e.printStackTrace();
 						}
@@ -897,8 +906,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.GET_DISTRICTS);
 					cs.setLong(1, testProgram);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -906,15 +915,16 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					ResultSet rs = null;
 					List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(2);
-						com.ctb.prism.core.transferobject.ObjectValueTO to = null;
-						while (rs.next()) {
-							to = new com.ctb.prism.core.transferobject.ObjectValueTO();
-							to.setValue(rs.getString(1));
-							to.setName(rs.getString(2));
-							to.setOther(rs.getString(3));
-							objectValueList.add(to);
+						if (cs.execute()) {
+							rs = (ResultSet) cs.getResultSet();
+							com.ctb.prism.core.transferobject.ObjectValueTO to = null;
+							while (rs.next()) {
+								to = new com.ctb.prism.core.transferobject.ObjectValueTO();
+								to.setValue(rs.getString(1));
+								to.setName(rs.getString(2));
+								to.setOther(rs.getString(3));
+								objectValueList.add(to);
+							}
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -959,8 +969,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.GET_SCHOOLS);
 					cs.setLong(1, districtId);
 					cs.setLong(2, testProgram);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -968,14 +978,15 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					ResultSet rs = null;
 					List<com.ctb.prism.core.transferobject.ObjectValueTO> objectValueList = new ArrayList<com.ctb.prism.core.transferobject.ObjectValueTO>();
 					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(3);
-						com.ctb.prism.core.transferobject.ObjectValueTO to = null;
-						while (rs.next()) {
-							to = new com.ctb.prism.core.transferobject.ObjectValueTO();
-							to.setValue(rs.getString("SCHOOL_ID"));
-							to.setName(rs.getString("SCHOOL_NAME"));
-							objectValueList.add(to);
+						if (cs.execute()) {
+							rs = (ResultSet) cs.getResultSet();
+							com.ctb.prism.core.transferobject.ObjectValueTO to = null;
+							while (rs.next()) {
+								to = new com.ctb.prism.core.transferobject.ObjectValueTO();
+								to.setValue(rs.getString("SCHOOL_ID"));
+								to.setName(rs.getString("SCHOOL_NAME"));
+								objectValueList.add(to);
+							}
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -1071,8 +1082,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					CallableStatement cs = con.prepareCall(IQueryConstants.GET_CODE);
 					cs.setLong(1, districtId);
 					cs.setLong(2, schoolId);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1080,12 +1091,13 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					ResultSet rs = null;
 					Map<String,Object> returnMapRs = new HashMap<String,Object>();
 					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(3);
-						if(rs.next()) {
-							returnMapRs.put("districtCode", rs.getString("DISTRICT_CODE"));
-							returnMapRs.put("schoolCode", rs.getString("SCHOOL_CODE"));
-						}
+						if (cs.execute()) {
+							rs = (ResultSet) cs.getResultSet();
+							if(rs.next()) {
+								returnMapRs.put("districtCode", rs.getString("DISTRICT_CODE"));
+								returnMapRs.put("schoolCode", rs.getString("SCHOOL_CODE"));
+							}
+						}						
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
@@ -1126,8 +1138,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.GET_TP_CODE);
 					cs.setLong(1, custProdId);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1135,12 +1147,13 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					ResultSet rs = null;
 					Map<String,Object> returnMapRs = new HashMap<String,Object>();
 					try {
-						cs.execute();
-						rs = (ResultSet) cs.getObject(2);
-						if(rs.next()) {
-							returnMapRs.put("tpCode", rs.getString("TP_CODE"));
-							returnMapRs.put("productId", rs.getString("PRODUCTID"));
-						}
+						if (cs.execute()) {
+							rs = (ResultSet) cs.getResultSet();
+							if(rs.next()) {
+								returnMapRs.put("tpCode", rs.getString("TP_CODE"));
+								returnMapRs.put("productId", rs.getString("PRODUCTID"));
+							}
+						}						
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
