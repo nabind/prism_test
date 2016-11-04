@@ -639,7 +639,7 @@ public class TascController {
                   process.setLevel1OrgCode(request.getParameter("stateCode"));
                   request.getSession().setAttribute("combinedRequestTO", process);
                  
-                  if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getTestElementId() != null && process.getTestElementId().length() > 0) ) {
+                  if((process.getUuid() != null && process.getUuid().length() > 0) || (process.getDRCStudentId() != null && process.getDRCStudentId().length() > 0) ) {
                         TascDAOImpl stageDao = new TascDAOImpl();
                        
                         String action = request.getParameter("action");
@@ -764,9 +764,9 @@ public class TascController {
                                return new ModelAndView("combined", "message", "");
                   } else {
                         if (userName.equals("Support"))
-                               return new ModelAndView("supportPageTASC", "message", "Please provide UUID");
+                               return new ModelAndView("supportPageTASC", "message", "Please provide UUID or DRC Student ID");
                         else  
-                               return new ModelAndView("combined", "message", "Please provide UUID");
+                               return new ModelAndView("combined", "message", "Please provide UUID or DRC Student ID");
                   }
                  
            } catch (Exception e) {
