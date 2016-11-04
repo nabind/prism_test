@@ -1434,7 +1434,7 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              SUBSTR(OND.ORG_NODE_CODE_PATH, 3, 3) LEVEL1_ORG_CODE,
                              SDI.DOCUMENTID,
                              SDI.SCHEDULE_ID,
-                             SDI.TCA_SCHEDULED_DATE,
+                             TO_CHAR(SDI.TCA_SCHEDULED_DATE, ''MM/DD/YYYY HH24:MI:SS'') TCA_SCHEDULED_DATE,
                              SDI.TEST_LANGUAGE
                         FROM STUDENT_BIO_DIM    SBD,
                              SUBTEST_SCORE_FACT SSF,
@@ -1504,8 +1504,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                      TO_CHAR(SDI.CHECKIN_DATE, ''MM/DD/YYYY HH24:MI:SS'') CHECKIN_DATE,
                      SDI.BARCODE_ID BARCODEID,
                      SDI.SCHEDULE_ID SCHEDULEID,
-                     SDI.TCA_SCHEDULED_DATE TCA_SCHEDULED_DATE,
-                     (SELECT SSF.TEST_DATE
+                     TO_CHAR(SDI.TCA_SCHEDULED_DATE, ''MM/DD/YYYY HH24:MI:SS'') TCA_SCHEDULED_DATE,
+                     (SELECT TO_CHAR(SSF.TEST_DATE, ''MM/DD/YYYY HH24:MI:SS'')
                         FROM SUBTEST_SCORE_FACT SSF
                        WHERE SSF.SUBTESTID = SD.SUBTESTID
                          AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID) DATETESTTAKEN,
