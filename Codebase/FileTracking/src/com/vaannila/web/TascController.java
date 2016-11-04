@@ -726,38 +726,46 @@ public class TascController {
                                jsonStr = supportDao.unlockStudnet(studentTO,true);
                                logger.info("Student "+unUuid+ " with schedule " +scheduleId+" has been locked");
                         }
-                       
-                        List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
-                        request.setAttribute("combinedList", studentDetailsTOList);
-                       
-                        List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
-                        request.setAttribute("erBucket", erBucket);
-                       
-                        if(erBucket != null && erBucket.size() > 0
-                                      && (process.getUuid() != null && process.getUuid().equals(erBucket.get(0).getUuid()))
-                                      && (process.getStateCode() != null && process.getStateCode().length() == 2)){
-                               savedComments = (erBucket.get(0).getComments()==null?"":erBucket.get(0).getComments());
-                               showCommentFlag = "true";
-                               uuid = process.getUuid();
-                               stateCode = process.getStateCode();
-                        } else{
-                               savedComments = "";
+                        
+                        /**
+                  	   * DRC Student id is only valid for GHI. So, if ONLY DRC student id is used in search criteria then we will not call the DEF methods.
+                  	   * If we call, it will fetch all result from the query in getCombinedProcess dao method as there is no condition check for DRC student id,
+                  	   * (as the form is DEF). It may cause problem due to data issue. So restricting the call.                	  
+                  	  **/
+                        
+                        if (process.getUuid() != null && process.getUuid().length() > 0) {
+	                        List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
+	                        request.setAttribute("combinedList", studentDetailsTOList);
+	                       
+	                        List<StudentDetailsTO> erBucket = stageDao.getERBucket(process);
+	                        request.setAttribute("erBucket", erBucket);
+	                       
+	                        if(erBucket != null && erBucket.size() > 0
+	                                      && (process.getUuid() != null && process.getUuid().equals(erBucket.get(0).getUuid()))
+	                                      && (process.getStateCode() != null && process.getStateCode().length() == 2)){
+	                               savedComments = (erBucket.get(0).getComments()==null?"":erBucket.get(0).getComments());
+	                               showCommentFlag = "true";
+	                               uuid = process.getUuid();
+	                               stateCode = process.getStateCode();
+	                        } else{
+	                               savedComments = "";
+	                        }
+	                       
+	                        List<StudentDetailsTO> erError = stageDao.getERError(process);
+	                        request.setAttribute("erError", erError);
+	                       
+	                        List<StudentDetailsTO> oasPpError = stageDao.getOasPPError(process);
+	                        request.setAttribute("oasPpError", oasPpError);
+	                        convertProcessToJson(studentDetailsTOList);
                         }
-                       
-                        List<StudentDetailsTO> erError = stageDao.getERError(process);
-                        request.setAttribute("erError", erError);
-                       
-                        List<StudentDetailsTO> oasPpError = stageDao.getOasPPError(process);
-                        request.setAttribute("oasPpError", oasPpError);
-                       
-                       
+                        
                         /** this is to fetch GHI record **/
                         Map<String,List> mapGhi = stageDao.getCombinedGhi(process);
                         request.setAttribute("combinedGhiList", (List<StudentDetailsTO>)mapGhi.get("op"));
                         request.setAttribute("docStatusGhi", (List<StudentDetailsGhiTO>)mapGhi.get("docStatusGhi"));
                         request.setAttribute("errorGhi", (List<StudentDetailsGhiTO>)mapGhi.get("er"));
-                       
-                        convertProcessToJson(studentDetailsTOList);
+                        
+                        
                         if (userName.equals("Support"))
                                return new ModelAndView("supportPageTASC", "message", "");
                         else
