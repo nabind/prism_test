@@ -735,7 +735,8 @@ public class TascController {
                   	     * (as the form is DEF). It may cause problem due to data issue. So restricting the call.                	  
                   	    **/
                         
-                        if (process.getUuid() != null && process.getUuid().length() > 0) {
+                        //if (process.getUuid() != null && process.getUuid().length() > 0) {
+                        if (StringUtils.hasText(process.getUuid()) && !StringUtils.hasText(process.getDRCStudentId())) {
 	                        List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
 	                        request.setAttribute("combinedList", studentDetailsTOList);
 	                       
