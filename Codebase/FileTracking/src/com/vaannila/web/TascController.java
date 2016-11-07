@@ -728,10 +728,12 @@ public class TascController {
                         }
                         
                         /**
-                  	   * DRC Student id is only valid for GHI. So, if ONLY DRC student id is used in search criteria then we will not call the DEF methods.
-                  	   * If we call, it will fetch all result from the query in getCombinedProcess dao method as there is no condition check for DRC student id,
-                  	   * (as the form is DEF). It may cause problem due to data issue. So restricting the call.                	  
-                  	  **/
+                         * 1. Length of state_code should be 3
+                         * 
+                         * 2. DRC Student id is only valid for GHI. So, if ONLY DRC student id is used in search criteria then we will not call the DEF methods.
+                  	     * If we call, it will fetch all result from the query in getCombinedProcess dao method as there is no condition check for DRC student id,
+                  	     * (as the form is DEF). It may cause problem due to data issue. So restricting the call.                	  
+                  	    **/
                         
                         if (process.getUuid() != null && process.getUuid().length() > 0) {
 	                        List<StudentDetailsTO> studentDetailsTOList = stageDao.getCombinedProcess(process);
