@@ -54,8 +54,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(2, Long.valueOf(testAdministrationVal));
 					cs.setLong(3, Long.valueOf(school));
 					cs.setLong(4, Long.valueOf(grade));
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -64,7 +64,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					List<RescoreRequestTO> dnpStudentResult = new ArrayList<RescoreRequestTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(5);
+						//rs = (ResultSet) cs.getObject(5);
+						rs = cs.getResultSet();
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
@@ -304,8 +305,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(2, Long.valueOf(testAdministrationVal));
 					cs.setLong(3, Long.valueOf(school));
 					cs.setLong(4, Long.valueOf(grade));
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -314,7 +315,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					List<RescoreRequestTO> notDnpStudentsResult = new ArrayList<RescoreRequestTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(5);
+						//rs = (ResultSet) cs.getObject(5);
+						rs = cs.getResultSet();
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
@@ -363,8 +365,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(3, 0);
 					cs.setLong(4, 0);
 					cs.setLong(5, studentBioId);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -373,7 +375,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					List<RescoreRequestTO> notDnpStudentResult = new ArrayList<RescoreRequestTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(6);
+						//rs = (ResultSet) cs.getObject(6);
+						rs = cs.getResultSet();
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
@@ -437,8 +440,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(3, Long.valueOf(school));
 					cs.setLong(4, Long.valueOf(grade));
 					cs.setLong(5, 0);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -447,7 +450,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					List<RescoreRequestTO> notDnpStudentResult = new ArrayList<RescoreRequestTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(6);
+						//rs = (ResultSet) cs.getObject(6);
+						rs = cs.getResultSet();
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();
@@ -500,8 +504,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					CallableStatement cs = null;
 					cs = con.prepareCall("{call " + IQueryConstants.GET_SUBTEST_DETAILS + "}");
 					cs.setLong(1, Long.valueOf(studentBioId));
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -510,7 +514,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					List<RescoreRequestTO> subtestResult = new ArrayList<RescoreRequestTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(2);
+						//rs = (ResultSet) cs.getObject(2);
+						rs = cs.getResultSet();
 						RescoreRequestTO rescoreRequestTO = null;
 						while (rs.next()) {
 							rescoreRequestTO = new RescoreRequestTO();

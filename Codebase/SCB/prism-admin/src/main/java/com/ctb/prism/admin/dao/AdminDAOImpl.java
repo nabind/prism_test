@@ -607,8 +607,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_ROLE);
 				cs.setLong(1, userId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -617,10 +617,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				List<RoleTO> roleList = new ArrayList<RoleTO>();
 				try {
 					cs.execute();
-					rs = (ResultSet) cs.getObject(2);
-					Utils.logError(cs.getString(3));
-					if(cs.getString(3) != null && cs.getString(3).length() > 0) {
-						throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
+					//rs = (ResultSet) cs.getObject(2);
+					rs = cs.getResultSet();
+					Utils.logError(cs.getString(2));
+					if(cs.getString(2) != null && cs.getString(2).length() > 0) {
+						throw new BusinessException("Exception occured while getting Organization " + cs.getString(2));
 					}
 					while(rs.next()){
 						RoleTO to = new RoleTO();
@@ -687,8 +688,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						cs.setString(6, userName);
 						cs.setString(7, searchParam);
 						cs.setLong(8, Long.parseLong(moreCount));
-						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -697,10 +698,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						List<UserTO> userList = new ArrayList<UserTO>();
 						try {
 							cs.execute();
-							rs = (ResultSet) cs.getObject(9);
-							Utils.logError(cs.getString(10));
-							if(cs.getString(10) != null && cs.getString(10).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(10));
+							//rs = (ResultSet) cs.getObject(9);
+							rs = cs.getResultSet();
+							Utils.logError(cs.getString(9));
+							if(cs.getString(9) != null && cs.getString(9).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(9));
 							}
 							userList = getUserListFromResultSet(currorg, rs);
 						} catch (SQLException e) {
@@ -730,8 +732,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						cs.setLong(5, Long.parseLong(custProdId));
 						cs.setString(6, userName);
 						cs.setLong(7, Long.parseLong(moreCount));
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -740,13 +742,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						List<UserTO> userList = new ArrayList<UserTO>();
 						try {
 							cs.execute();
-							rs = (ResultSet) cs.getObject(8);
-							Utils.logError(cs.getString(9));
-							if(cs.getString(9) != null && cs.getString(9).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(9));
+							//rs = (ResultSet) cs.getObject(8);
+							rs = cs.getResultSet();
+							Utils.logError(cs.getString(8));
+							if(cs.getString(8) != null && cs.getString(8).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(8));
 							}
 							userList = getUserListFromResultSet(currorg, rs);
-							Utils.logError(cs.getString(9));
+							Utils.logError(cs.getString(8));
 						} catch (SQLException e) {
 							e.printStackTrace();
 						} catch (BusinessException e) {
@@ -773,8 +776,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					cs.setLong(4, roleId);
 					cs.setLong(5, Long.parseLong(custProdId));
 					cs.setLong(6, Long.parseLong(moreCount));
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -783,10 +786,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					List<UserTO> userList = new ArrayList<UserTO>();
 					try {
 						cs.execute();
-						rs = (ResultSet) cs.getObject(7);
-						Utils.logError(cs.getString(8));
-						if(cs.getString(8) != null && cs.getString(8).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(8));
+						//rs = (ResultSet) cs.getObject(7);
+						rs = cs.getResultSet();
+						Utils.logError(cs.getString(7));
+						if(cs.getString(7) != null && cs.getString(7).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
 						}
 						userList = getUserListFromResultSet(currorg, rs);
 					
@@ -818,9 +822,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.GET_USER_DETAILS_ON_EDIT);
 				cs.setLong(1, userId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -833,11 +837,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				RoleTO roleTO = null;
 				try {
 					cs.execute();
-					Utils.logError(cs.getString(4));
-					if(cs.getString(4) != null && cs.getString(4).length() > 0) {
+					Utils.logError(cs.getString(2));
+					if(cs.getString(2) != null && cs.getString(2).length() > 0) {
 						throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
 					}
-					userRs = (ResultSet) cs.getObject(2);
+					//userRs = (ResultSet) cs.getObject(2);
+					userRs = cs.getResultSet();
 					while(userRs.next()){
 						to.setUserId(userRs.getLong("ID"));
 						to.setUserName(userRs.getString("USERID"));
@@ -846,7 +851,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						to.setStatus(userRs.getString("STATUS"));
 					}
 					
-					roleRs= (ResultSet) cs.getObject(3);
+					//roleRs= (ResultSet) cs.getObject(3);
+					if (cs.getMoreResults()) {
+						roleRs = cs.getResultSet();
+					}
 					while(roleRs.next()){
 						roleTO = new RoleTO();
 						roleTO.setRoleName(roleRs.getString("ROLENAME"));
@@ -946,8 +954,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						public CallableStatement createCallableStatement(Connection con) throws SQLException {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_ADD);
 							cs.setString(1, roleNotAdded);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+							//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -956,10 +964,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							List<RoleTO> roleList = new ArrayList<RoleTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject(2);
-								Utils.logError(cs.getString(3));
-								if(cs.getString(3) != null && cs.getString(3).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
+								//rs = (ResultSet) cs.getObject(2);
+								rs = cs.getResultSet();
+								Utils.logError(cs.getString(2));
+								if(cs.getString(2) != null && cs.getString(2).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(2));
 								}
 								while(rs.next()){
 									RoleTO to = new RoleTO();
@@ -988,8 +997,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_USER);
 							cs.setString(1, roleNotAdded);
 							cs.setLong(2, Long.valueOf(userid));
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
+							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -998,10 +1007,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 							List<RoleTO> roleList = new ArrayList<RoleTO>();
 							try {
 								cs.execute();
-								rs = (ResultSet) cs.getObject(3);
-								Utils.logError(cs.getString(4));
-								if(cs.getString(4) != null && cs.getString(4).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
+								//rs = (ResultSet) cs.getObject(3);
+								rs = cs.getResultSet();
+								Utils.logError(cs.getString(3));
+								if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
 								}
 								while(rs.next()){
 									RoleTO to = new RoleTO();
@@ -1293,9 +1303,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				cs.setString(13, IApplicationConstants.ACTIVE_FLAG);
 				cs.setString(14, roles.toString());
 				//15
-				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(18, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
+				//cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(16, oracle.jdbc.OracleTypes.VARCHAR);
 				if (IApplicationConstants.PURPOSE.equals(purpose)) {
 					cs.setLong(10, Long.valueOf(eduCenterId));
 					cs.setString(15, IApplicationConstants.FLAG_Y);
@@ -1316,11 +1326,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				RoleTO roleTO = null;
 				try {
 					cs.execute();
-					Utils.logError(cs.getString(18));
-					if(cs.getString(18) != null && cs.getString(18).length() > 0) {
+					Utils.logError(cs.getString(16));
+					if(cs.getString(16) != null && cs.getString(16).length() > 0) {
 						throw new BusinessException("Exception occured while getting Organization " + cs.getString(18));
 					}
-					userRs = (ResultSet) cs.getObject(16);
+					//userRs = (ResultSet) cs.getObject(16);
+					userRs = cs.getResultSet();
 					while(userRs.next()){
 						to.setUserId(userRs.getLong("ID"));
 						to.setUserName(userRs.getString("USERID"));
@@ -1329,7 +1340,10 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						to.setStatus(userRs.getString("STATUS"));
 					}
 					
-					roleRs= (ResultSet) cs.getObject(17);
+					//roleRs= (ResultSet) cs.getObject(17);
+					if (cs.getMoreResults()) {
+						roleRs = cs.getResultSet();
+					}
 					while(roleRs.next()){
 						roleTO = new RoleTO();
 						roleTO.setRoleName(roleRs.getString("ROLENAME"));
@@ -1756,8 +1770,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				new CallableStatementCreator() {
 					public CallableStatement createCallableStatement(Connection con) throws SQLException {
 						CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_ROLE_DETAILS);
-						cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+						//cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(1, oracle.jdbc.OracleTypes.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -1767,10 +1781,11 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						RoleTO to = new RoleTO();
 						try {
 							cs.execute();
-							rs = (ResultSet) cs.getObject(1);
-							Utils.logError(cs.getString(2));
-							if(cs.getString(2) != null && cs.getString(2).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(2));
+							//rs = (ResultSet) cs.getObject(1);
+							rs = cs.getResultSet();
+							Utils.logError(cs.getString(1));
+							if(cs.getString(1) != null && cs.getString(1).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(1));
 							}
 							while (rs.next()) {
 								to.setRoleId(rs.getLong("ROLE_ID"));	
@@ -2454,8 +2469,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					cs.setString(1, username);
 				//	cs.setLong(2, currentOrg);
 				//	cs.setLong(3, currentOrgLvl);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2464,11 +2479,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					UserTO user = new UserTO();
 					try {
 						cs.execute();
-						Utils.logError(cs.getString(3));
-						if(cs.getString(3) != null && cs.getString(3).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
+						Utils.logError(cs.getString(2));
+						if(cs.getString(2) != null && cs.getString(2).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(2));
 						}
-						rs = (ResultSet) cs.getObject(2);
+						//rs = (ResultSet) cs.getObject(2);
+						rs = cs.getResultSet();
 						while(rs.next()){
 							user.setUserId(Long.parseLong(rs.getString("USERID")));
 							user.setUserName(rs.getString("USERNAME"));
@@ -2510,8 +2526,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_PWD_HINT_LIST);
 					cs.setString(1, userId);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2520,11 +2536,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					List<PwdHintTO> pwdHintList = new ArrayList<PwdHintTO>();
 					try {
 						cs.execute();
-						Utils.logError(cs.getString(3));
-						if(cs.getString(3) != null && cs.getString(3).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
+						Utils.logError(cs.getString(2));
+						if(cs.getString(2) != null && cs.getString(2).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(2));
 						}
-						rs = (ResultSet) cs.getObject(2);
+						//rs = (ResultSet) cs.getObject(2);
+						rs = cs.getResultSet();
 						while (rs.next()) {
 							PwdHintTO to = new PwdHintTO();
 							to.setUserId(Long.parseLong(rs.getString("USERID")));
@@ -2557,8 +2574,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_EDU_USER_ROLE);
 				cs.setLong(1, userId);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
+				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2567,11 +2584,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				List<RoleTO> roleList = new ArrayList<RoleTO>();
 				try {
 					cs.execute();
-					Utils.logError(cs.getString(3));
-					if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+					Utils.logError(cs.getString(2));
+					if(cs.getString(2) != null && cs.getString(2).length() > 0) {
 						throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
 					}
-					rs = (ResultSet) cs.getObject(2);
+					//rs = (ResultSet) cs.getObject(2);
+					rs = cs.getResultSet();
 					while(rs.next()){
 						RoleTO to = new RoleTO();
 						to.setRoleId(Long.parseLong(rs.getString("ROLEID")));
