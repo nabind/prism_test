@@ -1578,12 +1578,12 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				searchParam = CustomStringUtil.appendString("%", searchParam, "%");
 				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL_WITH_SRCH_PARAM, parentTenantId, parentTenantId, parentTenantId, orgMode,searchParam,customerId, adminYear, moreCount);
 			} else {
-				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear, parentTenantId, moreCount);
+				lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST_ON_SCROLL, parentTenantId, moreCount, parentTenantId, customerId, parentTenantId, orgId, orgMode, customerId, adminYear);
 			}
 			orgList = getOrgList(lstData, adminYear);
 		} else {
 			parentTenantId = nodeId;
-			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, customerId, adminYear, parentTenantId, orgMode, customerId,adminYear, parentTenantId, moreCount);
+			lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ORGANIZATION_CHILDREN_LIST, parentTenantId, moreCount, parentTenantId, customerId, adminYear, parentTenantId, orgMode, customerId, adminYear);
 			orgList = getOrgList(lstData, adminYear);
 			logger.log(IAppLogger.DEBUG, lstData.size() + "");
 		}
@@ -1628,7 +1628,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 	public OrgTO getTotalUserCount(String tenantId, String adminYear, long customerId, String orgMode) {
 		OrgTO orgTO = null;
-		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, customerId, orgMode, adminYear, tenantId, customerId, tenantId, adminYear, adminYear);
+		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, tenantId, customerId, orgMode, adminYear, customerId, tenantId, adminYear, adminYear);
 		if (userCount != null && userCount.size() > 0) {
 			orgTO = new OrgTO();
 			orgTO.setNoOfUsers(((BigDecimal) userCount.get("USER_NO")).longValue());
@@ -1864,8 +1864,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 
 		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USERS_FOR_SELECTED_ROLE, roleid, 
-				Long.valueOf(customer).longValue(),Long.valueOf(customer).longValue(), Long.valueOf(currentOrg).longValue());
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USERS_FOR_SELECTED_ROLE, Long.valueOf(currentOrg).longValue(), roleid, Long.valueOf(customer).longValue(), Long.valueOf(customer).longValue());
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 
 		if (lstData.size() > 0) {
@@ -1890,8 +1889,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		ArrayList<UserTO> UserTOs = new ArrayList<UserTO>();
 
 		List<Map<String, Object>> lstData = null;
-		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_MORE_USERS_FOR_SELECTED_ROLE, roleid, 
-				Long.valueOf(customer).longValue(),Long.valueOf(last_user_id).longValue(),Long.valueOf(customer).longValue(), Long.valueOf(currentOrg).longValue());
+		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_MORE_USERS_FOR_SELECTED_ROLE, Long.valueOf(currentOrg).longValue(), roleid, Long.valueOf(customer).longValue(), Long.valueOf(last_user_id).longValue(),Long.valueOf(customer).longValue());
 		logger.log(IAppLogger.DEBUG, lstData.size() + "");
 
 		if (lstData.size() > 0) {
