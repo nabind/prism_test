@@ -1402,9 +1402,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (IApplicationConstants.FLAG_N.equalsIgnoreCase(isExactSearch)) {
 			userName = CustomStringUtil.appendString("%", userName, "%");
 			// List<OrgTO> orgList = null;
-			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER,orgMode, tenantId, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, tenantId, "15", orgMode, tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 		} else {
-			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,orgMode, tenantId, tenantId, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear, "15");
+			userslist = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER_EXACT,tenantId, "15", orgMode, tenantId, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 		}
 		if (userslist.size() > 0) {
 			UserTOs = new ArrayList<UserTO>();
@@ -1518,8 +1518,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			if (IApplicationConstants.PURPOSE.equals(purpose)) {
 				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_EDU_USER, userName, userName, userName, tenantId, moreCount);
 			} else {
-				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, orgMode, tenantId, tenantId, userName, userName, userName,
-						IApplicationConstants.ROLE_PARENT_ID, adminYear, moreCount);
+				listOfUser = getJdbcTemplatePrism().queryForList(IQueryConstants.SEARCH_USER, tenantId, moreCount, orgMode, 
+						tenantId, userName, userName, userName, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 			}
 		}
 		if (listOfUser != null && listOfUser.size() > 0) {
@@ -2404,7 +2404,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		logger.log(IAppLogger.INFO, "adminYear=" + adminYear);
 		logger.log(IAppLogger.INFO, "orgMode=" + orgMode);
 		ArrayList<UserDataTO> userDataList = new ArrayList<UserDataTO>();
-		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgMode, userId, orgNodeId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
+		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_USER_DATA, orgNodeId, orgMode, userId, IApplicationConstants.ROLE_PARENT_ID, adminYear);
 		if ((lstData != null) && (!lstData.isEmpty())) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserDataTO to = new UserDataTO();
