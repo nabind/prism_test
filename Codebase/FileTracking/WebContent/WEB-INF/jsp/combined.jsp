@@ -404,6 +404,9 @@
 					<th>Org Code Path</th>
 					<th>Prism Process Date</th>
 					<th>Doc ID</th>
+					<th>Scan Batch</th>
+					<th>Scan Sequence</th>
+					<th>Scan Stack</th>
 					<th>File Name</th>
 					<th>File Generation Date-Time</th>
 				</tr>
@@ -438,6 +441,9 @@
 					<td><%=docStatusTo.getOrgCodePath() %></td>
 					<td><%=docStatusTo.getProcesDate() %></td>
 					<td><%=docStatusTo.getDocumentID() %></td>
+					<td><%=docStatusTo.getScanBatch() %></td>
+					<td><%=docStatusTo.getScanSequence() %></td>
+					<td><%=docStatusTo.getScanStack() %></td>
 					<td><%=docStatusTo.getFileName() %></td>
 					<td><%=docStatusTo.getFileGenDateTime() %></td>
 				</tr>
