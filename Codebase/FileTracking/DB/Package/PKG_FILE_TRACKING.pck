@@ -1541,7 +1541,8 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              (SELECT MAX(TASK_ID)
                                 FROM SUBTEST_SCORE_FACT_HIST SSFH
                                WHERE SSFH.SUBTESTID = SD.SUBTESTID
-                                 AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID)) FILE_NAME,
+                                 AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
+                                 AND SDI.DOC_PROCESS_STATUS <> ''EXP'')) FILE_NAME,
                      TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME,
                      SDI.SCANBATCH SCANBATCH,
                      SDI.SCANSTACK SCANSTACK,
