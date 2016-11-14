@@ -149,7 +149,7 @@ public class MapDao extends CommonDao {
 			String adminYear = null;
 			try {
 				conn = driver.connect(DATA_SOURCE, null);
-				String query = CustomStringUtil.appendString(" SELECT SUBSTR( ADMIN_YEAR,3,2) AS CURYEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN='Y'");
+				String query = CustomStringUtil.appendString(" SELECT RIGHT(ADMIN_YEAR,2) AS CURYEAR FROM ADMIN_DIM WHERE IS_CURRENT_ADMIN='Y'");
 				pstmt = conn.prepareCall(query);
 				
 				rs = pstmt.executeQuery();
@@ -266,11 +266,16 @@ public class MapDao extends CommonDao {
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
 			String query = CustomStringUtil.appendString(
-					"SELECT cust.file_location || prod.file_location FROM customer_info cust, product prod, cust_product_link lin ",
-					" WHERE lin.customerid = cust.customerid ",
-					" AND lin.productid = prod.productid ",
-					" AND cust.customerid = ? AND lin.CUST_PROD_ID = ? ",
-					" AND ROWNUM = 1");
+					" SELECT top(1)	",
+					"	  ISNULL(cust.file_location, '') + ISNULL(prod.file_location, '') ",
+					"	FROM customer_info cust,	",
+					"	     product prod,	",
+					"	     cust_product_link lin	",
+					"	WHERE lin.customerid = cust.customerid	",
+					"	AND lin.productid = prod.productid	",
+					"	AND cust.customerid = ?	",
+					"	AND lin.CUST_PROD_ID = ?	");
+			
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.valueOf(customerId));
 			pstmt.setLong(2, Long.valueOf(custProdId));

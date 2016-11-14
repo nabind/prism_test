@@ -32,38 +32,38 @@ public class MapDAOImpl {
 		TASCProcessTO processTO = null;
 		List<TASCProcessTO> processList = new ArrayList<TASCProcessTO>();
 		StringBuffer queryBuff = new StringBuffer();
-		queryBuff.append("select task.TASK_ID, PROCESS_ID,FILE_NAME,HIER_VALIDATION,BIO_VALIDATION,DEMO_VALIDATION,CONTENT_VALIDATION,");
-		queryBuff.append(" OBJECTIVE_VALIDATION,ITEM_VALIDATION,WKF_PARTITION_NAME,task.DATETIMESTAMP,(SELECT getMapStatus(task.TASK_ID) FROM DUAL) STATUS ");
-		queryBuff.append(" ,TRGT_LOAD_CASE_COUNT CASE_COUNT");
-		queryBuff.append(" , (select DISTRICT_CODE from stg_task_district_mapping where task_id = task.task_id) DISTRICT_CODE ");
-		queryBuff.append(" , (select GRADE from stg_task_district_mapping where task_id = task.task_id) GRADE ");
-		queryBuff.append(" , (select CONTENT_AREA_TITLE from stg_task_district_mapping where task_id = task.task_id) SUBTEST ");
-		queryBuff.append(" from stg_task_status task ");
-		// queryBuff.append(" WHERE rownum<10 ");
-		queryBuff.append(" WHERE 1 = 1 ");
+		queryBuff.append("SELECT * FROM ");
+		queryBuff.append(" (SELECT task.TASK_ID, PROCESS_ID, FILE_NAME, HIER_VALIDATION, BIO_VALIDATION, DEMO_VALIDATION, CONTENT_VALIDATION, OBJECTIVE_VALIDATION, ITEM_VALIDATION ");
+		queryBuff.append(" , WKF_PARTITION_NAME, task.DATETIMESTAMP ");
+		queryBuff.append(" , (SELECT FACT.getMapStatus(task.TASK_ID)) STATUS ");
+		queryBuff.append(" , TRGT_LOAD_CASE_COUNT CASE_COUNT ");
+		queryBuff.append(" , (SELECT DISTRICT_CODE FROM stg_task_district_mapping WHERE task_id = task.task_id) DISTRICT_CODE ");
+		queryBuff.append(" , (SELECT GRADE FROM stg_task_district_mapping WHERE task_id = task.task_id) GRADE ");
+		queryBuff.append(" , (SELECT CONTENT_AREA_TITLE FROM stg_task_district_mapping WHERE task_id = task.task_id) SUBTEST ");
+		queryBuff.append(" 	 FROM stg_task_status task) AS a ");
+		queryBuff.append("   WHERE 1 = 1 ");
+
 		if(searchProcess != null) {			
 			if(searchProcess.getCreatedDate() != null && searchProcess.getCreatedDate().trim().length() > 0
 					&& searchProcess.getUpdatedDate() != null && searchProcess.getUpdatedDate().trim().length() > 0) {
-				queryBuff.append("AND (task.DATETIMESTAMP between to_date(?, 'MM/DD/YYYY') and to_date(?, 'MM/DD/YYYY')+1) ");
+				queryBuff.append("AND (DATETIMESTAMP BETWEEN CONVERT(datetime, ?, 110) AND CONVERT(datetime, ?, 110) + 1) ");
 			} 
 			if(searchProcess.getProcessId() != null &&  searchProcess.getProcessId().trim().length() > 0) {
 				queryBuff.append("AND PROCESS_ID = ?");
 			}
 			if(searchProcess.getDistrict() != null &&  searchProcess.getDistrict().trim().length() > 0) {
-				queryBuff.append("AND map.DISTRICT_CODE = ?");
+				queryBuff.append("AND DISTRICT_CODE = ?");
 			}
 			if(searchProcess.getGrade() != null &&  searchProcess.getGrade().trim().length() > 0) {
-				queryBuff.append("AND map.GRADE = ?");
+				queryBuff.append("AND GRADE = ?");
 			}
 			if(searchProcess.getSubtest() != null &&  searchProcess.getSubtest().trim().length() > 0) {
-				queryBuff.append("AND map.CONTENT_AREA_TITLE = ?");
+				queryBuff.append("AND SUBTEST = ?");
 			}
 			if(searchProcess.getProcessStatus() != null &&  searchProcess.getProcessStatus().trim().length() > 0) {
-				queryBuff.append("AND (SELECT getMapStatus(task.TASK_ID) FROM DUAL) = ?");
+				queryBuff.append("AND (SELECT FACT.getMapStatus(TASK_ID)) = ?");
 			}
 			
-		} else {
-			queryBuff.append("AND trunc(task.DATETIMESTAMP) = trunc(sysdate)");
 		}
 		queryBuff.append(" order by TASK_ID desc ");
 		String query = queryBuff.toString();
@@ -172,9 +172,11 @@ public class MapDAOImpl {
 			driver = MAPConnectionProvider.getDriver();
 			conn = driver.connect(DATA_SOURCE, null);
 			
-			String query = "select district_code, school_code, grade, drc_student_id, '(' || suffix || ') ' || last_name || ', ' || first_name || ' ' || middle_name as STUDENT_NAME, " +
-						" birth_date, gender, test_date, content_area_title, " +
-						" scale_score, err_code, log from student_data_extract_err where validation_flag = 'N' and task_id = ? ";
+			String query = "select task_id, district_code, school_code, grade, drc_student_id, "
+					+ "	'(' + isnull(suffix, '') + ') ' + isnull(last_name, '') + ', ' + isnull(first_name, '') + ' ' + isnull(middle_name, '') as STUDENT_NAME, "
+					+ " birth_date, gender, test_date, content_area_title, scale_score, err_code, log "
+					+ " from student_data_extract_err "
+					+ " where validation_flag = 'N' and task_id = ? ";
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, taskId);
 			rs = pstmt.executeQuery();
