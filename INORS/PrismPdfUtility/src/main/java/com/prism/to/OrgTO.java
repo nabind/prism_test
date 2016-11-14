@@ -39,9 +39,11 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String orgMode;
 	private String testAdministration;
 	private String orgNodeCodePath;
+	private String lvlOneOrgCode;
 
 	
 
+	
 	// Istep
 	private String orgNode;
 	private String parentElementName;
@@ -396,6 +398,14 @@ public class OrgTO implements Comparable<OrgTO> {
 
 	public void setOrgNodeCodePath(String orgNodeCodePath) {
 		this.orgNodeCodePath = orgNodeCodePath;
+	}
+	
+	public String getLvlOneOrgCode() {
+		return lvlOneOrgCode;
+	}
+
+	public void setLvlOneOrgCode(String lvlOneOrgCode) {
+		this.lvlOneOrgCode = lvlOneOrgCode;
 	}
 	
 	public int hashCode() {

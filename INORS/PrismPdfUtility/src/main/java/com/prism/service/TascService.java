@@ -368,7 +368,7 @@ public class TascService implements PrismPdfService {
 							String customerCode = dao.getCustomerCode(school.getCustomerCode());
 							
 							// FTP code
-							boolean isSuccess = SFTPUtil.send(encDocLocation, school.getCustomerCode());
+							boolean isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
 							
 							String mailSubject = null;
 							
@@ -417,17 +417,12 @@ public class TascService implements PrismPdfService {
 									updateLog("Failed sending mail. Updating status.");
 								}
 							}
-							
-													
+																			
 
 							// Sending password email for PDF opening
 							updateLog("Sending password email for PDF opening");
 							logger.info("Sending password email for PDF opening");
 							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
-							
-							
-							
-							
 							
 						} else {
 							updateLog("Error generating PDF");

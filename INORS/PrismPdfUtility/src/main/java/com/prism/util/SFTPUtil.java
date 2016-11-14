@@ -25,7 +25,7 @@ public class SFTPUtil {
         int SFTPPORT = Integer.parseInt(tascProperties.getProperty("sftp.port"));
         String SFTPUSER = tascProperties.getProperty("sftp.username");
         String SFTPPASS =  tascProperties.getProperty("sftp.password");
-       // String SFTPWORKINGDIR = "file/to/transfer";
+        String baseLocation =  tascProperties.getProperty("sftp.base.loc");
 
         Session session = null;
         Channel channel = null;
@@ -45,12 +45,12 @@ public class SFTPUtil {
             logger.info("sftp channel opened and connected.");
             channelSftp = (ChannelSftp) channel;
             try{
-            	SftpATTRS attrs = channelSftp.lstat(SFTPWORKINGDIR);
+            	SftpATTRS attrs = channelSftp.lstat(baseLocation+SFTPWORKINGDIR);
             	attrs.toString();
             } catch(Exception e) {
-            	channelSftp.mkdir(SFTPWORKINGDIR);
+            	channelSftp.mkdir(baseLocation+SFTPWORKINGDIR);
             }
-            channelSftp.cd(SFTPWORKINGDIR);
+            channelSftp.cd(baseLocation+SFTPWORKINGDIR);
             File f = new File(fileName);
             channelSftp.put(new FileInputStream(f), f.getName());
             isTransffered = true;
