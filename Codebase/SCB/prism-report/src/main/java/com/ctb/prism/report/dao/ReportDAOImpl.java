@@ -3107,7 +3107,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				try {
 					cs.execute();
 					//messageResultSet = (ResultSet) cs.getObject(2);
-					rs = cs.getResultSet();
+					messageResultSet = cs.getResultSet();
 					Utils.logError(cs.getString(2));
 					while (messageResultSet.next()) {
 						messageResult.put(messageResultSet.getString("MESSAGE_NAME"), messageResultSet.getString("REPORT_MSG"));
