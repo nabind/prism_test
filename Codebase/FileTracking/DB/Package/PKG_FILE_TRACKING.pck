@@ -1611,41 +1611,46 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
     V_QUERY_ACTUAL_OP  VARCHAR2(4000) := '';
   BEGIN
     V_QUERY_ACTUAL_DEF := V_QUERY_ACTUAL_DEF ||
-                          'SELECT PROCESS_ID,
-                             FILE_NAME,
-                             SOURCE_SYSTEM,
+                          'SELECT T.PROCESS_ID,
+                             T.FILE_NAME,
+                             T.SOURCE_SYSTEM,
                              '''' REG_VALIDATION,
                              '''' DOC_VALIDATION,
-                             HIER_VALIDATION,
-                             BIO_VALIDATION,
-                             DEMO_VALIDATION,
-                             CONTENT_VALIDATION,
-                             OBJECTIVE_VALIDATION,
-                             ITEM_VALIDATION,
-                             WKF_PARTITION_NAME,
-                             DATETIMESTAMP,
-                             (SELECT GETSTATUS(PROCESS_ID) FROM DUAL) STATUS,
-                             ER_VALIDATION
-                        FROM STG_PROCESS_STATUS
+                             T.HIER_VALIDATION,
+                             T.BIO_VALIDATION,
+                             T.DEMO_VALIDATION,
+                             T.CONTENT_VALIDATION,
+                             T.OBJECTIVE_VALIDATION,
+                             T.ITEM_VALIDATION,
+                             T.WKF_PARTITION_NAME,
+                             T.DATETIMESTAMP,
+                             (SELECT GETSTATUS(T.PROCESS_ID) FROM DUAL) STATUS,
+                             T.ER_VALIDATION
+                        FROM STG_PROCESS_STATUS T
                         WHERE 1 = 1';
   
     V_QUERY_ACTUAL_GHI := V_QUERY_ACTUAL_GHI ||
-                          'SELECT PROCESS_ID,
-                             FILE_NAME,
-                             SOURCE_SYSTEM,
-                             REG_VALIDATION,
-                             DOC_VALIDATION,
-                             HIER_VALIDATION,
-                             BIO_VALIDATION,
-                             DEMO_VALIDATION,
-                             CONTENT_VALIDATION,
-                             OBJECTIVE_VALIDATION,
-                             ITEM_VALIDATION,
-                             WKF_PARTITION_NAME,
-                             DATETIMESTAMP,
-                             (SELECT GETSTATUSGHI(PROCESS_ID) FROM DUAL) STATUS,
+                          'SELECT T.PROCESS_ID,
+                             (SELECT LISTAGG(S.FILE_NAME, '', '') WITHIN
+                               GROUP(
+                               ORDER BY S.FILE_NAME)
+                                FROM STG_TASK_STATUS S
+                               WHERE S.PROCESS_ID = T.PROCESS_ID
+                               GROUP BY S.PROCESS_ID) FILE_NAME,
+                             T.SOURCE_SYSTEM,
+                             T.REG_VALIDATION,
+                             T.DOC_VALIDATION,
+                             T.HIER_VALIDATION,
+                             T.BIO_VALIDATION,
+                             T.DEMO_VALIDATION,
+                             T.CONTENT_VALIDATION,
+                             T.OBJECTIVE_VALIDATION,
+                             T.ITEM_VALIDATION,
+                             T.WKF_PARTITION_NAME,
+                             T.DATETIMESTAMP,
+                             (SELECT GETSTATUSGHI(T.PROCESS_ID) FROM DUAL) STATUS,
                              ''''ER_VALIDATION
-                        FROM TASC_PROCESS_STATUS
+                        FROM TASC_PROCESS_STATUS T
                         WHERE 1 = 1';
   
     -- checking the source system and using the query accordingly                       
@@ -1657,22 +1662,22 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
   
     IF P_DATE_FROM <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                           ' AND TRUNC(DATETIMESTAMP) >= TO_DATE(''' ||
+                           ' AND TRUNC(T.DATETIMESTAMP) >= TO_DATE(''' ||
                            P_DATE_FROM || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_DATE_TO <> '-1' THEN
       V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP ||
-                           ' AND TRUNC(DATETIMESTAMP) <= TO_DATE(''' ||
+                           ' AND TRUNC(T.DATETIMESTAMP) <= TO_DATE(''' ||
                            P_DATE_TO || ''', ''MM/DD/YYYY'')';
     END IF;
   
     IF P_SOURCE_SYSTEM <> '-1' THEN
-      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' AND SOURCE_SYSTEM =  ''' ||
+      V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' AND T.SOURCE_SYSTEM =  ''' ||
                            P_SOURCE_SYSTEM || '''';
     END IF;
   
-    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' ORDER BY PROCESS_ID DESC';
+    V_QUERY_ACTUAL_OP := V_QUERY_ACTUAL_OP || ' ORDER BY T.PROCESS_ID DESC';
   
     OPEN P_OUT_CUR_DATA FOR V_QUERY_ACTUAL_OP;
   
