@@ -259,6 +259,7 @@
 						<td>&nbsp;</td>
 						<%
 							String sourceFileName = process.getFileName();
+							String sourceSystem = process.getSourceSystem();
 							if(sourceFileName != null && sourceFileName.length() > 16) {
 								sourceFileName = sourceFileName.substring(0, 16) + " " + sourceFileName.substring(16, sourceFileName.length());
 							} else {
@@ -273,7 +274,7 @@
 							<%} else {%>
 								<span class="error" title="Error"></span>
 							<%} %>
-							<%if(!"NA".equals(sourceFileName)) { %>
+							<%if(!"NA".equals(sourceFileName) && "UDB".equals(sourceSystem)) { %>
 								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, "<%=process.getSourceSystem() %>");'><%=process.getProcessId() %></a>
 							<%} else {%>
 								<%=process.getProcessId() %>
