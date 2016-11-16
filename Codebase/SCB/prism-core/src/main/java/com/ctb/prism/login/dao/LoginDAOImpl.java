@@ -535,8 +535,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(2, messageType);
 					cs.setString(3, messageName);
 					cs.setLong(4, custProdId);
-					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -544,11 +543,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					ResultSet rs = null;
 					String systemMessageResult = "";
 					try {
-						/*cs.execute();
-						rs = (ResultSet) cs.getObject(5);
-						if (rs.next()) {
-							systemMessageResult = rs.getString("REPORT_MSG");
-						}*/
 						if (cs.execute()) {
 							rs = cs.getResultSet();
                             if (rs.next()) {
@@ -679,8 +673,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
 				            cs.setString(1, username);
-				            //cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -689,7 +682,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			        			String usernameResult = "";
 			        			try {
 									cs.execute();
-									//rsUsername = (ResultSet) cs.getObject(2);
 									rsUsername = cs.getResultSet();
 									if(rsUsername.next()){
 										usernameResult = rsUsername.getString("USERNAME");
@@ -724,8 +716,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
 				            cs.setString(1, username);
-				            // cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -734,7 +725,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			        			String usernameResult = "";
 			        			try {
 									cs.execute();
-									//rsUsername = (ResultSet) cs.getObject(2);
 									rsUsername = cs.getResultSet();
 									if(rsUsername.next()){
 										usernameResult = rsUsername.getString("USERNAME");
@@ -986,8 +976,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				cs.setString(1, roles);
 				cs.setLong(2, orgNodeLevel);
 				cs.setLong(3, custProdId);
-				//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -997,8 +986,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				try {
 					if (cs.execute()) {
                         rs = cs.getResultSet();
-						//cs.execute();
-						//rs = (ResultSet) cs.getObject(4);
 						while (rs.next()) {
 							MenuTO to = new MenuTO();
 							String menuName = rs.getString("MENU_NAME");
@@ -1051,8 +1038,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				cs.setString(1, roles);
 				cs.setLong(2, orgNodeLevel);
 				cs.setLong(3, custProdId);
-				//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -1062,8 +1048,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				try {
 					if (cs.execute()) {
                         rs = cs.getResultSet();
-						//cs.execute();
-						//rs = (ResultSet) cs.getObject(4);
 						while (rs.next()) {
 							actionMap.put(rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"), rs.getString("REPORT_NAME")+ " " + rs.getString("ACTION_NAME"));
 						}
@@ -1099,8 +1083,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 			new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_PROPERTY);
-					//cs.registerOutParameter(1, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(1, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(1, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1108,12 +1091,6 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					Map<String, Object> propertyMap = new HashMap<String, Object>();
 					ResultSet rs = null;
 					try {
-						/*cs.execute();
-						rs = (ResultSet) cs.getObject(1);
-						while (rs.next()) {
-							propertyMap.put(rs.getString("PROPERY_NAME"), rs.getString("PROPERY_VALUE"));
-						}
-						Utils.logError(cs.getString(2));*/
 						if (cs.execute()) {
                             rs = cs.getResultSet();
                             while (rs.next()) {

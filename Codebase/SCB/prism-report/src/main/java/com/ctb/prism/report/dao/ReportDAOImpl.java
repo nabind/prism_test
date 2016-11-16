@@ -995,8 +995,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				            	cs.setString(2, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 				            }
 				            cs.setLong(3, custProdId);	
-				            //cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -1005,7 +1004,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			        			List<ManageMessageTO> manageMessageTOResult = new ArrayList<ManageMessageTO>();
 			        			try {
 									cs.execute();
-									//rsMessage = (ResultSet) cs.getObject(4);
 									rsMessage = cs.getResultSet();
 									ManageMessageTO manageMessageTO = null;
 									while(rsMessage.next()){
@@ -1739,8 +1737,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					cs.setString(3, gradeIdCommaSep);
 					cs.setString(4, subtestCommaSep);
 					cs.setString(5, studentGroupsCommaSep);
-					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1749,7 +1746,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 					try {
 						cs.execute();
-						//rs = (ResultSet) cs.getObject(6);
 						rs = cs.getResultSet();
 						GroupDownloadStudentTO student = null;
 						while (rs.next()) {
@@ -1790,8 +1786,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								cs.setLong(6, Long.parseLong(customerId));
 								cs.setString(7, groupFile);
 								cs.setString(8, collationHierarchy);
-								//cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.registerOutParameter(9, java.sql.Types.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -1800,7 +1795,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 								try {
 									cs.execute();
-									//rs = (ResultSet) cs.getObject(9);
 									rs = cs.getResultSet();
 									studentList = getStudentListFromResultSet(rs);
 								} catch (SQLException e) {
@@ -1823,8 +1817,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								cs.setLong(6, Long.parseLong(customerId));
 								cs.setLong(7, Long.parseLong(gradeId));
 								cs.setString(8, collationHierarchy);
-								//cs.registerOutParameter(9, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(9, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.registerOutParameter(9, java.sql.Types.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -1833,7 +1826,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 								try {
 									cs.execute();
-									//rs = (ResultSet) cs.getObject(9);
 									rs = cs.getResultSet();
 									studentList = getStudentListFromResultSet(rs);
 								} catch (SQLException e) {
@@ -1862,8 +1854,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								cs.setLong(7, Long.parseLong(testProgram));
 								cs.setString(8, groupFile);
 								cs.setString(9, collationHierarchy);
-								//cs.registerOutParameter(10, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(10, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.registerOutParameter(10, java.sql.Types.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -1872,7 +1863,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 								try {
 									cs.execute();
-									//rs = (ResultSet) cs.getObject(10);
 									rs = cs.getResultSet();
 									studentList = getStudentListFromResultSet(rs);
 								} catch (SQLException e) {
@@ -1893,8 +1883,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								cs.setLong(4, Long.parseLong(testProgram));
 								cs.setLong(5, Long.parseLong(gradeId));
 								cs.setString(6, collationHierarchy);
-								//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-								cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+								cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 								return cs;
 							}
 						}, new CallableStatementCallback<Object>() {
@@ -1903,7 +1892,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 								List<GroupDownloadStudentTO> studentList = new ArrayList<GroupDownloadStudentTO>();
 								try {
 									cs.execute();
-									//rs = (ResultSet) cs.getObject(7);
 									rs = cs.getResultSet();
 									studentList = getStudentListFromResultSet(rs);
 								} catch (SQLException e) {
@@ -2830,8 +2818,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs = con.prepareCall(IQueryConstants.GET_PRODUCTS_EDIT_ACTIONS);
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(customerId));
-				//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2840,10 +2827,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				ResultSet reportResultSet = null;
 				try {
 					cs.execute();
-					//reportResultSet = (ResultSet) cs.getObject(3);
 					reportResultSet = cs.getResultSet();
-					Utils.logError(cs.getString(3));
 					reportResult = parseProductsForEditAction(reportResultSet);
+					Utils.logError(cs.getString(3));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -2894,8 +2880,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs = con.prepareCall(IQueryConstants.GET_ACTIONS_EDIT_ACTIONS);
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(custProdId));
-				//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2904,10 +2889,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				List<ReportActionTO> actionResult = null;
 				try {
 					cs.execute();
-					//actionResultSet = (ResultSet) cs.getObject(3);
 					actionResultSet = cs.getResultSet();
-					Utils.logError(cs.getString(3));
 					actionResult = parseActionDataForEditAction(actionResultSet);
+					Utils.logError(cs.getString(3));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -2959,8 +2943,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs.setLong(1, Long.parseLong(reportId));
 				cs.setLong(2, Long.parseLong(custProdId));
 				cs.setLong(3, Long.parseLong(actionId));
-				//cs.registerOutParameter(4, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -2969,10 +2952,9 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				List<ReportActionTO> actionAccessResult = null;
 				try {
 					cs.execute();
-					//actionResultSet = (ResultSet) cs.getObject(4);
 					actionResultSet = cs.getResultSet();
-					Utils.logError(cs.getString(4));
 					actionAccessResult = parseActionAccessDataForEditAction(actionResultSet);
+					Utils.logError(cs.getString(4));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -3036,7 +3018,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				cs.setLong(2, Long.parseLong(custProdId));
 				cs.setLong(3, Long.parseLong(actionId));
 				cs.setString(4, roleIdLevelId);
-				cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -3096,8 +3078,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				CallableStatement cs = null;
 				cs = con.prepareCall(IQueryConstants.GET_GENERIC_SYSTEM_CONFIGURATION_MESSAGES);
 				cs.setString(1, messageNames);
-				//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -3106,12 +3087,11 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				ResultSet messageResultSet = null;
 				try {
 					cs.execute();
-					//messageResultSet = (ResultSet) cs.getObject(2);
 					messageResultSet = cs.getResultSet();
-					Utils.logError(cs.getString(2));
 					while (messageResultSet.next()) {
 						messageResult.put(messageResultSet.getString("MESSAGE_NAME"), messageResultSet.getString("REPORT_MSG"));
 					}
+					Utils.logError(cs.getString(2));
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}

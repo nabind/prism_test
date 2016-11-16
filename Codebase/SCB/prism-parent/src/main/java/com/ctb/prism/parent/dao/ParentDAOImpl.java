@@ -79,8 +79,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_SECRET_QUESTION + "}");
 					cs.setString(1, "0");
-					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -89,7 +88,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					List<QuestionTO> questionList = new ArrayList<QuestionTO>();
 					try {
 						cs.execute();
-						//rsQuestion = (ResultSet) cs.getObject(2);
 						rsQuestion = cs.getResultSet();
 						QuestionTO questionTO = null;
 						while(rsQuestion.next()){
@@ -137,8 +135,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				        public CallableStatement createCallableStatement(Connection con) throws SQLException {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.VALIDATE_USER_NAME + "}");
 				            cs.setString(1, username);
-				            //cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -147,7 +144,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 			        			String usernameResult = "";
 			        			try {
 									cs.execute();
-									//rsUsername = (ResultSet) cs.getObject(2);
 									rsUsername = cs.getResultSet();
 									if(rsUsername.next()){
 										usernameResult = rsUsername.getString("USERNAME");

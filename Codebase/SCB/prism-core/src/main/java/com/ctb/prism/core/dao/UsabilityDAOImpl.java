@@ -1262,8 +1262,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_CLOB_XML_FILE + "}");
 					cs.setLong(1, jobId);
 					cs.setLong(2, customer);
-					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1272,7 +1271,6 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 					StudentDataExtractTO studentDataExtractTOResult = null;
 					try {
 						cs.execute();
-						//rs = (ResultSet) cs.getObject(3);
 						rs = cs.getResultSet();
 						if (rs.next()) {
 							studentDataExtractTOResult = new StudentDataExtractTO();
