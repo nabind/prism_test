@@ -102,9 +102,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				try {
 					if (cs.execute()) {
 						rs = (ResultSet) cs.getResultSet();					
-						Utils.logError(cs.getString(4));
-						if(cs.getString(4) != null && cs.getString(4).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
+						Utils.logError(cs.getString(3));
+						if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
 						}
 						while(rs.next()){
 							OrgTO to = new OrgTO();
@@ -166,9 +166,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				try {
 					if (cs.execute()) {
 						rs = (ResultSet) cs.getResultSet();
-						Utils.logError(cs.getString(5));
-						if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-							throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
+						Utils.logError(cs.getString(4));
+						if(cs.getString(4) != null && cs.getString(4).length() > 0) {
+							throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
 						}
 						while(rs.next()){
 							OrgTO to = new OrgTO();
@@ -304,29 +304,29 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						if (cs.execute()) {							
 							if (isFirstLoad){
 								rs = (ResultSet) cs.getResultSet();
-								Utils.logError(cs.getString(4));
-								if(cs.getString(4) != null && cs.getString(4).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
+								Utils.logError(cs.getString(3));
+								if(cs.getString(3) != null && cs.getString(3).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(3));
 								}
 							} else {
 								if (nodeId.indexOf("_") > 0) {
 									if (!("1".equals(nodeId.substring((nodeId.indexOf("_") + 1), nodeId.length())))) {
 										rs = (ResultSet) cs.getResultSet();
-										Utils.logError(cs.getString(7));
-										if(cs.getString(7) != null && cs.getString(7).length() > 0) {
+										Utils.logError(cs.getString(6));
+										if(cs.getString(6) != null && cs.getString(6).length() > 0) {
 											throw new SQLException();
 										}
 									} else {
 										if(Integer.parseInt(nodeId.substring(0, nodeId.indexOf("_"))) == 0){
 											rs = (ResultSet) cs.getResultSet();
-											Utils.logError(cs.getString(5));
-											if(cs.getString(5) != null && cs.getString(5).length() > 0) {
+											Utils.logError(cs.getString(4));
+											if(cs.getString(4) != null && cs.getString(4).length() > 0) {
 												throw new SQLException();
 											}
 										} else {
 											rs = (ResultSet) cs.getResultSet();
-											Utils.logError(cs.getString(6));
-											if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+											Utils.logError(cs.getString(5));
+											if(cs.getString(5) != null && cs.getString(5).length() > 0) {
 												throw new SQLException();
 											}
 										}
@@ -334,14 +334,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 								} else {
 									if(Integer.parseInt(nodeId) == 0){
 										rs = (ResultSet) cs.getResultSet();
-										Utils.logError(cs.getString(5));
-										if(cs.getString(5) != null && cs.getString(5).length() > 0) {
+										Utils.logError(cs.getString(4));
+										if(cs.getString(4) != null && cs.getString(4).length() > 0) {
 											throw new SQLException();
 										}
 									} else {
 										rs = (ResultSet) cs.getResultSet();
-										Utils.logError(cs.getString(6));
-										if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+										Utils.logError(cs.getString(5));
+										if(cs.getString(5) != null && cs.getString(5).length() > 0) {
 											throw new SQLException();
 										}
 									}
@@ -424,9 +424,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					try {
 						if (cs.execute()) {
 							rs = (ResultSet) cs.getResultSet();
-							Utils.logError(cs.getString(5));
-							if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
+							Utils.logError(cs.getString(4));
+							if(cs.getString(4) != null && cs.getString(4).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
 							}
 							while(rs.next()){
 								long hierarcialOrgId = rs.getLong("ORG_ID");
@@ -506,14 +506,14 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						if (cs.execute()) {							
 							if (isFirstLoad){
 								rs = (ResultSet) cs.getResultSet();
-								Utils.logError(cs.getString(5));
-								if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
+								Utils.logError(cs.getString(4));
+								if(cs.getString(4) != null && cs.getString(4).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
 								}
 							} else {
 								rs = (ResultSet) cs.getResultSet();
-								Utils.logError(cs.getString(6));
-								if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+								Utils.logError(cs.getString(5));
+								if(cs.getString(5) != null && cs.getString(5).length() > 0) {
 									throw new SQLException();
 								}
 							}
@@ -1675,9 +1675,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						try {
 							if (cs.execute()) {								
 								rs = (ResultSet) cs.getResultSet();
-								Utils.logError(cs.getString(7));
-								if(cs.getString(7) != null && cs.getString(7).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
+								Utils.logError(cs.getString(6));
+								if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(6));
 								}
 								while (rs.next()) {
 									OrgTO orgTO = new OrgTO();
@@ -1736,9 +1736,9 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						try {
 							if (cs.execute()) {								
 								rs = (ResultSet) cs.getResultSet();
-								Utils.logError(cs.getString(7));
-								if(cs.getString(7) != null && cs.getString(7).length() > 0) {
-									throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
+								Utils.logError(cs.getString(6));
+								if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+									throw new BusinessException("Exception occured while getting Organization " + cs.getString(6));
 								}
 								orgListJsonString = "[";
 								while (rs.next()) {
@@ -2256,15 +2256,15 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 					if (cs.execute()) {
 						if ("-1".equals(selectedLevelOrgId)){
 							rs = (ResultSet) cs.getResultSet();
-							Utils.logError(cs.getString(5));
-							if(cs.getString(5) != null && cs.getString(5).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(5));
+							Utils.logError(cs.getString(4));
+							if(cs.getString(4) != null && cs.getString(4).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(4));
 							}
 						} else {
 							rs = (ResultSet) cs.getResultSet();
-							Utils.logError(cs.getString(7));
-							if(cs.getString(7) != null && cs.getString(7).length() > 0) {
-								throw new BusinessException("Exception occured while getting Organization " + cs.getString(7));
+							Utils.logError(cs.getString(6));
+							if(cs.getString(6) != null && cs.getString(6).length() > 0) {
+								throw new BusinessException("Exception occured while getting Organization " + cs.getString(6));
 							}
 						}
 						

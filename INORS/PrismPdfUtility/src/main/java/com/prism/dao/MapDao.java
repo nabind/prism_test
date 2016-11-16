@@ -68,18 +68,21 @@ public class MapDao extends CommonDao {
 					" where org_nodeid = ? order by gradeid");*/
 			
 			String query = CustomStringUtil.appendString(
-					" SELECT SSF.STUDENT_BIO_ID," ,//1
-					" GRD.GRADE_CODE,",//2
-					" GRD.GRADEID,",//3
-					" SSF.SUBTESTID," ,//4
-					" nvl(SBD.EXT_STUDENT_ID,''),",//5
-			        " UPPER(SBD.LAST_NAME)," ,//6
-			        " REGEXP_REPLACE(REGEXP_REPLACE(UPPER(REPLACE(SBD.LAST_NAME, '''', '')), '[^[:alnum:]'' '']', NULL),'[[:space:]]*','')",//7
-			        " FROM STUDENT_BIO_DIM SBD, SUBTEST_SCORE_FACT SSF,GRADE_DIM GRD",
-			        " WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID",
-			        " AND SSF.GRADEID = GRD.GRADEID",
-			        " AND SSF.ORG_NODEID = ?",
-			        " ORDER BY SSF.GRADEID");
+					"	SELECT	",
+					"	  SSF.STUDENT_BIO_ID,	",
+					"	  GRD.GRADE_CODE,	",
+					"	  GRD.GRADEID,	",
+					"	  SSF.SUBTESTID,	",
+					"	  ISNULL(SBD.EXT_STUDENT_ID, ''),	",
+					"	  UPPER(SBD.LAST_NAME),	",
+					"	  FACT.REGEXP_REPLACE(FACT.REGEXP_REPLACE(UPPER(REPLACE(SBD.LAST_NAME, '''', '')), '[^[:alnum:]]', '', 1, 0, ''), '[[:space:]]*', '', 1, 0, '')	",
+					"	FROM STUDENT_BIO_DIM SBD,	",
+					"	     SUBTEST_SCORE_FACT SSF,	",
+					"	     GRADE_DIM GRD	",
+					"	WHERE SBD.STUDENT_BIO_ID = SSF.STUDENT_BIO_ID	",
+					"	AND SSF.GRADEID = GRD.GRADEID	",
+					"	AND SSF.ORG_NODEID = ?	",
+					"	ORDER BY SSF.GRADEID ");
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, schoolOrgNodeId);
 			rs = pstmt.executeQuery();

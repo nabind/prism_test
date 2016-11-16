@@ -338,9 +338,9 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	// START---- Queries related to Role Management
 	public static final String GET_ROLE_DETAILS = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION FROM ROLE ORDER BY ROLE_NAME";
 	
-	public static final String SP_GET_ROLE_DETAILS = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_DETAILS(?, ?)}";
+	public static final String SP_GET_ROLE_DETAILS = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_ROLE_DETAILS(?)}";
 	
-	public static final String SP_GET_EDU_USER_ROLE = "{CALL PKG_MANAGE_USERS.SP_GET_EDU_USER_ROLE(?, ?, ?)}";
+	public static final String SP_GET_EDU_USER_ROLE = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_EDU_USER_ROLE(?, ?)}";
 	
 	public static final String GET_ROLE_DETAILS_BY_ID = "SELECT ROLEID ROLE_ID, ROLE_NAME, DESCRIPTION  FROM ROLE WHERE ROLEID = ?";
 	
@@ -434,14 +434,14 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 	//END ---- Queries related to Role Management
 	
 	
-	public static final String VALIDATE_USER_NAME = "PKG_MANAGE_USERS.SP_VALIDATE_USERNAME(?,?,?)";
+	public static final String VALIDATE_USER_NAME = "FACT.PKG_MANAGE_USERS$SP_VALIDATE_USERNAME(?,?)";
 	public static final String GET_USER_ORG = "select ou.org_nodeid NODEID from users u, org_users ou where u.userid = ou.userid and upper(U.USERNAME) = upper(?) ";
 	public static final String UPDATE_USER_ORG = "update org_users set org_nodeid = ? where org_nodeid = ? and userid = (select userid from users where upper(USERNAME) = upper(?) )";
 	
 	
 	public static final String VALIDATE_ACTIVE_USER_NAME = "SELECT USR.USERNAME AS USERNAME FROM USERS USR WHERE upper(USR.USERNAME) = upper(?) AND USR.ACTIVATION_STATUS IN ('AC','SS')";
 	
-	public static final String GET_SECRET_QUESTION = "PKG_MY_ACCOUNT.SP_GET_SECURITY_QUESTIONS(?,?,?)";
+	public static final String GET_SECRET_QUESTION = "FACT.PKG_MY_ACCOUNT$SP_GET_SECURITY_QUESTIONS(?,?)";
 	
 	public static final String PARENT_USER_SEQ_ID = "SELECT NEXT VALUE FOR  USER_ID_SEQ AS PARENT_SEQ_ID";
 	
@@ -525,7 +525,7 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 			" select TOP(1) org_nodeid NODEID, org_node_name ORGNAME, org_node_level ORGLEVEL, customerid CUSTOMERID ",
 			" from org_node_dim where org_node_code_path = ?  AND org_node_level = ?");
 	
-	public static final String GET_MANAGE_MESSAGE_LIST = "PKG_MANAGE_REPORT.SP_GET_REPORT_MESSAGE_LIST(?,?,?,?,?)";
+	public static final String GET_MANAGE_MESSAGE_LIST = "FACT.PKG_MANAGE_REPORT$SP_GET_REPORT_MESSAGE_LIST(?,?,?,?)";
 	
 	public static final String DELETE_DASH_MESSAGE = CustomStringUtil.appendString(
 			"  DELETE FROM DASH_MESSAGES WHERE DB_REPORTID = ? AND CUST_PROD_ID = ?");
@@ -1558,20 +1558,20 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 
 		public static final String UPDATE_JOB_TRACKING_STATUS = "UPDATE JOB_TRACKING SET JOB_STATUS = ?, JOB_LOG = ?, UPDATED_DATE_TIME = SYSDATETIME() WHERE JOB_ID = ?";
 		
-		public static final String SP_GET_STUDENTS_ALL_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_STUDENTS_ALL_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ALL_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_STUDENTS_ONE_C_ALL_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_STUDENTS_ONE_C_ONE_G = "{CALL PKG_GROUP_DOWNLOADS.SP_GET_STUDENTS_ONE_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_STUDENTS_G_MO = "{CALL PKG_GROUP_DOWNLOADS_MO.SP_GET_STUDENTS(?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_STUDENTS_ALL_C_ALL_G = "{CALL FACT.PKG_GROUP_DOWNLOADS$SP_GET_STUDENTS_ALL_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?,  ?)}";
+		public static final String SP_GET_STUDENTS_ALL_C_ONE_G = "{CALL FACT.PKG_GROUP_DOWNLOADS$SP_GET_STUDENTS_ALL_C_ONE_G(?, ?, ?, ?, ?, ?, ?, ?,  ?)}";
+		public static final String SP_GET_STUDENTS_ONE_C_ALL_G = "{CALL FACT.PKG_GROUP_DOWNLOADS$SP_GET_STUDENTS_ONE_C_ALL_G(?, ?, ?, ?, ?, ?, ?, ?, ?,  ?)}";
+		public static final String SP_GET_STUDENTS_ONE_C_ONE_G = "{CALL FACT.PKG_GROUP_DOWNLOADS$SP_GET_STUDENTS_ONE_C_ONE_G(?, ?, ?, ?,  ?, ?, ?)}";
+		public static final String SP_GET_STUDENTS_G_MO = "{CALL FACT.PKG_GROUP_DOWNLOADS_MO$SP_GET_STUDENTS(?, ?, ?, ?, ?,  ?)}";
 		
-		public static final String SP_GET_USER_ROLE = "{CALL PKG_MANAGE_USERS.SP_GET_USER_ROLE(?, ?, ?)}";
+		public static final String SP_GET_USER_ROLE = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USER_ROLE(?,  ?)}";
 
-		public static final String SP_GET_USERS_ONSCROLL_WITH_SP = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL_WITH_SP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_USERS_ONSCROLL = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ONSCROLL(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-		public static final String SP_GET_USERS_ON_FIRST_LOAD = "{CALL PKG_MANAGE_USERS.SP_GET_USERS_ON_FIRST_LOAD(?, ?, ?, ?, ?, ?, ?, ?)}";
+		public static final String SP_GET_USERS_ONSCROLL_WITH_SP = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USERS_ONSCROLL_WITH_SP(?, ?, ?, ?, ?, ?,  ?, ?, ?)}";
+		public static final String SP_GET_USERS_ONSCROLL = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USERS_ONSCROLL(?, ?, ?, ?, ?, ?, ?,  ?)}";
+		public static final String SP_GET_USERS_ON_FIRST_LOAD = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USERS_ON_FIRST_LOAD(?, ?, ?, ?, ?, ?,  ?)}";
 
-		public static final String SP_GET_USER_RESET_PASSWORD = "{CALL PKG_MANAGE_USERS.SP_GET_USER_RESET_PASSWORD(?, ?, ?)}";
-		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL PKG_MANAGE_USERS.SP_GET_USER_PWD_HINT_LIST(?, ?, ?)}";
+		public static final String SP_GET_USER_RESET_PASSWORD = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USER_RESET_PASSWORD(?,  ?)}";
+		public static final String SP_GET_USER_PWD_HINT_LIST = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USER_PWD_HINT_LIST(?,  ?)}";
 
 		public static final String SP_GET_MENU_MAP = "{CALL FACT.PKG_MENU_ACCESS$SP_GET_MENU_MAP(?, ?, ?, ?)}";
 		
@@ -1582,16 +1582,16 @@ public interface IQueryConstants extends IUserQuery, IOrgQuery, IParentQuery, IR
 		
 		public static final String SP_GET_PROPERTY = "{CALL FACT.PKG_CONTRACT_PROPERTY$SP_GET_PROPERTY(?)}";
 
-		public static final String GET_PRODUCTS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_PRODUCTS_EDIT_ACTIONS(?, ?, ?, ?)}";
-		public static final String GET_ACTIONS_EDIT_ACTIONS = "{CALL PKG_MANAGE_REPORT.GET_ACTIONS_EDIT_ACTIONS(?, ?, ?, ?)}";
-		public static final String GET_ACTION_ACCESS = "{CALL PKG_MANAGE_REPORT.GET_ACTION_ACCESS(?, ?, ?, ?, ?)}";
-		public static final String SP_UPDATE_ACTION_DATA = "{CALL PKG_MANAGE_REPORT.SP_UPDATE_ACTION_DATA(?, ?, ?, ?, ?)}";
+		public static final String GET_PRODUCTS_EDIT_ACTIONS = "{CALL FACT.PKG_MANAGE_REPORT$GET_PRODUCTS_EDIT_ACTIONS(?,  ?, ?)}";
+		public static final String GET_ACTIONS_EDIT_ACTIONS = "{CALL FACT.PKG_MANAGE_REPORT$GET_ACTIONS_EDIT_ACTIONS(?,  ?, ?)}";
+		public static final String GET_ACTION_ACCESS = "{CALL FACT.PKG_MANAGE_REPORT$GET_ACTION_ACCESS(?, ?,  ?, ?)}";
+		public static final String SP_UPDATE_ACTION_DATA = "{CALL FACT.PKG_MANAGE_REPORT$SP_UPDATE_ACTION_DATA(?, ?, ?, ?, ?)}";
 		
-		public static final String GET_GENERIC_SYSTEM_CONFIGURATION_MESSAGES = "{CALL PKG_MANAGE_REPORT.GET_GENERIC_MESSAGES(?, ?, ?)}";
+		public static final String GET_GENERIC_SYSTEM_CONFIGURATION_MESSAGES = "{CALL FACT.PKG_MANAGE_REPORT$GET_GENERIC_MESSAGES(?,  ?)}";
 		
-		public static final String SP_CUSTOMER_STD_EXTRACT_ONLINE = "{CALL PKG_STUDENTDATA_EXTRACT.SP_CUSTOMER_STD_EXTRACT_ONLINE(?, ?, ?, ?, ?)}";
+		public static final String SP_CUSTOMER_STD_EXTRACT_ONLINE = "{CALL FACT.PKG_STUDENTDATA_EXTRACT$SP_CUSTOMER_STD_EXTRACT_ONLINE(?, ?, ?, ?, ?)}";
 		
-		public static final String GET_CLOB_XML_FILE = "PKG_STUDENTDATA_EXTRACT.SP_GET_CLOB_XML_FILE(?,?,?,?)";
+		public static final String GET_CLOB_XML_FILE = "FACT.PKG_STUDENTDATA_EXTRACT$SP_GET_CLOB_XML_FILE(?,?,?)";
 		
 		public static final String STORE_WS_LOG = "INSERT INTO OAS_WS_LOG (processid, rosterid, state, uuid, status, summary, message, datetimestamp) VALUES (?,?,?,?,?,?,?,sysdatetime())";
 

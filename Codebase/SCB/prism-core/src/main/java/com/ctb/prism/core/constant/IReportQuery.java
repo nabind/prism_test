@@ -106,7 +106,7 @@ public interface IReportQuery {
 	public static final String GET_DELETE_SCHEDULED_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
 			"select request_filename,job_id from job_tracking ",
 			" where job_status!='DL' ",
-			" and SYSDATETIME>=dateadd(day, ? , created_date_time)");
+			" and SYSDATETIME() >=dateadd(day, ? , created_date_time)");
 
 	public static final String GET_PROCESS_SEQ = "SELECT NEXT VALUE FOR SEQ_ISTEP_PROCESS_ID STAGING_SEQ";
 	
