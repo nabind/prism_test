@@ -14,13 +14,13 @@ public interface IParentQuery {
 	 * Moved to package and reduce DB call - By Joy
 	 * Fix for TD 78161 - By Joy
 	 */
-	public static final String VALIDATE_INVITATION_CODE = "PKG_PARENT_NETWORK.SP_VALIDATE_IC(?,?,?,?)";
+	public static final String VALIDATE_INVITATION_CODE = "FACT.PKG_PARENT_NETWORK$SP_VALIDATE_IC(?,?,?)";
 
 	/**
 	 * Moved to package - By Joy
 	 * Fix for TD 78161 - By Joy
 	 */
-	public static final String GET_STUDENT_FOR_INVITATION_CODE = "PKG_PARENT_NETWORK.SP_GET_STUDENT_FOR_IC(?,?,?)";
+	public static final String GET_STUDENT_FOR_INVITATION_CODE = "FACT.PKG_PARENT_NETWORK$SP_GET_STUDENT_FOR_IC(?,?)";
 
 	/**
 	 * Query to assign user role to the new registered user
@@ -31,9 +31,9 @@ public interface IParentQuery {
 	 * @author Joy
 	 * Query to add new student to parent
 	 */
-	public static final String ADD_INVITATION_CODE_TO_ACCOUNT = "PKG_PARENT_NETWORK.SP_CLAIM_INVITATION(?,?,?,?)";
+	public static final String ADD_INVITATION_CODE_TO_ACCOUNT = "FACT.PKG_PARENT_NETWORK$SP_CLAIM_INVITATION(?,?,?,?)";
 
-	public static final String GET_ACCOUNT_DETAILS = "PKG_MY_ACCOUNT.SP_GET_ACCOUNT_DETAILS(?,?,?,?)";
+	public static final String GET_ACCOUNT_DETAILS = "FACT.PKG_MY_ACCOUNT$SP_GET_ACCOUNT_DETAILS(?,?)";
 
 	public static final String GET_PARENT_SECURITY_QUESTION = CustomStringUtil.appendString(
 			" SELECT Q.PH_QUESTIONID AS QUESTION_ID, ",
@@ -52,7 +52,7 @@ public interface IParentQuery {
 	public static final String DELETE_ANSWER_DATA = CustomStringUtil.appendString(
 			"DELETE FROM PWD_HINT_ANSWERS WHERE USERID = ?");
 	// Added by Ravi for Manage Profile
-	public static final String UPDATE_USER_DATA = "PKG_MY_ACCOUNT.SP_UPDATE_USER_ACCOUNT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String UPDATE_USER_DATA = "FACT.PKG_MY_ACCOUNT$SP_UPDATE_USER_ACCOUNT(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	// Query to retrieve list of children of the logged in parent.
 	public static final String SEARCH_CHILDREN = CustomStringUtil.appendString(
@@ -84,53 +84,53 @@ public interface IParentQuery {
 	/*
 	 * Moved to PKG_MANAGE_PARENT by Joy
 	 */
-	public static final String GET_PARENT_DETAILS_MANAGE_PARENT = "{ CALL PKG_MANAGE_PARENT.SP_GET_PARENT_DETAILS(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String GET_PARENT_DETAILS_MANAGE_PARENT = "{ CALL FACT.PKG_MANAGE_PARENT$SP_GET_PARENT_DETAILS(?, ?, ?, ?, ?, ?, ?, ?)}";
 	
 	/*
 	 * Moved to PKG_MANAGE_PARENT by Joy
 	 * Query to search parent auto complete
 	 */
-	public static final String SEARCH_PARENT = "PKG_MANAGE_PARENT.SP_SEARCH_PARENT(?,?,?,?,?,?,?,?,?)";
+	public static final String SEARCH_PARENT = "FACT.PKG_MANAGE_PARENT$SP_SEARCH_PARENT(?,?,?,?,?,?,?,?)";
 
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 */
-	public static final String GET_STUDENT_DETAILS_MANAGE_STUDENT = "{ CALL PKG_MANAGE_STUDENT.SP_GET_STUDENT_DETAILS(?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String GET_STUDENT_DETAILS_MANAGE_STUDENT = "{ CALL FACT.PKG_MANAGE_STUDENT$SP_GET_STUDENT_DETAILS(?, ?, ?, ?, ?, ?, ?,  ?)}";
 	
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 */
-	public static final String GET_PARENT_DETAILS_FOR_STUDENT = "PKG_MANAGE_STUDENT.SP_GET_PARENT_FOR_STUDENT(?,?,?,?)";
+	public static final String GET_PARENT_DETAILS_FOR_STUDENT = "FACT.PKG_MANAGE_STUDENT$SP_GET_PARENT_FOR_STUDENT(?,?,?)";
 
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * Fix for Amit Da's mail: RE: Latest code is deployed into DEV and QA (in manage student view assessment tab is not opening)[IC.TEST_ELEMENT_ID - missing] - By Joy
 	 */
-	public static final String GET_ASSESSMENT_LIST = "PKG_MANAGE_STUDENT.SP_GET_ASSESSMENT_FOR_STUDENT(?,?,?)";
+	public static final String GET_ASSESSMENT_LIST = "FACT.PKG_MANAGE_STUDENT$SP_GET_ASSESSMENT_FOR_STUDENT(?,?)";
 	
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 * Fix for TD 78101 - Add exists clause with ORG_PRODUCT_LINK 
 	 * and Use Exists clause instead of in clause for ORG_NODEID for better performance - By Joy
 	 * */
-	public static final String SEARCH_STUDENT = "PKG_MANAGE_STUDENT.SP_SEARCH_STUDENT(?,?,?,?,?,?,?,?)";
+	public static final String SEARCH_STUDENT = "FACT.PKG_MANAGE_STUDENT$SP_SEARCH_STUDENT(?,?,?,?,?,?,?)";
 
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 */
-	public static final String SEARCH_STUDENT_ON_REDIRECT = "PKG_MANAGE_STUDENT.SP_SEARCH_STUDENT_REDIRECT(?,?,?,?)";
+	public static final String SEARCH_STUDENT_ON_REDIRECT = "FACT.PKG_MANAGE_STUDENT$SP_SEARCH_STUDENT_REDIRECT(?,?,?)";
 	
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 */
-	public static final String UPDATE_ASSESSMENT = "PKG_MANAGE_STUDENT.SP_UPDATE_ASSESSMENT(?,?,?,?,?)";
+	public static final String UPDATE_ASSESSMENT = "FACT.PKG_MANAGE_STUDENT$SP_UPDATE_ASSESSMENT(?,?,?,?,?)";
 	
 	/*
 	 * Moved to PKG_MANAGE_STUDENT by Joy
 	 *  Fix for 78188 - By Joy
 	 *  Query modified for Reset Activation Code issue - By Joy
 	 */
-	public static final String REGENERATE_ACTIVATION_CODE = "PKG_MANAGE_STUDENT.SP_REGENERATE_ACTIVATION_CODE(?,?,?,?,?)";
+	public static final String REGENERATE_ACTIVATION_CODE = "FACT.PKG_MANAGE_STUDENT$SP_REGENERATE_ACTIVATION_CODE(?,?,?,?,?)";
 
 	/**
 	 * update user profile when they login for the first time
@@ -152,7 +152,7 @@ public interface IParentQuery {
 			" UPDATED_DATE_TIME) SELECT NEXT VALUE FOR SEQ_PASSWORD_HISTORY, ?,",
 			" (select userid from users  where upper(USERNAME) =upper(?)), sysdatetime(), sysdatetime() ");
 	
-	public static final String SP_RESET_PASSWORD ="{CALL PKG_MANAGE_USERS.SP_RESET_PASSWORD(?, ?, ?, ?, ?)}";
+	public static final String SP_RESET_PASSWORD ="{CALL FACT.PKG_MANAGE_USERS$SP_RESET_PASSWORD(?, ?, ?, ?, ?)}";
 
 	public static final String FETCH_SCHOOLID_FOR_STUDENT = CustomStringUtil.appendString(
 			" select ORG.ORG_NODEID from student_bio_dim std, ORG_NODE_DIM org ",
@@ -162,43 +162,43 @@ public interface IParentQuery {
 			" select ISNULL(last_name,'')+' '+ISNULL(first_name,'')+' '+ISNULL(middle_name,'') NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",
 			" where stu.gradeid = grd.gradeid and org_nodeid = (select TOP(1) org_lstnodeid from ORG_LSTNODE_LINK where org_nodeid = ? and adminid = ?) and adminid = ? and customerid = ? and stu.gradeid = ? ");
 
-	public static final String GET_TEST_ADMINISTRATION = "PKG_MANAGE_CONTENT.SP_GET_CUST_PROD_DETAILS(?,?,?,?)";
+	public static final String GET_TEST_ADMINISTRATION = "FACT.PKG_MANAGE_CONTENT$SP_GET_CUST_PROD_DETAILS(?,??)";
 
-	public static final String GET_GRADE = "PKG_MANAGE_CONTENT.SP_GET_GRADE_DETAILS(?,?,?)";
+	public static final String GET_GRADE = "FACT.PKG_MANAGE_CONTENT$SP_GET_GRADE_DETAILS(?,?)";
 
-	public static final String GET_SUBTEST = "PKG_MANAGE_CONTENT.SP_GET_SUBTEST_DETAILS(?,?,?,?)";
+	public static final String GET_SUBTEST = "FACT.PKG_MANAGE_CONTENT$SP_GET_SUBTEST_DETAILS(?,?,?)";
 
-	public static final String GET_OBJECTIVE = "PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS(?,?,?,?)";
+	public static final String GET_OBJECTIVE = "FACT.PKG_MANAGE_CONTENT$SP_GET_OBJECTIVE_DETAILS(?,?,?)";
 	
-	public static final String GET_PERFORMANCE_LEVEL = "PKG_MANAGE_CONTENT.SP_GET_PERFORMANCE_LEVEL(?,?,?,?)";
+	public static final String GET_PERFORMANCE_LEVEL = "FACT.PKG_MANAGE_CONTENT$SP_GET_PERFORMANCE_LEVEL(?,?,?)";
 
-	public static final String ADD_NEW_CONTENT = "PKG_MANAGE_CONTENT.SP_ADD_NEW_CONTENT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String ADD_NEW_CONTENT = "FACT.PKG_MANAGE_CONTENT$SP_ADD_NEW_CONTENT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	public static final String GET_MANAGE_CONTENT_LIST = "{CALL PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS(?, ?, ?, ?, ?, ?, ?)}";
+	public static final String GET_MANAGE_CONTENT_LIST = "{CALL FACT.PKG_MANAGE_CONTENT$SP_GET_CONTENT_DETAILS(?, ?, ?, ?, ?, ?, ?)}";
 
-	public static final String GET_MANAGE_CONTENT_LIST_MORE = "{ CALL PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS_MORE(?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String GET_MANAGE_CONTENT_LIST_MORE = "{ CALL FACT.PKG_MANAGE_CONTENT$SP_GET_CONTENT_DETAILS_MORE(?, ?, ?, ?, ?,  ?, ?)}";
 
-	public static final String GET_MANAGE_CONTENT_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_CONTENT_DETAILS_EDIT(?,?,?)";
+	public static final String GET_MANAGE_CONTENT_FOR_EDIT = "FACT.PKG_MANAGE_CONTENT$SP_GET_CONTENT_DETAILS_EDIT(?,?)";
 
-	public static final String UPDATE_CONTENT = "PKG_MANAGE_CONTENT.SP_UPDATE_CONTENT_DETAILS(?,?,?,?,?,?,?)";
+	public static final String UPDATE_CONTENT = "FACT.PKG_MANAGE_CONTENT$SP_UPDATE_CONTENT_DETAILS(?,?,?,?,?,?,?)";
 
-	public static final String DELETE_CONTENT = "PKG_MANAGE_CONTENT.SP_DELETE_CONTENT_DETAILS(?,?,?)";
+	public static final String DELETE_CONTENT = "FACT.PKG_MANAGE_CONTENT$SP_DELETE_CONTENT_DETAILS(?,?,?)";
 
-	public static final String GET_OBJECTIVE_DETAILS_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_OBJECTIVE_DETAILS_EDIT(?,?)";
+	public static final String GET_OBJECTIVE_DETAILS_FOR_EDIT = "FACT.PKG_MANAGE_CONTENT$SP_GET_OBJECTIVE_DETAILS_EDIT(?,?)";
 
-	public static final String GET_GENERIC_DETAILS_FOR_EDIT = "PKG_MANAGE_CONTENT.SP_GET_GENERIC_DETAILS_EDIT(?,?,?,?,?,?,?,?)";
+	public static final String GET_GENERIC_DETAILS_FOR_EDIT = "FACT.PKG_MANAGE_CONTENT$SP_GET_GENERIC_DETAILS_EDIT(?,?,?,?,?,?,?)";
 
-	public static final String GET_STUDENT_SUBTEST = "PKG_PARENT_NETWORK.SP_GET_SUBTEST_DETAILS(?,?,?)";
+	public static final String GET_STUDENT_SUBTEST = "FACT.PKG_PARENT_NETWORK$SP_GET_SUBTEST_DETAILS(?,?)";
 
-	public static final String GET_ARTICLE_TYPE_DETAILS = "PKG_PARENT_NETWORK.SP_GET_ARTICLE_TYPE_DETAILS(?,?,?,?,?,?,?)";
+	public static final String GET_ARTICLE_TYPE_DETAILS = "FACT.PKG_PARENT_NETWORK$SP_GET_ARTICLE_TYPE_DETAILS(?,?,?,?,?,?)";
 
-	public static final String GET_ARTICLE_DESCRIPTION = "PKG_PARENT_NETWORK.SP_GET_ARTICLE_DESCRIPTION(?,?,?,?,?,?,?,?)";
+	public static final String GET_ARTICLE_DESCRIPTION = "FACT.PKG_PARENT_NETWORK$SP_GET_ARTICLE_DESCRIPTION(?,?,?,?,?,?,?)";
 
-	public static final String GET_GRADE_SUBTEST_INFO = "PKG_PARENT_NETWORK.SP_GET_GRADE_SUBTEST_DETAILS(?,?,?)";
+	public static final String GET_GRADE_SUBTEST_INFO = "FACT.PKG_PARENT_NETWORK$SP_GET_GRADE_SUBTEST_DETAILS(?,?)";
 
-	public static final String GET_STUDENT_DETAILS = "PKG_PARENT_NETWORK.SP_GET_STUDENT_DETAILS(?,?,?)";
+	public static final String GET_STUDENT_DETAILS = "FACT.PKG_PARENT_NETWORK$SP_GET_STUDENT_DETAILS(?,?)";
 	
-	public static final String GET_STUDENT_DETAILS_ADMIN = "PKG_PARENT_NETWORK.SP_GET_STUDENT_DETAILS_ADMIN(?,?,?,?,?,?)";
+	public static final String GET_STUDENT_DETAILS_ADMIN = "FACT.PKG_PARENT_NETWORK$SP_GET_STUDENT_DETAILS_ADMIN(?,?,?,?,?)";
 	
-	public static final String CREATE_PARENT="Pkg_Admin_Module.Sp_Create_Parent(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String CREATE_PARENT="FACT.Pkg_Admin_Module$Sp_Create_Parent(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 }

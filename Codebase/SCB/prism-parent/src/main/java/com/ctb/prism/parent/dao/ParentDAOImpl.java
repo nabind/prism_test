@@ -227,7 +227,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				    		}
 				            cs.setString(2, invitationCode);
 				            //cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -287,7 +287,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				        	CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_FOR_INVITATION_CODE + "}");
 				            cs.setString(1, (String)paramMap.get("invitationCode"));
 				            //cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -396,8 +396,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, firstName);
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+					cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -502,7 +502,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(3, orgMode);
 						cs.setString(4, adminYear);
 						//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -540,7 +540,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_DETAILS + "}");
 						cs.setString(1, parentName);
 						//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -621,7 +621,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
 							cs.setLong(7, Long.parseLong(moreCount));
 							//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 						} else {
 							logger.log(IAppLogger.INFO, "GET_PARENT_DETAILS_ON_SCROLL");
 							logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
@@ -634,7 +634,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
 							cs.setLong(7, Long.parseLong(moreCount));
 							//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 							return cs;
 						}
 					} else {
@@ -649,7 +649,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setLong(6, IApplicationConstants.ROLE_PARENT_ID);
 						cs.setLong(7, Long.parseLong(moreCount));
 						//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 					}
 					return cs;
 				}
@@ -724,7 +724,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setLong(6,rowNum);
 						cs.setString(7, isExactSeacrh);
 						//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 					}else{
 						logger.log(IAppLogger.INFO, "SEARCH_PARENT_EXACT");
 						logger.log(IAppLogger.INFO, "tenantId = " + tenantId);
@@ -737,7 +737,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setLong(6,rowNum);
 						cs.setString(7, isExactSeacrh);
 						//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 					}
 					return cs;
 				}
@@ -808,7 +808,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(6,rowNum);
 					cs.setString(7, IApplicationConstants.FLAG_N);
 					//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -895,7 +895,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(6, searchParamNew);
 							cs.setLong(7, Long.valueOf(moreCount));
 							//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 							return cs;
 						} else {
 							cs = con.prepareCall(IQueryConstants.GET_STUDENT_DETAILS_MANAGE_STUDENT);
@@ -907,7 +907,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							cs.setString(6, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 							cs.setLong(7, Long.valueOf(moreCount));
 							//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-							cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 							return cs;
 						}
 					} else {
@@ -921,7 +921,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(6, String.valueOf(IApplicationConstants.DEFAULT_PRISM_VALUE));
 						cs.setLong(7, Long.valueOf(moreCount));
 						//cs.registerOutParameter(8, oracle.jdbc.OracleTypes.CURSOR);							
-						cs.registerOutParameter(8, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(8, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}
@@ -986,7 +986,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(1, testElementId);
 						cs.setLong(2,customerId);
 						//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -1050,7 +1050,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(5, searchParam);
 					cs.setLong(6,rowNum);
 					//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1127,7 +1127,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(5, searchParam);
 					cs.setLong(6,rowNum);
 					//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1198,7 +1198,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(1, adminYear);
 					cs.setString(2, tesElementId);
 					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1259,7 +1259,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs = con.prepareCall("{call " + IQueryConstants.GET_ASSESSMENT_LIST + "}");
 					cs.setString(1, testElementId);
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1320,8 +1320,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(1, totalAvailableClaim);
 					cs.setString(2, expirationDate);
 					cs.setString(3, invitationcode);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1330,7 +1330,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(4);
+						executionStatus = (long)cs.getFloat(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(5));
 						Utils.logError(cs.getString(5));
@@ -1387,7 +1387,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(2, encryptedPass);
 						cs.setString(3, salt);
 						cs.setString(4, IApplicationConstants.FLAG_Y);
-						cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -1450,7 +1450,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(1, username);
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
 					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1678,8 +1678,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(answerIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+					cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1688,7 +1688,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(17);
+						executionStatus = (long)cs.getFloat(17);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(18));
 						Utils.logError(statusTO.getErrorMsg());
@@ -1742,8 +1742,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT + "}");
 					cs.setString(1, (String)paramMap.get("curruser"));
 					cs.setString(2, (String)paramMap.get("invitationCode"));
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1752,7 +1752,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(3);
+						executionStatus = (long)cs.getFloat(3);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(4));
 						Utils.logError(cs.getString(4));
@@ -1813,9 +1813,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.REGENERATE_ACTIVATION_CODE + "}");
 					cs.setString(1, student.getInvitationcode());
 					cs.setString(2, student.getTestElementId());
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1825,7 +1825,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					try {
 						cs.execute();
 						statusTO.setOther(cs.getString(3));
-						executionStatus = cs.getLong(4);
+						executionStatus = (long)cs.getFloat(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(5));
 						Utils.logError(cs.getString(5));
@@ -1868,7 +1868,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_GRADE + "}");
 					cs.setLong(1, custProdId);
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1921,7 +1921,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(1, custProdId);
 					cs.setLong(2, gradeId);
 					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1974,7 +1974,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(1, subtestId);
 					cs.setLong(2, gradeId);
 					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2028,7 +2028,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(1, custProdId);
 					cs.setString(2, contentTypeId);
 					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2089,8 +2089,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(9, manageContentTO.getGradeId());
 					cs.setString(10, manageContentTO.getPerformanceLevel());
 					cs.setString(11, manageContentTO.getStatusCode());
-					cs.registerOutParameter(12, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(13, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(12, java.sql.Types.FLOAT);
+					cs.registerOutParameter(13, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2099,7 +2099,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(12);
+						executionStatus = (long)cs.getFloat(12);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(13));
@@ -2146,7 +2146,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(4, contentTypeId);
 						cs.setLong(5, Long.valueOf(moreCount));
 						//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 						return cs;
 					} else {
 						final long lastid = Long.parseLong((String) paramMap.get("lastid"));
@@ -2158,7 +2158,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 						cs.setString(5, contentTypeId);
 						cs.setLong(6, Long.valueOf(moreCount));
 						//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}
@@ -2169,14 +2169,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					try {
 						cs.execute();
 						rs = cs.getResultSet();
-						if (checkFirstLoad.equals("true")) {
-							//rs = (ResultSet) cs.getObject(6);
-							Utils.logError(cs.getString(7));
-						} else {
-							//rs = (ResultSet) cs.getObject(7);
-							Utils.logError(cs.getString(8));
-						}
-
 						while (rs.next()) {
 							ManageContentTO manageContentTO = new ManageContentTO();
 							manageContentTO.setContentId(rs.getLong("METADATA_ID"));
@@ -2185,6 +2177,13 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 							manageContentTO.setGradeName(rs.getString("GRADE"));
 							manageContentTO.setPerformanceLevel(rs.getString("PROFICIENCY_LEVEL"));
 							manageContentListResult.add(manageContentTO);
+						}
+						if (checkFirstLoad.equals("true")) {
+							//rs = (ResultSet) cs.getObject(6);
+							Utils.logError(cs.getString(7));
+						} else {
+							//rs = (ResultSet) cs.getObject(7);
+							Utils.logError(cs.getString(8));
 						}
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -2218,7 +2217,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_MANAGE_CONTENT_FOR_EDIT + "}");
 					cs.setLong(1, contentId);
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2274,8 +2273,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(3, manageContentTO.getSubHeader());
 					cs.setString(4, manageContentTO.getContentDescription());
 					cs.setString(5, manageContentTO.getPerformanceLevel());
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(6, java.sql.Types.FLOAT);
+					cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2284,7 +2283,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(6);
+						executionStatus = (long)cs.getFloat(6);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(7));
@@ -2319,8 +2318,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.DELETE_CONTENT + "}");
 					cs.setLong(1, contentId);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.FLOAT);
+					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2329,7 +2328,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(2);
+						executionStatus = (long)cs.getFloat(2);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(3));
@@ -2450,7 +2449,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_STUDENT_SUBTEST + "}");
 					cs.setString(1, testElementId);
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2513,7 +2512,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(4, contentType);
 					cs.setLong(5, custProdId);
 					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2581,7 +2580,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(5, subtestId);
 					cs.setString(6, contentType);
 					//cs.registerOutParameter(7, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(7, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -2635,7 +2634,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs = con.prepareCall("{call " + IQueryConstants.GET_GRADE_SUBTEST_INFO + "}");
 					cs.setLong(1, Long.valueOf(loggedinUserTO.getCustomerId()));
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {

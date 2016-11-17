@@ -324,9 +324,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_EDU_USER_DETAILS);
 							cs.setString(1, username);
 							//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+							cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+							cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -375,10 +375,10 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 							CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_DETAILS);
 							cs.setString(1, username);
 							//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-							cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
-							cs.registerOutParameter(4, oracle.jdbc.OracleTypes.DATE);
-							cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+							cs.registerOutParameter(2, java.sql.Types.VARCHAR);
+							cs.registerOutParameter(3, java.sql.Types.VARCHAR);
+							cs.registerOutParameter(4, java.sql.Types.DATE);
+							cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 							return cs;
 						}
 					}, new CallableStatementCallback<Object>() {
@@ -600,7 +600,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				            cs.setLong(1, loggedInCustomer);	
 				            cs.setString(2, loggedInOrgId);
 				           // cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR); 
-				            cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+				            cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 				            return cs;				      			            
 				        }
 				    } ,   new CallableStatementCallback<Object>()  {
@@ -850,7 +850,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(15, IApplicationConstants.FLAG_N);
 					//cs.registerOutParameter(16, oracle.jdbc.OracleTypes.CURSOR);
 					//cs.registerOutParameter(17, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(16, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(16, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1135,7 +1135,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 						cs.setString(1, username);
 						cs.setInt(2 ,pwdHistoryDay);
 						//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
-						cs.registerOutParameter(3, oracle.jdbc.OracleTypes.VARCHAR);
+						cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 						return cs;
 					}
 				}, new CallableStatementCallback<Object>() {
@@ -1175,7 +1175,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				CallableStatement cs = con.prepareCall(IQueryConstants.SP_GET_USER_EMAIL);
 				cs.setString(1, userName);
 				//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-				cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -1219,8 +1219,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					cs.setString(1, userName);
 					cs.setLong(2, Long.parseLong(custProdId));
 					cs.setLong(3, Long.parseLong(prevOrgId));
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -1264,8 +1264,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_USER_ROLE_BY_USERNAME);
 					cs.setString(1, username);
 					cs.setString(2, userRole);
-					cs.registerOutParameter(3, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(3, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {

@@ -55,7 +55,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(3, Long.valueOf(school));
 					cs.setLong(4, Long.valueOf(grade));
 					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -144,8 +144,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setString(7, requestedStatus);
 					cs.setString(8, requestedDate);
 					cs.setLong(9, rrfId);
-					cs.registerOutParameter(10, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(11, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(10, java.sql.Types.FLOAT);
+					cs.registerOutParameter(11, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -154,7 +154,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(10);
+						executionStatus = (long)cs.getFloat(10);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -198,8 +198,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(2, studentBioId);
 					cs.setLong(3, userId);
 					cs.setString(4, requestedStatus);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(5, java.sql.Types.FLOAT);
+					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -208,7 +208,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(5);
+						executionStatus = (long)cs.getFloat(5);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -249,8 +249,8 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(1, studentBioId);
 					cs.setLong(2, userId);
 					cs.setString(3, requestedDate);
-					cs.registerOutParameter(4, oracle.jdbc.OracleTypes.NUMBER);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -259,7 +259,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = cs.getLong(4);
+						executionStatus = (long)cs.getFloat(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -306,7 +306,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(3, Long.valueOf(school));
 					cs.setLong(4, Long.valueOf(grade));
 					//cs.registerOutParameter(5, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(5, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -366,7 +366,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(4, 0);
 					cs.setLong(5, studentBioId);
 					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -441,7 +441,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(4, Long.valueOf(grade));
 					cs.setLong(5, 0);
 					//cs.registerOutParameter(6, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(6, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
@@ -505,7 +505,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs = con.prepareCall("{call " + IQueryConstants.GET_SUBTEST_DETAILS + "}");
 					cs.setLong(1, Long.valueOf(studentBioId));
 					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					cs.registerOutParameter(2, oracle.jdbc.OracleTypes.VARCHAR);
+					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {

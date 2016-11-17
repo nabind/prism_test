@@ -10,18 +10,18 @@ import com.ctb.prism.core.util.CustomStringUtil;
  */
 public interface IRescoreRequestQuery {
 
-	public static final String GET_DNP_STUDENT_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_DNP_STUDENT_DETAILS(?,?,?,?,?,?)";
+	public static final String GET_DNP_STUDENT_DETAILS = "FACT.PKG_RESCORE_REQUEST$SP_GET_DNP_STUDENT_DETAILS(?,?,?,?,?)";
 	
-	public static final String SUBMIT_RESCORE_REQUEST = "PKG_RESCORE_REQUEST.SP_SUBMIT_RESCORE_REQUEST(?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String SUBMIT_RESCORE_REQUEST = "FACT.PKG_RESCORE_REQUEST$SP_SUBMIT_RESCORE_REQUEST(?,?,?,?,?,?,?,?,?,?,?)";
 	
-	public static final String RESET_ITEM_STATE = "PKG_RESCORE_REQUEST.SP_RESET_ITEM_STATE(?,?,?,?,?,?)";
+	public static final String RESET_ITEM_STATE = "FACT.PKG_RESCORE_REQUEST$SP_RESET_ITEM_STATE(?,?,?,?,?,?)";
 	
-	public static final String RESET_ITEM_DATE = "PKG_RESCORE_REQUEST.SP_RESET_ITEM_DATE(?,?,?,?,?)";
+	public static final String RESET_ITEM_DATE = "FACT.PKG_RESCORE_REQUEST$SP_RESET_ITEM_DATE(?,?,?,?,?)";
 	
-	public static final String GET_NOT_DNP_STUDENT = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT(?,?,?,?,?,?)";
+	public static final String GET_NOT_DNP_STUDENT = "FACT.PKG_RESCORE_REQUEST$SP_GET_NOT_DNP_STUDENT(?,?,?,?,?)";
 	
-	public static final String GET_NOT_DNP_STUDENT_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_NOT_DNP_STUDENT_DETAILS(?,?,?,?,?,?,?)";
+	public static final String GET_NOT_DNP_STUDENT_DETAILS = "FACT.PKG_RESCORE_REQUEST$SP_GET_NOT_DNP_STUDENT_DETAILS(?,?,?,?,?,?)";
 	
-	public static final String GET_SUBTEST_DETAILS = "PKG_RESCORE_REQUEST.SP_GET_SUBTEST_DETAILS(?,?,?)";
+	public static final String GET_SUBTEST_DETAILS = "FACT.PKG_RESCORE_REQUEST$SP_GET_SUBTEST_DETAILS(?,?,?)";
 
 }

@@ -28,8 +28,7 @@ public interface IReportQuery {
 			" 		IC.TYPE TYPE, IC.DATA_TYPE DATATYPE, IC.READONLY READ_ONLY, IC.VISIBLE VISIBLE, IC.MANDATORY MANDATORY, ",
 			" 		IC.QUERY_VALUE_COLUMN QUERY_VALUE_COLUMN, ",
 			"       (SELECT DATASOURCE FROM JIQUERY WHERE ID=IC.LIST_QUERY) DATASOURCE, ",
-			" 	    (SELECT SQL_QUERY FROM JIQUERY WHERE ID=IC.LIST_QUERY) SQL_QUERY, F_GET_LIST_OF_VALUES ",
-			" 	    (IC.LIST_OF_VALUES) LIST_OF_VALUES, DT.type FIELD_TYPE, ",
+			" 	    (SELECT SQL_QUERY FROM JIQUERY WHERE ID=IC.LIST_QUERY) SQL_QUERY, F_GET_LIST_OF_VALUES(IC.LIST_OF_VALUES) LIST_OF_VALUES, DT.type FIELD_TYPE, ",
 			"  	    UTL_RAW.CAST_TO_VARCHAR2(substr(DT.minvalue, 15)) MIN_LENGTH, ",
 			"       UTL_RAW.CAST_TO_VARCHAR2(substr(DT.max_value, 15)) MAX_LENGTH ",
 			" FROM JIREPORTUNITINPUTCONTROL RUIC, JIRESOURCE RE, JIINPUTCONTROL IC, jidatatype DT ",
@@ -50,25 +49,25 @@ public interface IReportQuery {
 	 * It returns all report details for manage reports screen and
 	 * retrieve a report based on the report id
 	 * */ 
-	public static final String GET_DASHBOARD_DETAILS = "PKG_MANAGE_REPORT.SP_GET_REPORT_LIST(?,?,?,?)";
+	public static final String GET_DASHBOARD_DETAILS = "FACT.PKG_MANAGE_REPORT$SP_GET_REPORT_LIST(?,?,?)";
 	
 	/**
 	 * @author Joy
 	 * Add a new report
 	 * */
-	public static final String ADD_REPORT = "PKG_MANAGE_REPORT.SP_ADD_REPORT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String ADD_REPORT = "FACT.PKG_MANAGE_REPORT$SP_ADD_REPORT(?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	/**
 	 * @author Joy
 	 * Edit a report
 	 * */
-	public static final String EDIT_REPORT = "PKG_MANAGE_REPORT.SP_EDIT_REPORT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	public static final String EDIT_REPORT = "FACT.PKG_MANAGE_REPORT$SP_EDIT_REPORT(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 	
 	/**
 	 * @author Joy
 	 * Delete a report
 	 * */
-	public static final String DELETE_REPORT = "PKG_MANAGE_REPORT.SP_DELETE_REPORT(?,?,?,?)";
+	public static final String DELETE_REPORT = "FACT.PKG_MANAGE_REPORT$SP_DELETE_REPORT(?,?,?,?)";
 
 	// query to group download files
 	public static final String GET_GROUP_DOWNLOAD_LIST = CustomStringUtil.appendString(
@@ -84,10 +83,10 @@ public interface IReportQuery {
 	public static final String GET_GROUP_DOWNLOAD_REQUEST_VIEW = CustomStringUtil.appendString(
 	"select * from job_tracking where job_Id=?");
 	
-	public static final String GET_ALL_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_ALL_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_GROWTH_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_GROWTH_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_EDU_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_EDU_ASSESSMENT_LIST(?, ?, ?, ?, ?)}";
-	public static final String GET_ALL_BUT_GROWTH_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_ALL_BUT_GRW_ASS_LIST(?, ?, ?, ?, ?)}";
+	public static final String GET_ALL_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_ALL_ASSESSMENT_LIST(?, ?, ?,  ?, ?)}";
+	public static final String GET_GROWTH_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_GROWTH_ASSESSMENT_LIST(?, ?, ?,  ?, ?)}";
+	public static final String GET_EDU_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_EDU_ASSESSMENT_LIST(?, ?, ?, ?,  ?)}";
+	public static final String GET_ALL_BUT_GROWTH_ASSESSMENT_LIST = "{CALL FACT.PKG_MENU_ACCESS$GET_ALL_BUT_GRW_ASS_LIST(?, ?, ?, ?,  ?)}";
 
 	public static final String GET_LIST_OF_ROLES = CustomStringUtil.appendString(
 			"SELECT FACT.SF_GET_LIST_OF_ROLES(?) ROLES"); 
@@ -121,7 +120,7 @@ public interface IReportQuery {
 					"?, ?, ?, ?, ?, ?, ?, ?, ?, (SELECT ADMINID FROM CUST_PRODUCT_LINK WHERE CUSTOMERID=? AND PRODUCTID=? AND ROWNUM=1),",
 					" ?, SYSDATE, ?)");*/
 	
-	public static final String INSERT_JOB_TRACKING = "{ CALL PKG_GROUP_DOWNLOADS_MO.SP_ADD_JOB_TRACKING(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+	public static final String INSERT_JOB_TRACKING = "{ CALL FACT.PKG_GROUP_DOWNLOADS_MO$SP_ADD_JOB_TRACKING(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 	
 	public static final String INSERT_JOB_TRACKING_DATE = CustomStringUtil.appendString(
 			"  insert into JOB_TRACKING(job_id,userid, job_name,extract_startdate,extract_enddate,",

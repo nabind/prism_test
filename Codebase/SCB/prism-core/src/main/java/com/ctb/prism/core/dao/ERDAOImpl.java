@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.ctb.prism.core.constant.IApplicationConstants;
@@ -96,9 +95,9 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, scheduleDetails.getTestCenterName());
 				cs.setString(count++, scheduleDetails.getScheduledAtTestCenterCountyParishCode());
 				
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -212,9 +211,9 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, errCode); // ERROR CODE
 				cs.setString(count++, IApplicationConstants.JOB_STATUS.ER.toString()); // exception status
 				
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -286,9 +285,9 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCode());
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCountyParishCode());
 				
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {
@@ -356,9 +355,9 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, scheduleDetails.getScheduledAtTestCenterCountyParishCode());
 				cs.setString(count++, orgDetails.getStateCode());
 				
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.NUMBER);
-				cs.registerOutParameter(count++, oracle.jdbc.OracleTypes.VARCHAR);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
 		}, new CallableStatementCallback<Object>() {

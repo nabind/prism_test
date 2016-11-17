@@ -21,7 +21,7 @@ public interface IUserQuery {
 	
 	public static final String SP_GET_USER_DETAILS = "{CALL FACT.PKG_ADMIN_MODULE$SP_GET_USER_DETAILS(?, ?, ?, ?, ?)}";
 
-	public static final String SP_GET_USER_EMAIL = "{CALL PKG_MANAGE_USERS.SP_GET_USER_EMAIL(?, ?, ?)}";
+	public static final String SP_GET_USER_EMAIL = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USER_EMAIL(?, ?)}";
 	public static final String SP_CHECK_ORG_HIERARCHY = "{CALL FACT.PKG_ADMIN_MODULE$SP_CHECK_ORG_HIERARCHY(?,?,?,?,?)}";
 	public static final String SP_CHECK_USER_ROLE_BY_USERNAME = "{CALL FACT.PKG_ADMIN_MODULE$SP_CHECK_USER_ROLE_BY_USERNAME(?,?,?,?)}";
 	
@@ -35,7 +35,7 @@ public interface IUserQuery {
 			" AND EC.EDU_CENTERID = EL.EDU_CENTERID",
 			" AND EL.USERID = USERS.USERID");
 	*/
-	public static final String SP_GET_EDU_USER_DETAILS = "{CALL PKG_ADMIN_MODULE.SP_GET_EDUUSER_DETAILS(?, ?, ?, ?, ?)}";
+	public static final String SP_GET_EDU_USER_DETAILS = "{CALL FACT.PKG_ADMIN_MODULE$SP_GET_EDUUSER_DETAILS(?, ?, ?, ?)}";
 	
 	// queru to fetch user roles for logged-in user
 	/*public static final String SELECT_USER_AUTHORITIES = CustomStringUtil.appendString(
@@ -360,14 +360,14 @@ public interface IUserQuery {
 			" AND UR.ROLEID=RE.ROLEID AND OU.ORG_NODE_LEVEL=OTS.ORG_LEVEL",
 			" AND RE.ROLE_NAME NOT IN (? ,? ,?) ORDER BY RE.ROLEID");*/
 	
-	public static final String SP_GET_ROLE_USER = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_USER(?, ?, ?, ?)}";
+	public static final String SP_GET_ROLE_USER = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_ROLE_USER(?, ?,  ?)}";
 	
 /*	public static final String GET_ROLE_ADD = CustomStringUtil.appendString(
 			" SELECT RE.ROLEID    AS ROLE_ID, RE.ROLE_NAME AS ROLE_NAME, RE.DESCRIPTION DESCRIPTION ",
 			" FROM ROLE RE WHERE RE.ROLE_NAME NOT IN (? ,? ,?)");*/
-	public static final String SP_GET_ROLE_ADD = "{CALL PKG_MANAGE_USERS.SP_GET_ROLE_ADD(?, ?, ?)}";
+	public static final String SP_GET_ROLE_ADD = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_ROLE_ADD(?,  ?)}";
 	
-	public static final String GET_USER_DETAILS_ON_EDIT = "{CALL PKG_MANAGE_USERS.SP_GET_USER_DETAILS_ON_EDIT(?, ?, ?, ?)}";
+	public static final String GET_USER_DETAILS_ON_EDIT = "{CALL FACT.PKG_MANAGE_USERS$SP_GET_USER_DETAILS_ON_EDIT(?, ?)}";
 	
 /*	public static final String GET_USER_ROLE_ON_EDIT = CustomStringUtil.appendString(
 			"SELECT DISTINCT RLE.ROLEID AS ROLE_ID, RLE.ROLE_NAME AS ROLENAME, OTS.ORG_LABEL || ' ' || RLE.DESCRIPTION AS DESCRIPTION",
@@ -580,23 +580,23 @@ public interface IUserQuery {
 	 * This is for TASC and INORS 
 	 * */
 	//Modify query because Corporation/Diocese are same - By Joy
-	public static final String GET_ORG_NODE_LEVEL = "PKG_ADMIN_MODULE.SP_GET_ORG_NODE_LEVEL(?,?)";
+	public static final String GET_ORG_NODE_LEVEL = "FACT.PKG_ADMIN_MODULE$SP_GET_ORG_NODE_LEVEL(?)";
 	
 	public static final String INSERT_EDU_CENTER_USER = CustomStringUtil.appendString(
 			"INSERT INTO EDU_CENTER_USER_LINK (EDU_CENTERID, USERID) VALUES (?, ?)");
 		
 	
-	public static final String CREATE_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
-	public static final String CREATE_SSO_USER = "{CALL PKG_ADMIN_MODULE.SP_CREATE_SSO_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+	public static final String CREATE_USER = "{CALL FACT.PKG_ADMIN_MODULE$SP_CREATE_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?,  ?, ?, ?, ?)}";
+	public static final String CREATE_SSO_USER = "{CALL FACT.PKG_ADMIN_MODULE$SP_CREATE_SSO_USER(?, ?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?, ?, ?, ?, ?)}";
 	
 	/*public static final String GET_PASSWORD_HISTORY = CustomStringUtil.appendString(
 			" select salt, ph.password ",
 			" from PASSWORD_HISTORY ph, users u ",
 			" where upper(USERNAME) = upper('ctbadmin') order by ph.created_date_time desc ");*/
 	
-	public static final String SP_DELETE_USER = "{CALL PKG_ADMIN_MODULE.SP_DELETE_USER(?, ?, ?)}";
+	public static final String SP_DELETE_USER = "{CALL FACT.PKG_ADMIN_MODULE$SP_DELETE_USER(?, ?, ?)}";
 	
-	public static final String SP_GET_PASSWORD_HISTORY = "{CALL PKG_ADMIN_MODULE.SP_GET_PASSWORD_HISTORY(?, ?, ?, ?)}";
+	public static final String SP_GET_PASSWORD_HISTORY = "{CALL FACT.PKG_ADMIN_MODULE$SP_GET_PASSWORD_HISTORY(?, ?, ?)}";
 	
 	
 }
