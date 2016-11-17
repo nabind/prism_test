@@ -36,7 +36,7 @@
         driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
         validationQuery="SELECT 1"
         testOnBorrow="true"
-        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=TASC_report_dev;SelectMethod=cursor"
+        url="jdbc:sqlserver://10.160.23.88\\dev1:6001;databaseName==TASC_report_dev;SelectMethod=cursor"
          />
     
     <Resource name="jdbc/usmo" auth="Container" type="javax.sql.DataSource"
@@ -45,7 +45,7 @@
         driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
         validationQuery="SELECT 1"
         testOnBorrow="true"
-        url="jdbc:sqlserver://10.160.23.88\\dev1:6001;databaseName=Missouri_report_dev"
+        url="jdbc:sqlserver://10.160.23.88\\dev1:6001;databaseName=Missouri_report_dev;SelectMethod=cursor"
          />
          
      <Resource name="jdbc/wisc" auth="Container" type="javax.sql.DataSource"
@@ -54,7 +54,7 @@
         driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
         validationQuery="SELECT 1"
         testOnBorrow="true"
-        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=Wisconsin_report_dev;SelectMethod=cursor"
+        url="jdbc:sqlserver://10.160.23.88\\dev1:6001;databaseName=Wisconsin_report_dev;SelectMethod=cursor"
          />
 
    <Realm className="org.apache.catalina.realm.MemoryRealm" pathname="conf/tomcat-users.xml" />
