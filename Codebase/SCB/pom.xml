@@ -715,8 +715,8 @@
 		</dependency>
 		<dependency>
     		<groupId>com.microsoft</groupId>
-    		<artifactId>sqljdbc42</artifactId>
-    		<version>4.2</version>
+    		<artifactId>sqljdbc420</artifactId>
+    		<version>4.2.0</version>
 		</dependency>
 	<!--<dependency>
 			<groupId>com.oracle</groupId>

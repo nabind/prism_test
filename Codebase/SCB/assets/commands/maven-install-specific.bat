@@ -10,4 +10,4 @@ call mvn install:install-file -Dfile=%PRISM_HOME%\jars\ojdbc6.jar -DgroupId=com.
 
 call mvn install:install-file -Dfile=%PRISM_HOME%\jars\ojdbc7.jar -DgroupId=com.oracle -DartifactId=ojdbc7 -Dversion=7 -Dpackaging=jar -DgeneratePom=true;
 
-call mvn install:install-file -Dfile=%PRISM_HOME%\jars\sqljdbc42.jar -DgroupId=com.microsoft -DartifactId=sqljdbc42 -Dversion=4.2 -Dpackaging=jar -DgeneratePom=true;
+call mvn install:install-file -Dfile=%PRISM_HOME%\jars\sqljdbc4-2.0.jar -DgroupId=com.microsoft -DartifactId=sqljdbc420 -Dversion=4.2.0 -Dpackaging=jar -DgeneratePom=true;
