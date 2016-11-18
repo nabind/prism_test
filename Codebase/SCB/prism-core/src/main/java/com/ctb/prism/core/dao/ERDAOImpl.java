@@ -1,6 +1,5 @@
 package com.ctb.prism.core.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -395,8 +394,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				IQueryConstants.GET_STUDENT, jobTrackingTO.getOrgCode(), jobTrackingTO.getStudentBioId(), jobTrackingTO.getUuid());
 		if ( dataList != null && dataList.size() > 0 ) {
 			for (Map<String, Object> data : dataList) {
-				jobTrackingTO.setClikedOrgId(((BigDecimal) data.get("org_nodeid")).longValue());
-				jobTrackingTO.setCustomerId(((BigDecimal) data.get("customerid")).toString());
+				jobTrackingTO.setClikedOrgId(((Long) data.get("org_nodeid")).longValue());
+				jobTrackingTO.setCustomerId(((Long) data.get("customerid")).toString());
 			}
 		}
 		return jobTrackingTO;

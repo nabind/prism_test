@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -1399,7 +1398,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			for (Map<String, Object> fieldDetails : userslist) {
 
 				UserTO to = new UserTO();
-				long userId = ((BigDecimal) fieldDetails.get("USER_ID")).longValue();
+				long userId = ((Long) fieldDetails.get("USER_ID")).longValue();
 				to.setUserId(userId);
 				/*
 				 * to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")) .longValue());
@@ -1407,8 +1406,8 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				to.setUserDisplayName((String) (fieldDetails.get("FULLNAME")));
 				to.setStatus((String) (fieldDetails.get("STATUS")));
-				to.setTenantId(((BigDecimal) fieldDetails.get("ORG_ID")).longValue());
-				to.setParentId(((BigDecimal) fieldDetails.get("ORG_PARENT_ID")).longValue());
+				to.setTenantId(((Long) fieldDetails.get("ORG_ID")).longValue());
+				to.setParentId(((Long) fieldDetails.get("ORG_PARENT_ID")).longValue());
 				to.setTenantName((String) (fieldDetails.get("ORG_NAME")));
 				// to.setUserType((String) (fieldDetails.get("USER_TYPE")));
 				try {
@@ -1425,7 +1424,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 						for (Map<String, Object> roleDetails : roleList) {
 
 							RoleTO rleTo = new RoleTO();
-							rleTo.setRoleId(((BigDecimal) roleDetails.get("ROLEID")).longValue());
+							rleTo.setRoleId(((Long) roleDetails.get("ROLEID")).longValue());
 							rleTo.setRoleName((String) (roleDetails.get("ROLE_NAME")));
 							rleTo.setRoleDescription((String) (roleDetails.get("DESCRIPTION")));
 							rleTo.setLabel((String) (roleDetails.get("ORG_LABEL")));
@@ -1619,7 +1618,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		Map<String, Object> userCount = getJdbcTemplatePrism().queryForMap(IQueryConstants.GET_USER_COUNT, tenantId, customerId, orgMode, adminYear, customerId, tenantId, adminYear, adminYear);
 		if (userCount != null && userCount.size() > 0) {
 			orgTO = new OrgTO();
-			orgTO.setNoOfUsers(((BigDecimal) userCount.get("USER_NO")).longValue());
+			orgTO.setNoOfUsers(((Long) userCount.get("USER_NO")).longValue());
 			orgTO.setAdminName((String) userCount.get("ADMIN_NAME"));
 		}
 		return orgTO;
@@ -1817,7 +1816,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_ROLE_DETAILS_BY_ID, roleid);
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
-				roleTO.setRoleId(((BigDecimal) fieldDetails.get("ROLE_ID")).longValue());
+				roleTO.setRoleId(((Long) fieldDetails.get("ROLE_ID")).longValue());
 				roleTO.setRoleName((String) (fieldDetails.get("ROLE_NAME")));
 				roleTO.setRoleDescription((String) (fieldDetails.get("DESCRIPTION")));
 			}
@@ -1858,7 +1857,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserTO to = new UserTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")).longValue());
+				to.setUserId(((Long) fieldDetails.get("USER_ID")).longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				UserTOs.add(to);
 			}
@@ -1883,7 +1882,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 
 			for (Map<String, Object> fieldDetails : lstData) {
 				UserTO to = new UserTO();
-				to.setUserId(((BigDecimal) fieldDetails.get("USER_ID")).longValue());
+				to.setUserId(((Long) fieldDetails.get("USER_ID")).longValue());
 				to.setUserName((String) (fieldDetails.get("USERNAME")));
 				UserTOs.add(to);
 			}
@@ -2098,7 +2097,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				ObjectValueTO to = new ObjectValueTO();
-				to.setValue(((BigDecimal) (fieldDetails.get("ADMINID"))).toString());
+				to.setValue(((Long) (fieldDetails.get("ADMINID"))).toString());
 				to.setName((String) (fieldDetails.get("ADMIN_NAME")));
 				adminYearList.add(to);
 			}
@@ -2178,7 +2177,7 @@ public class AdminDAOImpl extends BaseDAO implements IAdminDAO {
 			for (Map<String, Object> fieldDetails : lstData) {
 				ObjectValueTO to = new ObjectValueTO();
 				to.setName(((String) (fieldDetails.get("NAME"))));
-				to.setValue(((BigDecimal) (fieldDetails.get("ID"))).toString());
+				to.setValue(((Long) (fieldDetails.get("ID"))).toString());
 				studentList.add(to);
 			}
 		}

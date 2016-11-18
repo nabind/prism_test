@@ -1,6 +1,5 @@
 package com.ctb.prism.parent.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -1539,8 +1538,8 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 
 			for (Map<String, Object> fieldDetails : lstData) {
 				QuestionTO questionTo = new QuestionTO();
-				questionTo.setSno(((BigDecimal) fieldDetails.get("SNO")).longValue());
-				questionTo.setQuestionId(((BigDecimal) fieldDetails.get("QUESTION_ID")).longValue());
+				questionTo.setSno(((Long) fieldDetails.get("SNO")).longValue());
+				questionTo.setQuestionId(((Long) fieldDetails.get("QUESTION_ID")).longValue());
 				questionTo.setQuestion((String) fieldDetails.get("QUESTION"));
 				// questionTo.setAnswerId(((BigDecimal) fieldDetails.get("ANSWER_ID")).longValue());
 				// questionTo.setAnswer((String)fieldDetails.get("ANSWER"));
@@ -1785,7 +1784,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 	public String getSchoolOrgId(String studentBioId) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.FETCH_SCHOOLID_FOR_STUDENT, new Object[] { studentBioId }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
-				return ((BigDecimal) rs.getObject(1)).toString();
+				return (Long.toString(rs.getLong(1)));
 			}
 		});
 	}

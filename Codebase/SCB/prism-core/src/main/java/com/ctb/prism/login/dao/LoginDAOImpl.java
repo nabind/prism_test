@@ -1,6 +1,5 @@
 package com.ctb.prism.login.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -163,7 +162,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 	public String getTenantId( String userName ) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_TENANT_ID, new Object[]{ userName }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
-				return ((BigDecimal) rs.getObject(1)).toString();
+				return Long.toString(rs.getLong(1));
 			}
 		});
 	}
@@ -488,9 +487,9 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if (lstData.size() > 0) {
 			userTO = new UserTO();
 			for (Map<String, Object> fieldDetails : lstData) {
-				userTO.setOrgId( ((BigDecimal) (fieldDetails.get("NODEID"))).toString() );
-				userTO.setOrgNodeLevel( ((BigDecimal) (fieldDetails.get("ORGLEVEL"))).longValue() );
-				userTO.setCustomerId(((BigDecimal) (fieldDetails.get("CUSTOMERID"))).toString());
+				userTO.setOrgId( ((Long) (fieldDetails.get("NODEID"))).toString() );
+				userTO.setOrgNodeLevel( ((Long) (fieldDetails.get("ORGLEVEL"))).longValue() );
+				userTO.setCustomerId(((Long) (fieldDetails.get("CUSTOMERID"))).toString());
 			}
 		}
 		return userTO;
@@ -653,8 +652,8 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if (lstData.size() > 0) {
 
 			for (Map<String, Object> fieldDetails : lstData) {
-				userTO.setCustomerId(((BigDecimal)(fieldDetails.get("CUSTOMERID"))).toString());
-				userTO.setOrgId(((BigDecimal)(fieldDetails.get("NODEID"))).toString());
+				userTO.setCustomerId(((Long)(fieldDetails.get("CUSTOMERID"))).toString());
+				userTO.setOrgId(((Long)(fieldDetails.get("NODEID"))).toString());
 			}
 		}
 		return userTO;
@@ -895,7 +894,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				to = new ObjectValueTO();
-				to.setValue( ((BigDecimal) (fieldDetails.get("ADMINID"))).toString() );
+				to.setValue( ((Long) (fieldDetails.get("ADMINID"))).toString() );
 				to.setName((String) (fieldDetails.get("ADMIN_NAME")));
 			}
 		}

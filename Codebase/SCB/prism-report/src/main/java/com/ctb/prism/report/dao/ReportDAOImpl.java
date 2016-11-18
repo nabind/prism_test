@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -388,17 +387,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			inputControlTOs = new ArrayList<InputControlTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
 				InputControlTO to = new InputControlTO();
-				to.setControlId(((BigDecimal) fieldDetails.get("CONTROLID")).longValue());
-				to.setDatasource((BigDecimal) fieldDetails.get("DATASOURCE") != null ? ((BigDecimal) fieldDetails.get("DATASOURCE")).toString() : null);
-				to.setDataType((BigDecimal) fieldDetails.get("DATATYPE") != null ? ((BigDecimal) fieldDetails.get("DATATYPE")).toString() : null);
+				to.setControlId(((Long) fieldDetails.get("CONTROLID")).longValue());
+				to.setDatasource((Long) fieldDetails.get("DATASOURCE") != null ? ((Long) fieldDetails.get("DATASOURCE")).toString() : null);
+				to.setDataType((Long) fieldDetails.get("DATATYPE") != null ? ((Long) fieldDetails.get("DATATYPE")).toString() : null);
 				to.setLabel((String) fieldDetails.get("LBL"));
 				to.setLabelId((String) fieldDetails.get("LABELID"));
-				to.setMandatory(((BigDecimal) fieldDetails.get("MANDATORY")).intValue() == 1 ? true : false);
+				to.setMandatory(((Long) fieldDetails.get("MANDATORY")).intValue() == 1 ? true : false);
 				to.setQueryValueColumn((String) fieldDetails.get("QUERY_VALUE_COLUMN"));
-				to.setReadonly(((BigDecimal) fieldDetails.get("READ_ONLY")).intValue() == 1 ? true : false);
-				to.setSequence(((BigDecimal) fieldDetails.get("SEQ")).intValue());
-				to.setType(((BigDecimal) fieldDetails.get("TYPE")).toString());
-				to.setVisible(((BigDecimal) fieldDetails.get("VISIBLE")).intValue() == 1 ? true : false);
+				to.setReadonly(((Long) fieldDetails.get("READ_ONLY")).intValue() == 1 ? true : false);
+				to.setSequence(((Long) fieldDetails.get("SEQ")).intValue());
+				to.setType(((Long) fieldDetails.get("TYPE")).toString());
+				to.setVisible(((Long) fieldDetails.get("VISIBLE")).intValue() == 1 ? true : false);
 				String strListOfValues = (String) fieldDetails.get("LIST_OF_VALUES");
 				if (strListOfValues != null) {
 					String[] values = strListOfValues.split(",");
@@ -406,7 +405,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				} else {
 					to.setQuery((String) fieldDetails.get("SQL_QUERY"));
 				}
-				to.setFieldType((fieldDetails.get("FIELD_TYPE") != null) ? ((BigDecimal) fieldDetails.get("FIELD_TYPE")).toString() : null);
+				to.setFieldType((fieldDetails.get("FIELD_TYPE") != null) ? ((Long) fieldDetails.get("FIELD_TYPE")).toString() : null);
 				to.setMinLength((fieldDetails.get("MIN_LENGTH") != null) ? fieldDetails.get("MIN_LENGTH").toString() : null);
 				to.setMaxLength((fieldDetails.get("MAX_LENGTH") != null) ? fieldDetails.get("MAX_LENGTH").toString() : null);
 				inputControlTOs.add(to);
@@ -508,13 +507,13 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		if (IApplicationConstants.EDU_USER_FLAG.equals(userType)) {
 			return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_EDU_TENANT_ID, new Object[] { /* userParameter[0] */userName }, new RowMapper<String>() {
 				public String mapRow(ResultSet rs, int col) throws SQLException {
-					return ((BigDecimal) rs.getObject(1)).toString();
+					return Long.toString(rs.getLong(1));
 				}
 			});
 		} else {
 			return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_TENANT_ID, new Object[] { userName }, new RowMapper<String>() {
 				public String mapRow(ResultSet rs, int col) throws SQLException {
-					return ((BigDecimal) rs.getObject(1)).toString();
+					return Long.toString(rs.getLong(1));
 				}
 			});
 		}
@@ -529,7 +528,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	public String getReportId(String reportUrl) {
 		return getJdbcTemplatePrism().queryForObject(IQueryConstants.GET_REPORT_ID, new Object[] { reportUrl + "%" }, new RowMapper<String>() {
 			public String mapRow(ResultSet rs, int col) throws SQLException {
-				return ((BigDecimal) rs.getObject(1)).toString();
+				return Long.toString(rs.getLong(1));
 			}
 		});
 	}
@@ -1302,7 +1301,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			for (Map<String, Object> data : dataList) {
 				JobTrackingTO to = new JobTrackingTO();
 				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss");
-				to.setJobId(((BigDecimal) data.get("JOB_ID")).longValue());
+				to.setJobId(((Long) data.get("JOB_ID")).longValue());
 				Timestamp ts = (Timestamp) data.get("UPDATED_DATE_TIME");
 				if (ts == null) {
 					ts = (Timestamp) data.get("CREATED_DATE_TIME");
@@ -1450,8 +1449,8 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		String classCount = "";
 		if ((selectionDataList != null) && (!selectionDataList.isEmpty())) {
 			for (Map<String, Object> data : selectionDataList) {
-				schoolCount = ((BigDecimal) data.get("SCHOOLS")).toString();
-				classCount = ((BigDecimal) data.get("CLASSES")).toString();
+				schoolCount = ((Long) data.get("SCHOOLS")).toString();
+				classCount = ((Long) data.get("CLASSES")).toString();
 			}
 		}
 		String selectionString = querySheetTO.getStudentCount() + " Student(s) in " + classCount + " Class(es) in " + schoolCount + " School(s) have been selected.";
@@ -1606,7 +1605,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			if (dataList != null && dataList.size() > 0) {
 				for (Map<String, Object> data : dataList) {
 					String filePath = (String) data.get("request_filename");
-					Long jobId = ((BigDecimal) data.get("job_id")).longValue();
+					Long jobId = ((Long) data.get("job_id")).longValue();
 					if (filePath != null && filePath.length() > 0) {
 						jobMap.put(jobId, filePath);
 					}else{
@@ -2607,7 +2606,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			for (Map<String, Object> data : lstData) {
 				String createdDate = getFormattedDate((Timestamp) data.get("CREATED_DATE_TIME"), "MM/dd/yyyy HH:mm:ss aa");
 				String extractStartdate = getFormattedDate((Timestamp) data.get("EXTRACT_STARTDATE"), "MM/dd/yyyy HH:mm:ss aa");
-				to.setJobId(((BigDecimal) data.get("job_id")).longValue());
+				to.setJobId(((Long) data.get("job_id")).longValue());
 				to.setExtractStartdate(extractStartdate);
 				to.setCreatedDateTime(createdDate);
 				to.setExtractFiletype((String) data.get("extract_filetype"));
@@ -2793,7 +2792,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		List<Map<String, Object>> lstData = getJdbcTemplatePrism().queryForList(IQueryConstants.GET_CURRENT_MSGTYPE,currentCustProdId,oldMsgTypeId);
 		if (!lstData.isEmpty()) {
 			for (Map<String, Object> fieldDetails : lstData) {
-				msgTypeId =  ((BigDecimal) fieldDetails.get("MSGTYPEID")).longValue() ;
+				msgTypeId =  ((Long) fieldDetails.get("MSGTYPEID")).longValue() ;
 			}
 		}
 		return msgTypeId;

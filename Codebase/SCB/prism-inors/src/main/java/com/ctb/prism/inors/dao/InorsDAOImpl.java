@@ -2,7 +2,6 @@ package com.ctb.prism.inors.dao;
 
 import static com.ctb.prism.inors.util.InorsDownloadUtil.wrap;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -126,8 +125,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 			if (lstData.size() > 0) {
 				for (Map<String, Object> fieldDetails : lstData) {
 					jobTrackingTO = new JobTrackingTO();
-					jobTrackingTO.setJobId(((BigDecimal) (fieldDetails.get("JOB_ID"))).longValue());
-					if(fieldDetails.get("USERID") != null)  jobTrackingTO.setUserId(((BigDecimal) (fieldDetails.get("USERID"))).toString()) ;
+					jobTrackingTO.setJobId(((Long) (fieldDetails.get("JOB_ID"))).longValue());
+					if(fieldDetails.get("USERID") != null)  jobTrackingTO.setUserId(((Long) (fieldDetails.get("USERID"))).toString()) ;
 					// jobTrackingTO.setUserName((String) (fieldDetails.get("username")));
 					jobTrackingTO.setJobName((String) (fieldDetails.get("JOB_NAME")));
 					jobTrackingTO.setExtractCategory((String) (fieldDetails.get("EXTRACT_CATEGORY")));
@@ -139,8 +138,8 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 					jobTrackingTO.setRequestEmail((String) (fieldDetails.get("REQUEST_EMAIL")));
 					jobTrackingTO.setJobLog((String) (fieldDetails.get("JOB_LOG")));
 					jobTrackingTO.setJobStatus((String) (fieldDetails.get("JOB_STATUS")));
-					jobTrackingTO.setAdminId((((BigDecimal) fieldDetails.get("ADMINID")) != null) ? ((BigDecimal) fieldDetails.get("ADMINID")).toString() : null);
-					jobTrackingTO.setCustomerId((((BigDecimal) fieldDetails.get("CUSTOMERID")) != null) ? ((BigDecimal) fieldDetails.get("CUSTOMERID")).toString() : null);
+					jobTrackingTO.setAdminId((((Long) fieldDetails.get("ADMINID")) != null) ? ((Long) fieldDetails.get("ADMINID")).toString() : null);
+					jobTrackingTO.setCustomerId((((Long) fieldDetails.get("CUSTOMERID")) != null) ? ((Long) fieldDetails.get("CUSTOMERID")).toString() : null);
 					jobTrackingTO.setOtherRequestparams((String) (fieldDetails.get("OTHER_REQUEST_PARAMS")));
 				}
 			} else {
@@ -171,9 +170,9 @@ public class InorsDAOImpl extends BaseDAO implements IInorsDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				bulkDownloadTO = new BulkDownloadTO();
-				bulkDownloadTO.setClassNodes(((BigDecimal) (fieldDetails.get("CLS"))).toString());
+				bulkDownloadTO.setClassNodes(((Long) (fieldDetails.get("CLS"))).toString());
 				bulkDownloadTO.setOrgClass((String) (fieldDetails.get("CLS_NAME")));
-				bulkDownloadTO.setSchoolNodes(((BigDecimal) (fieldDetails.get("SCH"))).toString());
+				bulkDownloadTO.setSchoolNodes(((Long) (fieldDetails.get("SCH"))).toString());
 				bulkDownloadTO.setSchool((String) (fieldDetails.get("SCH_NAME")));
 			}
 		}

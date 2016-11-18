@@ -1,6 +1,5 @@
 package com.ctb.prism.admin.transferobject;
 
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -51,7 +50,7 @@ public class EduCenterTOMapper implements RowMapper<EduCenterTO> {
 					for (Map<String, Object> roleDetails : roleListDb) {
 
 						roleTO = new RoleTO();
-						roleTO.setRoleId(((BigDecimal) roleDetails.get("ROLEID")).longValue());
+						roleTO.setRoleId(((Long) roleDetails.get("ROLEID")).longValue());
 						roleTO.setRoleName((String) (roleDetails.get("ROLENAME")));
 						roleTO.setRoleDescription((String) (roleDetails.get("DESCRIPTION")));
 						roleTO.setLabel((String) (roleDetails.get("ORG_LABEL")));

@@ -3,7 +3,6 @@
  */
 package com.ctb.prism.core.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -1060,7 +1059,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 
-				wsRosterDataId = ((BigDecimal) fieldDetails
+				wsRosterDataId = ((Long) fieldDetails
 						.get("WS_ROSTER_DATA_ID")).longValue();
 			//	Clob requestObj = (Clob) fieldDetails.get("REQUEST_OBJECT");
 				String requestObj = (String)fieldDetails.get("REQUEST_OBJECT");
@@ -1181,7 +1180,7 @@ public class UsabilityDAOImpl extends BaseDAO implements IUsabilityDAO {
 		if (lstData.size() > 0) {
 			for (Map<String, Object> fieldDetails : lstData) {
 				jobTrackingTO = new JobTrackingTO();
-				jobTrackingTO.setJobId(((BigDecimal)fieldDetails.get("JOB_ID")).longValue());
+				jobTrackingTO.setJobId(((Long)fieldDetails.get("JOB_ID")).longValue());
 				jobTrackingTO.setRequestFilename((String)(fieldDetails.get("REQUEST_FILENAME")));
 				jobTrackingTO.setFileSize((String)(fieldDetails.get("FILE_SIZE")));
 			}
