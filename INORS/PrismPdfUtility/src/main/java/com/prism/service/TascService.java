@@ -367,8 +367,24 @@ public class TascService implements PrismPdfService {
 							
 							String customerCode = dao.getCustomerCode(school.getCustomerCode());
 							
-							// FTP code
+							// SFTP code
 							boolean isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+							int counter = 0;
+							while (!isSuccess && counter < Integer.parseInt(tascProperties.getProperty("sftp.retrial"))) {// retry logic 
+								isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+								if(isSuccess) {
+									logger.info("FTP success, so no need to retry");
+									break;
+								} else {
+									logger.info("FTP failed, so need to retry");
+									counter++;
+									try {
+									    Thread.sleep(1000);                 //1000 milliseconds is one second.
+									} catch(InterruptedException ex) {
+									    Thread.currentThread().interrupt();
+									}
+								}
+							}
 							
 							String mailSubject = null;
 							

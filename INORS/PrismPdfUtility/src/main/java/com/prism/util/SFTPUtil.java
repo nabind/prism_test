@@ -56,7 +56,7 @@ public class SFTPUtil {
             isTransffered = true;
             logger.info("File transfered successfully to host.");
         } catch (Exception ex) {
-        	logger.error("Exception found while tranfer the response.");
+        	logger.error("Exception found while tranfer the response." + ex.getMessage());
         }
         finally{
 
