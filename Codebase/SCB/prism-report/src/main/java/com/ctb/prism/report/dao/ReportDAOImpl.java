@@ -826,7 +826,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			roles = new ArrayList<ObjectValueTO>();
 			for (Map<String, Object> data : dataList) {
 				ObjectValueTO to = new ObjectValueTO();
-				to.setValue(((BigDecimal) data.get("ROLEID")).toString());
+				to.setValue(data.get("ROLEID").toString());
 				to.setName((String) data.get("ROLE_NAME"));
 				roles.add(to);
 			}
@@ -847,7 +847,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			assessments = new ArrayList<ObjectValueTO>();
 			for (Map<String, Object> data : dataList) {
 				ObjectValueTO to = new ObjectValueTO();
-				to.setValue(((BigDecimal) data.get("ID")).toString());
+				to.setValue(data.get("ID").toString());
 				to.setName((String) data.get("NAME"));
 				assessments.add(to);
 			}
@@ -869,7 +869,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			menuList = new ArrayList<ObjectValueTO>();
 			for (Map<String, Object> data : dataList) {
 				ObjectValueTO to = new ObjectValueTO();
-				to.setValue(((BigDecimal) data.get("DB_MENUID")).toString());
+				to.setValue(data.get("DB_MENUID").toString());
 				to.setName((String) data.get("MENU_NAME"));
 				menuList.add(to);
 			}
@@ -889,7 +889,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 		if (dataList != null && dataList.size() > 0) {
 			for (Map<String, Object> data : dataList) {
 				to.setReportType((String) data.get("TYPE"));
-				to.setReportId(((BigDecimal) data.get("ID")).longValue());
+				to.setReportId((Long) data.get("ID"));
 				to.setReportUrl((String) data.get("URI"));
 				break;
 			}
