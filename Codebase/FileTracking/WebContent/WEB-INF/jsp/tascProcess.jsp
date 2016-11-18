@@ -257,7 +257,15 @@
 				%>
 					<tr>
 						<td>&nbsp;</td>
-						
+						<%
+							String sourceFileName = process.getFileName();
+							String sourceSystem = process.getSourceSystem();
+							if(sourceFileName != null && sourceFileName.length() > 16) {
+								sourceFileName = sourceFileName.substring(0, 16) + " " + sourceFileName.substring(16, sourceFileName.length());
+							} else {
+								sourceFileName = "NA";
+							}
+						%>
 						<td style="padding-top: 12px;" nowrap>
 							<%if("CO".equals(process.getOverallStatus())) { %>
 								<span class="completed" title="Completed"></span>
@@ -266,7 +274,11 @@
 							<%} else {%>
 								<span class="error" title="Error"></span>
 							<%} %>
-							<%=process.getProcessId() %>
+							<%if(!"NA".equals(sourceFileName) && "UDB".equals(sourceSystem)) { %>
+								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, "<%=process.getSourceSystem() %>");'><%=process.getProcessId() %></a>
+							<%} else {%>
+								<%=process.getProcessId() %>
+							<%} %>
 						</td>
 						
 						<td><%=process.getSourceSystem() %></td>
@@ -289,22 +301,7 @@
 							<%=process.getWkfPartitionName() %></a>
 						</td>
 						<td><%=process.getDateTimestamp() %></td>
-						<%
-							String sourceFileName = process.getFileName();
-							if(sourceFileName != null && sourceFileName.length() > 16) {
-								sourceFileName = sourceFileName.substring(0, 16) + " " + sourceFileName.substring(16, sourceFileName.length());
-							} else {
-								sourceFileName = "NA";
-							}
-						%>
-						<td>
-						<%if(!"NA".equals(sourceFileName)) { %>
-								<a href='#note' class='noteLink' style='color:#00329B;text-decoration:underline' onclick='getProcessLog(<%=process.getProcessId() %>, "<%=process.getSourceSystem() %>");'>
-								<%=sourceFileName %></a>
-							<%} else {%>
-								<%=sourceFileName %>
-							<%} %>						
-						</td>
+						<td><%=sourceFileName %></td>
 					</tr>
 				
 				

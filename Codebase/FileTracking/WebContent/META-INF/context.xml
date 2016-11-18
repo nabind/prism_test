@@ -3,7 +3,7 @@
 	<WatchedResource>WEB-INF/web.xml</WatchedResource>
     <!-- Specify a JDBC datasource -->
 		
-	<!-- <Resource name="jdbc/tasc" 
+	<Resource name="jdbc/tasc" 
 		auth="Container"
         type="javax.sql.DataSource" 
 		username="Tasc" 
@@ -21,9 +21,9 @@
         driverClassName="oracle.jdbc.driver.OracleDriver"
         url="jdbc:oracle:thin:@//10.160.23.70:1521/ehs2clqa"
         maxActive="10" 
-		maxIdle="4" />	 -->
+		maxIdle="4" />	
 		
-	<Resource name="jdbc/tasc" 
+	<!-- <Resource name="jdbc/tasc" 
 		auth="Container"
         type="javax.sql.DataSource" 
 		username="Tasc" 
@@ -41,7 +41,7 @@
         driverClassName="oracle.jdbc.driver.OracleDriver"
         url="jdbc:oracle:thin:@//10.160.23.35:1521/prismdev"
         maxActive="10" 
-		maxIdle="4" />
+		maxIdle="4" /> -->
 		
     <!-- <Resource name="jdbc/tasc" 
 		auth="Container"

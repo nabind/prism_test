@@ -75,10 +75,16 @@ public class TascDao extends CommonDao {
 					"   EMAILS,", // 9
 					"   CUSTOMERID,", // 10
 					"   TO_CHAR(SYSDATE, 'DDMM') AS DATE_STR,", // 11
-					"   TO_CHAR(SYSDATE, 'DDMMYYHH24MISS') AS DATE_STR_WT_YEAR", // 12
+					"   TO_CHAR(SYSDATE, 'DDMMYYHH24MISS') AS DATE_STR_WT_YEAR,", // 12
+					"   (SELECT ORG_NODE_CODE ",
+					"      FROM ORG_NODE_DIM OD, ORG_LSTNODE_LINK OL ",
+					"	   WHERE OD.ORG_NODEID = OL.ORG_NODEID ",
+					" 		 AND OD.ORG_NODE_LEVEL = 1 ",
+					"        AND OL.ORG_LSTNODEID = ?) STATE_CODE ", //13
 					" FROM ORG_NODE_DIM", " WHERE ORG_NODEID = ?");
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
+			pstmt.setString(2, jasperOrgId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				school = new OrgTO();
@@ -92,6 +98,7 @@ public class TascDao extends CommonDao {
 				school.setParentJasperOrgId(rs.getString(7));
 				school.setDateStr(rs.getString(11));
 				school.setDateStrWtYear(rs.getString(12));
+				school.setLvlOneOrgCode(rs.getString(13));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

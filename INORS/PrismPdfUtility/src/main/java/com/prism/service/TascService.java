@@ -28,6 +28,7 @@ import com.prism.util.CustomStringUtil;
 import com.prism.util.FileUtil;
 import com.prism.util.PdfUtil;
 import com.prism.util.PropertyFile;
+import com.prism.util.SFTPUtil;
 
 public class TascService implements PrismPdfService {
 
@@ -353,42 +354,6 @@ public class TascService implements PrismPdfService {
 						logElapsedTime("Update newuser flag for school : ");
 						if (encDocLocation != null && encDocLocation.trim().length() > 0) {
 							updateLog("Updated Process Status to success");
-
-							// send mail to school
-							String customerCode = dao.getCustomerCode(school.getCustomerCode());
-							String mailSubject = CustomStringUtil.appendString(customerCode, " ", school.getOrgNodeCode(), " ", school.getElementName(),
-									" TASC Online Reporting System - User Accounts");
-							logger.info(mailSubject);
-							if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
-								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
-										schoolUserPresent, false, supportEmail)) {
-									logger.info("	mail sent successfully ... for process id : " + processId);
-									updateLog("Mail sent successfully to ", school.getEmail());
-
-									// update staging status
-									lStartTime = new Date().getTime();
-									updateLog("Updated Process Status to complete");
-									updateLog("Updated Mail Status to success");
-									lEndTime = new Date().getTime();
-									logElapsedTime("Update process status : ");
-								} else {
-									updateLog("Failed sending mail. Updating status.");
-								}
-							} else {
-								logger.info("Sending mail to Support group only .. no school mail id is defined.");
-								if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
-										schoolUserPresent, false, null)) {
-									updateLog("Mail sent successfully to ", supportEmail);
-								} else {
-									updateLog("Failed sending mail. Updating status.");
-								}
-							}
-
-							// Sending password email for PDF opening
-							updateLog("Sending password email for PDF opening");
-							logger.info("Sending password email for PDF opening");
-							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
-							
 							
 							// S3 code
 							if ("true".equals(tascProperties.getProperty("moveFilesToS3"))) {
@@ -400,6 +365,80 @@ public class TascService implements PrismPdfService {
 								logger.info("Files NOT moved to S3");
 							}
 							
+							String customerCode = dao.getCustomerCode(school.getCustomerCode());
+							
+							// SFTP code
+							boolean isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+							int counter = 0;
+							while (!isSuccess && counter < Integer.parseInt(tascProperties.getProperty("sftp.retrial"))) {// retry logic 
+								isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+								if(isSuccess) {
+									logger.info("FTP success, so no need to retry");
+									break;
+								} else {
+									logger.info("FTP failed, so need to retry");
+									counter++;
+									try {
+									    Thread.sleep(1000);                 //1000 milliseconds is one second.
+									} catch(InterruptedException ex) {
+									    Thread.currentThread().interrupt();
+									}
+								}
+							}
+							
+							String mailSubject = null;
+							
+							if(isSuccess) {
+								
+								// send success mail to school
+								mailSubject = CustomStringUtil.appendString(customerCode, " ", school.getOrgNodeCode(), " ", school.getElementName(),
+										" TASC Online Reporting System - User Accounts");
+								logger.info(mailSubject);
+								
+								if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
+									if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
+											schoolUserPresent, false, supportEmail)) {
+										logger.info("	mail sent successfully ... for process id : " + processId);
+										updateLog("Mail sent successfully to ", school.getEmail());
+
+										// update staging status
+										lStartTime = new Date().getTime();
+										updateLog("Updated Process Status to complete");
+										updateLog("Updated Mail Status to success");
+										lEndTime = new Date().getTime();
+										logElapsedTime("Update process status : ");
+									} else {
+										updateLog("Failed sending mail. Updating status.");
+									}
+								} else {
+									logger.info("Sending mail to Support group only .. no school mail id is defined.");
+									if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
+											schoolUserPresent, false, null)) {
+										updateLog("Mail sent successfully to ", supportEmail);
+									} else {
+										updateLog("Failed sending mail. Updating status.");
+									}
+								}
+							} else {
+							
+								// send failure mail to Support group
+								mailSubject = CustomStringUtil.appendString(customerCode, " ", school.getOrgNodeCode(), " ", school.getElementName(),
+										" TASC Online Reporting System - User Accounts - Failed");
+								logger.info(mailSubject);
+								logger.info("Sending mail to Support group only .. for exception in postinf file in FTP.");
+								if (sendFailureMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
+										schoolUserPresent, false, null)) {
+									updateLog("Mail sent successfully to ", supportEmail);
+								} else {
+									updateLog("Failed sending mail. Updating status.");
+								}
+							}
+																			
+
+							// Sending password email for PDF opening
+							updateLog("Sending password email for PDF opening");
+							logger.info("Sending password email for PDF opening");
+							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
 							
 						} else {
 							updateLog("Error generating PDF");
@@ -591,6 +630,45 @@ public class TascService implements PrismPdfService {
 			}
 			mailBody = CustomStringUtil.replaceCharacterInString('~', password, messagePasswordBody);
 			EmailSender.sendMailTasc(prop, toMailAddr, mailSubject, mailBody, supportEmail);
+			mailSent = true;
+		} catch (Exception e) {
+			logger.info("Mail sending failed ..." + e.getMessage());
+			updateLog("Mail sending failed", e.getMessage());
+		}
+		lEndTime = new Date().getTime();
+		logElapsedTime("Mail sending : ");
+		return mailSent;
+	}
+	
+	
+	/**
+	 * This calls mail sending method to send support group for FTP failure
+	 * 
+	 * @param level3OrgId
+	 * @param isInitialLoad
+	 * @param migration
+	 * @param prop
+	 * @param mailSubject
+	 * @param toMailAddr
+	 * @param attachment
+	 * @param attachmentTwo
+	 * @param processLog
+	 * @param schoolUserPresent
+	 * @param letterMail
+	 * @param supportEmail
+	 * @return
+	 */
+	private boolean sendFailureMail(String level3OrgId, boolean isInitialLoad, boolean migration, Properties prop, String mailSubject, String toMailAddr,
+			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, boolean letterMail, String supportEmail) {
+		logger.info("sending mail... ");
+		lStartTime = new Date().getTime();
+		boolean mailSent = false;
+		// String mailSubject = "";
+		String mailBody = "";
+		try {
+			// mailSubject = prop.getProperty("mailSubject");
+			mailBody = prop.getProperty("mailFailureSubject") + prop.getProperty("messageFooter");
+			EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
 			logger.info("Mail sending failed ..." + e.getMessage());

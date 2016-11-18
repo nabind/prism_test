@@ -1886,7 +1886,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 			int count = 0;
 			cs = conn.prepareCall(query);
 			if(searchProcess.getUuid() != null && searchProcess.getUuid().trim().length() > 0){
-				cs.setString(++count, "%"+searchProcess.getUuid()+"%");
+				cs.setString(++count, searchProcess.getUuid());
 			}else{
 				cs.setString(++count, "-1");
 			}
@@ -1969,6 +1969,9 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				studentDetailsTO.setDocumentID(rsDocStatusGhi.getString("DOCUMENTID")!=null ? rsDocStatusGhi.getString("DOCUMENTID") : "");
 				studentDetailsTO.setFileName(rsDocStatusGhi.getString("FILE_NAME")!=null ? rsDocStatusGhi.getString("FILE_NAME") : "");
 				studentDetailsTO.setFileGenDateTime(rsDocStatusGhi.getString("FILE_GENERATION_DATE_TIME")!=null ? rsDocStatusGhi.getString("FILE_GENERATION_DATE_TIME") : "");
+				studentDetailsTO.setScanBatch(rsDocStatusGhi.getString("SCANBATCH")!=null ? rsDocStatusGhi.getString("SCANBATCH") : "");
+				studentDetailsTO.setScanStack(rsDocStatusGhi.getString("SCANSTACK")!=null ? rsDocStatusGhi.getString("SCANSTACK") : "");
+				studentDetailsTO.setScanSequence(rsDocStatusGhi.getString("SCANSEQUENCE")!=null ? rsDocStatusGhi.getString("SCANSEQUENCE") : "");
 				processListDocStatus.add(studentDetailsTO);
 			}
 			

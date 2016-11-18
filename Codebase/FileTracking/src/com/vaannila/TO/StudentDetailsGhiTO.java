@@ -42,8 +42,28 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String expiredDate;
 	private String checkinDate;
 	private String fieldTestForm;
+	private String scanBatch;
+	private String scanStack;
+	private String scanSequence;
 	
-	
+	public String getScanBatch() {
+		return scanBatch;
+	}
+	public void setScanBatch(String scanBatch) {
+		this.scanBatch = scanBatch;
+	}
+	public String getScanStack() {
+		return scanStack;
+	}
+	public void setScanStack(String scanStack) {
+		this.scanStack = scanStack;
+	}
+	public String getScanSequence() {
+		return scanSequence;
+	}
+	public void setScanSequence(String scanSequence) {
+		this.scanSequence = scanSequence;
+	}
 	public String getFileName() {
 		return fileName;
 	}
