@@ -396,7 +396,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, firstName);
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+					cs.registerOutParameter(count++, java.sql.Types.BIGINT); // index 20
 					cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -405,7 +405,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					String strUserId = null; 
 					try {
 						cs.execute();
-						strUserId =  cs.getString(20);
+						strUserId = Long.toString(cs.getLong(20));
 						if( cs.getString(21) != null &&  cs.getString(21).trim().length() > 0) {
 							logger.log(IAppLogger.DEBUG,"Parent Not added due to " + cs.getString(21));
 							return null;
@@ -1320,7 +1320,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(1, totalAvailableClaim);
 					cs.setString(2, expirationDate);
 					cs.setString(3, invitationcode);
-					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.BIGINT);
 					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -1330,7 +1330,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(4);
+						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(5));
 						Utils.logError(cs.getString(5));
@@ -1678,7 +1678,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(count++, Utils.arrayToSeparatedString(questionIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(answerIdArr, '~'));
 					cs.setString(count++, Utils.arrayToSeparatedString(ansValArr, '~'));
-					cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+					cs.registerOutParameter(count++, java.sql.Types.BIGINT);
 					cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -1688,7 +1688,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(17);
+						executionStatus = cs.getLong(17);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(18));
 						Utils.logError(statusTO.getErrorMsg());
@@ -1742,7 +1742,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.ADD_INVITATION_CODE_TO_ACCOUNT + "}");
 					cs.setString(1, (String)paramMap.get("curruser"));
 					cs.setString(2, (String)paramMap.get("invitationCode"));
-					cs.registerOutParameter(3, java.sql.Types.FLOAT);
+					cs.registerOutParameter(3, java.sql.Types.BIGINT);
 					cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -1752,7 +1752,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(3);
+						executionStatus = cs.getLong(3);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(4));
 						Utils.logError(cs.getString(4));
@@ -1814,7 +1814,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(1, student.getInvitationcode());
 					cs.setString(2, student.getTestElementId());
 					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
-					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.BIGINT);
 					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -1825,7 +1825,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					try {
 						cs.execute();
 						statusTO.setOther(cs.getString(3));
-						executionStatus = (long)cs.getFloat(4);
+						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setErrorMsg(cs.getString(5));
 						Utils.logError(cs.getString(5));
@@ -2089,7 +2089,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setLong(9, manageContentTO.getGradeId());
 					cs.setString(10, manageContentTO.getPerformanceLevel());
 					cs.setString(11, manageContentTO.getStatusCode());
-					cs.registerOutParameter(12, java.sql.Types.FLOAT);
+					cs.registerOutParameter(12, java.sql.Types.BIGINT);
 					cs.registerOutParameter(13, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -2099,7 +2099,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(12);
+						executionStatus = cs.getLong(12);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(13));
@@ -2273,7 +2273,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					cs.setString(3, manageContentTO.getSubHeader());
 					cs.setString(4, manageContentTO.getContentDescription());
 					cs.setString(5, manageContentTO.getPerformanceLevel());
-					cs.registerOutParameter(6, java.sql.Types.FLOAT);
+					cs.registerOutParameter(6, java.sql.Types.BIGINT);
 					cs.registerOutParameter(7, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -2283,7 +2283,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(6);
+						executionStatus = cs.getLong(6);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(7));
@@ -2318,7 +2318,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.DELETE_CONTENT + "}");
 					cs.setLong(1, contentId);
-					cs.registerOutParameter(2, java.sql.Types.FLOAT);
+					cs.registerOutParameter(2, java.sql.Types.BIGINT);
 					cs.registerOutParameter(3, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -2328,7 +2328,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(2);
+						executionStatus = cs.getLong(2);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(3));

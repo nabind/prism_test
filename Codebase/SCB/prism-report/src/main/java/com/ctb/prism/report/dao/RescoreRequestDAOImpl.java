@@ -144,7 +144,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setString(7, requestedStatus);
 					cs.setString(8, requestedDate);
 					cs.setLong(9, rrfId);
-					cs.registerOutParameter(10, java.sql.Types.FLOAT);
+					cs.registerOutParameter(10, java.sql.Types.BIGINT);
 					cs.registerOutParameter(11, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -154,7 +154,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(10);
+						executionStatus = cs.getLong(10);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -198,7 +198,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(2, studentBioId);
 					cs.setLong(3, userId);
 					cs.setString(4, requestedStatus);
-					cs.registerOutParameter(5, java.sql.Types.FLOAT);
+					cs.registerOutParameter(5, java.sql.Types.BIGINT);
 					cs.registerOutParameter(6, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -208,7 +208,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(5);
+						executionStatus = cs.getLong(5);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {
@@ -249,7 +249,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					cs.setLong(1, studentBioId);
 					cs.setLong(2, userId);
 					cs.setString(3, requestedDate);
-					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.BIGINT);
 					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -259,7 +259,7 @@ public class RescoreRequestDAOImpl extends BaseDAO implements IRescoreRequestDAO
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(4);
+						executionStatus = cs.getLong(4);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 					} catch (SQLException e) {

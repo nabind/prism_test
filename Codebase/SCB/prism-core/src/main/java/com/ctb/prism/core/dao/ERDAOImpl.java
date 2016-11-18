@@ -95,8 +95,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, scheduleDetails.getTestCenterName());
 				cs.setString(count++, scheduleDetails.getScheduledAtTestCenterCountyParishCode());
 				
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
 				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
@@ -211,8 +211,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, errCode); // ERROR CODE
 				cs.setString(count++, IApplicationConstants.JOB_STATUS.ER.toString()); // exception status
 				
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
 				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
@@ -221,7 +221,7 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				String exceptionId = null; 
 				try {
 					cs.execute();
-					exceptionId = cs.getString(7);
+					exceptionId = Long.toString(cs.getLong(7));
 					logger.log(IAppLogger.DEBUG, "ER EXCEPTION INSERT DONE");
 					logger.log(IAppLogger.INFO, "ER exception created with exception id: " + exceptionId);
 				} catch (SQLException e) {
@@ -285,8 +285,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCode());
 				cs.setString(count++, demoDetails.getRegisteredAtTestCenterCountyParishCode());
 				
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
 				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}
@@ -355,8 +355,8 @@ public class ERDAOImpl extends BaseDAO implements IERDAO {
 				cs.setString(count++, scheduleDetails.getScheduledAtTestCenterCountyParishCode());
 				cs.setString(count++, orgDetails.getStateCode());
 				
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
-				cs.registerOutParameter(count++, java.sql.Types.FLOAT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
+				cs.registerOutParameter(count++, java.sql.Types.BIGINT);
 				cs.registerOutParameter(count++, java.sql.Types.VARCHAR);
 				return cs;
 			}

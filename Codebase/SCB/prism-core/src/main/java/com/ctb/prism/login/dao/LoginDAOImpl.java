@@ -1210,25 +1210,25 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String prevOrgId = (String)paramMap.get("prevOrgId");
 		String contractName = (String)paramMap.get("contractName"); 
 		if(contractName == null) contractName = Utils.getContractName();
-		BigDecimal existFlag;
+		Long existFlag;
 		boolean returnFlag = Boolean.FALSE;
 		try{
-			existFlag = (BigDecimal)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+			existFlag = (Long)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_ORG_HIERARCHY);
 					cs.setString(1, userName);
 					cs.setLong(2, Long.parseLong(custProdId));
 					cs.setLong(3, Long.parseLong(prevOrgId));
-					cs.registerOutParameter(4, java.sql.Types.FLOAT);
+					cs.registerOutParameter(4, java.sql.Types.BIGINT);
 					cs.registerOutParameter(5, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(CallableStatement cs) {
-					BigDecimal existFlag = null;
+					long existFlag = 0;
 					try {
 						cs.execute();
-						existFlag = (BigDecimal)cs.getObject(4);
+						existFlag = cs.getLong(4);
 						Utils.logError(cs.getString(5));
 					} catch (SQLException e) {
 						e.printStackTrace();
@@ -1237,7 +1237,7 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 				}
 			});
 			
-			if(existFlag.intValue() > 0 ){
+			if(existFlag.longValue() > 0l ){
 				returnFlag = Boolean.TRUE;
 			}
 		}catch (Exception e) {
@@ -1257,23 +1257,23 @@ public class LoginDAOImpl extends BaseDAO implements ILoginDAO{
 		final String username = (String)paramMap.get("username"); 
 		final String contractName = (String)paramMap.get("contractName"); 
 		final String userRole = (String)paramMap.get("userRole"); 
-		BigDecimal statusFlag = null;
+		Long statusFlag = null;
 		try{
-			statusFlag = (BigDecimal)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
+			statusFlag = (Long)getJdbcTemplatePrism(contractName).execute(new CallableStatementCreator() {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall(IQueryConstants.SP_CHECK_USER_ROLE_BY_USERNAME);
 					cs.setString(1, username);
 					cs.setString(2, userRole);
-					cs.registerOutParameter(3, java.sql.Types.FLOAT);
+					cs.registerOutParameter(3, java.sql.Types.BIGINT);
 					cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 					return cs;
 				}
 			}, new CallableStatementCallback<Object>() {
 				public Object doInCallableStatement(CallableStatement cs) {
-					BigDecimal statusFlag = null;
+					long statusFlag = 0;
 					try {
 						cs.execute();
-						statusFlag = (BigDecimal)cs.getObject(3);
+						statusFlag = cs.getLong(3);
 						Utils.logError(cs.getString(4));
 					} catch (SQLException e) {
 						e.printStackTrace();

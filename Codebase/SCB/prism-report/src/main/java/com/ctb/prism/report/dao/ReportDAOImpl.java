@@ -781,7 +781,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs = con.prepareCall("{call " + IQueryConstants.DELETE_REPORT + "}");
 						cs.setLong(1, Long.parseLong((String)paramMap.get("reportId")));
 						cs.setLong(2, loggedInCustomer);
-						cs.registerOutParameter(3, java.sql.Types.FLOAT);
+						cs.registerOutParameter(3, java.sql.Types.BIGINT);
 						cs.registerOutParameter(4, java.sql.Types.VARCHAR);
 						return cs;
 					}
@@ -791,7 +791,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 	        			try {
 							cs.execute();
-							executionStatus = (long)cs.getFloat(3);
+							executionStatus = cs.getLong(3);
 							statusTO.setValue(Long.toString(executionStatus));
 							statusTO.setName("");
 							if(cs.getString(4)!= null && cs.getString(4).length() > 0) {
@@ -1142,7 +1142,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs.setString(9, reportTO.getMenuId());
 						cs.setString(10, customerProducts);
 						cs.setLong(11,reportTO.getReportSequence());
-						cs.registerOutParameter(12, java.sql.Types.FLOAT);
+						cs.registerOutParameter(12, java.sql.Types.BIGINT);
 						cs.registerOutParameter(13, java.sql.Types.VARCHAR);
 						return cs;
 					}
@@ -1152,7 +1152,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 	        			try {
 							cs.execute();
-							executionStatus = (long)cs.getFloat(12);
+							executionStatus = cs.getLong(12);
 							statusTO.setValue(Long.toString(executionStatus));
 							statusTO.setName("");
 							if(cs.getString(13)!= null && cs.getString(13).length() > 0) {
@@ -1220,8 +1220,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 						cs.setString(8, dbMenuId);
 						cs.setString(9, customerProducts);
 						cs.setLong(10, customerId);
-						cs.registerOutParameter(11, java.sql.Types.FLOAT);
-						//cs.registerOutParameter(12, oracle.jdbc.OracleTypes.CURSOR);
+						cs.registerOutParameter(11, java.sql.Types.BIGINT);
 						cs.registerOutParameter(12, java.sql.Types.VARCHAR);
 						return cs;
 					}
@@ -1231,8 +1230,6 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 	        			ReportTO to = null;
 	        			try {
 							cs.execute();
-							
-							//rsReport = (ResultSet) cs.getObject(12);
 							rsReport = cs.getResultSet();
 							if(rsReport.next()){
 								to = new ReportTO();
@@ -2137,7 +2134,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					cs.setLong(13, customerid);
 					cs.setLong(14, productId);
 					cs.setString(15, otherRequestParams_final);
-					cs.registerOutParameter(16, java.sql.Types.FLOAT);
+					cs.registerOutParameter(16, java.sql.Types.BIGINT);
 					cs.registerOutParameter(17, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -2147,7 +2144,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 					com.ctb.prism.core.transferobject.ObjectValueTO statusTO = new com.ctb.prism.core.transferobject.ObjectValueTO();
 					try {
 						cs.execute();
-						executionStatus = (long)cs.getFloat(16);
+						executionStatus = cs.getLong(16);
 						statusTO.setValue(Long.toString(executionStatus));
 						statusTO.setName("");
 						Utils.logError(cs.getString(17));
