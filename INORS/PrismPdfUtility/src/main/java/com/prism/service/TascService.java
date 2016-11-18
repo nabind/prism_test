@@ -379,7 +379,7 @@ public class TascService implements PrismPdfService {
 									logger.info("FTP failed, so need to retry");
 									counter++;
 									try {
-									    Thread.sleep(1000);                 //1000 milliseconds is one second.
+									    Thread.sleep(Integer.parseInt(tascProperties.getProperty("sftp.wait.time")));  //1000 milliseconds is one second.
 									} catch(InterruptedException ex) {
 									    Thread.currentThread().interrupt();
 									}
@@ -392,7 +392,7 @@ public class TascService implements PrismPdfService {
 								
 								// send success mail to school
 								mailSubject = CustomStringUtil.appendString(customerCode, " ", school.getOrgNodeCode(), " ", school.getElementName(),
-										" TASC Online Reporting System - User Accounts");
+										tascProperties.getProperty("mailSubject"));
 								logger.info(mailSubject);
 								
 								if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
@@ -423,11 +423,14 @@ public class TascService implements PrismPdfService {
 							
 								// send failure mail to Support group
 								mailSubject = CustomStringUtil.appendString(customerCode, " ", school.getOrgNodeCode(), " ", school.getElementName(),
-										" TASC Online Reporting System - User Accounts - Failed");
+										tascProperties.getProperty("mailFailureSubject"));
 								logger.info(mailSubject);
-								logger.info("Sending mail to Support group only .. for exception in postinf file in FTP.");
+								
+								String fileName = dao.getHierarchyFileName();
+								
+								logger.info("Sending mail to Support group only .. for exception in posting file in FTP.");
 								if (sendFailureMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
-										schoolUserPresent, false, null)) {
+										schoolUserPresent, false, null,school.getLvlOneOrgCode(),school.getOrgNodeCode(), fileName)) {
 									updateLog("Mail sent successfully to ", supportEmail);
 								} else {
 									updateLog("Failed sending mail. Updating status.");
@@ -659,15 +662,21 @@ public class TascService implements PrismPdfService {
 	 * @return
 	 */
 	private boolean sendFailureMail(String level3OrgId, boolean isInitialLoad, boolean migration, Properties prop, String mailSubject, String toMailAddr,
-			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, boolean letterMail, String supportEmail) {
+			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, boolean letterMail, String supportEmail,
+			String stateCode, String orgCode, String FileName) {
 		logger.info("sending mail... ");
 		lStartTime = new Date().getTime();
 		boolean mailSent = false;
 		// String mailSubject = "";
-		String mailBody = "";
+		String mailBody ="";
 		try {
+			mailBody = CustomStringUtil.appendString(
+					prop.getProperty("messageFailureBody1") ,
+					" ", FileName, " for the State: ", stateCode ,", Org: ",orgCode,
+					prop.getProperty("messageFailureBody2"));
+			
 			// mailSubject = prop.getProperty("mailSubject");
-			mailBody = prop.getProperty("mailFailureSubject") + prop.getProperty("messageFooter");
+
 			EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
 			mailSent = true;
 		} catch (Exception e) {
