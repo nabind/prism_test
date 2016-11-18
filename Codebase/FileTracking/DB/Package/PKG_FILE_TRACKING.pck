@@ -1535,14 +1535,16 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                         TO_CHAR(SDI.UPDATED_DATE_TIME, ''MM/DD/YYYY HH24:MI:SS'')
                      END AS PRISM_PROCESS_DATE,
                      TO_CHAR(SDI.DOCUMENTID) DOCUMENTID,
-                     (SELECT FILE_NAME
-                        FROM STG_TASK_STATUS
-                       WHERE TASK_ID =
-                             (SELECT MAX(TASK_ID)
-                                FROM SUBTEST_SCORE_FACT_HIST SSFH
-                               WHERE SSFH.SUBTESTID = SD.SUBTESTID
-                                 AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
-                                 AND SDI.DOC_PROCESS_STATUS = ''TES'')) FILE_NAME,
+                     CASE
+                       WHEN SDI.DOC_PROCESS_STATUS = ''TES'' THEN
+                        (SELECT FILE_NAME
+                           FROM STG_TASK_STATUS
+                          WHERE TASK_ID =
+                                (SELECT MAX(TASK_ID)
+                                   FROM SUBTEST_SCORE_FACT_HIST SSFH
+                                  WHERE SSFH.SUBTESTID = SD.SUBTESTID
+                                    AND STUDENT_BIO_ID = SDI.STUDENT_BIO_ID))
+                     END AS FILE_NAME,
                      TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME,
                      SDI.SCANBATCH SCANBATCH,
                      SDI.SCANSTACK SCANSTACK,
