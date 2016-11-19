@@ -1,9 +1,9 @@
 package com.ctb.prism.report.dao;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -35,7 +35,6 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.SqlLobValue;
 import org.springframework.jdbc.support.lob.DefaultLobHandler;
 import org.springframework.jdbc.support.lob.LobHandler;
 import org.springframework.jdbc.support.lob.OracleLobHandler;
@@ -46,7 +45,6 @@ import com.ctb.prism.core.constant.IApplicationConstants.ROLE_TYPE;
 import com.ctb.prism.core.constant.IQueryConstants;
 import com.ctb.prism.core.constant.IReportQuery;
 import com.ctb.prism.core.dao.BaseDAO;
-import com.ctb.prism.core.exception.BusinessException;
 import com.ctb.prism.core.exception.SystemException;
 import com.ctb.prism.core.logger.IAppLogger;
 import com.ctb.prism.core.logger.LogFactory;
@@ -387,17 +385,17 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 			inputControlTOs = new ArrayList<InputControlTO>();
 			for (Map<String, Object> fieldDetails : lstData) {
 				InputControlTO to = new InputControlTO();
-				to.setControlId(((Long) fieldDetails.get("CONTROLID")).longValue());
-				to.setDatasource((Long) fieldDetails.get("DATASOURCE") != null ? ((Long) fieldDetails.get("DATASOURCE")).toString() : null);
-				to.setDataType((Long) fieldDetails.get("DATATYPE") != null ? ((Long) fieldDetails.get("DATATYPE")).toString() : null);
+				to.setControlId(((BigDecimal) fieldDetails.get("CONTROLID")).longValue());
+				to.setDatasource((BigDecimal) fieldDetails.get("DATASOURCE") != null ? ((BigDecimal) fieldDetails.get("DATASOURCE")).toString() : null);
+				to.setDataType((BigDecimal) fieldDetails.get("DATATYPE") != null ? ((BigDecimal) fieldDetails.get("DATATYPE")).toString() : null);
 				to.setLabel((String) fieldDetails.get("LBL"));
 				to.setLabelId((String) fieldDetails.get("LABELID"));
-				to.setMandatory(((Long) fieldDetails.get("MANDATORY")).intValue() == 1 ? true : false);
+				to.setMandatory(((Short) fieldDetails.get("MANDATORY")).intValue() == 1 ? true : false);
 				to.setQueryValueColumn((String) fieldDetails.get("QUERY_VALUE_COLUMN"));
-				to.setReadonly(((Long) fieldDetails.get("READ_ONLY")).intValue() == 1 ? true : false);
-				to.setSequence(((Long) fieldDetails.get("SEQ")).intValue());
-				to.setType(((Long) fieldDetails.get("TYPE")).toString());
-				to.setVisible(((Long) fieldDetails.get("VISIBLE")).intValue() == 1 ? true : false);
+				to.setReadonly(((Short) fieldDetails.get("READ_ONLY")).intValue() == 1 ? true : false);
+				to.setSequence(((Integer) fieldDetails.get("SEQ")).intValue());
+				to.setType(((Short) fieldDetails.get("TYPE")).toString());
+				to.setVisible(((Short) fieldDetails.get("VISIBLE")).intValue() == 1 ? true : false);
 				String strListOfValues = (String) fieldDetails.get("LIST_OF_VALUES");
 				if (strListOfValues != null) {
 					String[] values = strListOfValues.split(",");
@@ -405,7 +403,7 @@ public class ReportDAOImpl extends BaseDAO implements IReportDAO {
 				} else {
 					to.setQuery((String) fieldDetails.get("SQL_QUERY"));
 				}
-				to.setFieldType((fieldDetails.get("FIELD_TYPE") != null) ? ((Long) fieldDetails.get("FIELD_TYPE")).toString() : null);
+				to.setFieldType((fieldDetails.get("FIELD_TYPE") != null) ? ((Short) fieldDetails.get("FIELD_TYPE")).toString() : null);
 				to.setMinLength((fieldDetails.get("MIN_LENGTH") != null) ? fieldDetails.get("MIN_LENGTH").toString() : null);
 				to.setMaxLength((fieldDetails.get("MAX_LENGTH") != null) ? fieldDetails.get("MAX_LENGTH").toString() : null);
 				inputControlTOs.add(to);
