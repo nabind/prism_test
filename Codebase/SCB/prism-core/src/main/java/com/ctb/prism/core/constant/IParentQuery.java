@@ -162,7 +162,7 @@ public interface IParentQuery {
 			" select ISNULL(last_name,'')+' '+ISNULL(first_name,'')+' '+ISNULL(middle_name,'') NAME, grd.grade_name GRADE, stu.student_bio_id ID from student_bio_dim stu, grade_dim grd ",
 			" where stu.gradeid = grd.gradeid and org_nodeid = (select TOP(1) org_lstnodeid from ORG_LSTNODE_LINK where org_nodeid = ? and adminid = ?) and adminid = ? and customerid = ? and stu.gradeid = ? ");
 
-	public static final String GET_TEST_ADMINISTRATION = "FACT.PKG_MANAGE_CONTENT$SP_GET_CUST_PROD_DETAILS(?,??)";
+	public static final String GET_TEST_ADMINISTRATION = "FACT.PKG_MANAGE_CONTENT$SP_GET_CUST_PROD_DETAILS(?,?,?)";
 
 	public static final String GET_GRADE = "FACT.PKG_MANAGE_CONTENT$SP_GET_GRADE_DETAILS(?,?)";
 
