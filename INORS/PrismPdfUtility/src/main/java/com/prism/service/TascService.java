@@ -368,23 +368,30 @@ public class TascService implements PrismPdfService {
 							String customerCode = dao.getCustomerCode(school.getCustomerCode());
 							
 							// SFTP code
-							boolean isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
-							int counter = 0;
-							while (!isSuccess && counter < Integer.parseInt(tascProperties.getProperty("sftp.retrial"))) {// retry logic 
-								isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
-								if(isSuccess) {
-									logger.info("FTP success, so no need to retry");
-									break;
-								} else {
-									logger.info("FTP failed, so need to retry");
-									counter++;
-									try {
-									    Thread.sleep(Integer.parseInt(tascProperties.getProperty("sftp.wait.time")));  //1000 milliseconds is one second.
-									} catch(InterruptedException ex) {
-									    Thread.currentThread().interrupt();
+							boolean isSuccess = false;
+							try{
+							    isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+								int counter = 0;
+								while (!isSuccess && counter < Integer.parseInt(tascProperties.getProperty("sftp.retrial"))) {// retry logic 
+									isSuccess = SFTPUtil.send(encDocLocation, school.getLvlOneOrgCode());
+									if(isSuccess) {
+										logger.info("FTP success, so no need to retry");
+										break;
+									} else {
+										logger.info("FTP failed, so need to retry");
+										counter++;
+										try {
+										    Thread.sleep(Integer.parseInt(tascProperties.getProperty("sftp.wait.time")));  //1000 milliseconds is one second.
+										} catch(InterruptedException ex) {
+										    Thread.currentThread().interrupt();
+										}
 									}
 								}
+							} catch (Exception e) {
+								logger.error("Error occured during FTP");
+								isSuccess = false;
 							}
+							
 							
 							String mailSubject = null;
 							
@@ -397,7 +404,7 @@ public class TascService implements PrismPdfService {
 								
 								if (school.getEmail() != null && school.getEmail().trim().length() > 0) {
 									if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, school.getEmail(), encDocLocation, acLetterLocation, processLog,
-											schoolUserPresent, false, supportEmail)) {
+											schoolUserPresent, false, supportEmail,school.getLvlOneOrgCode(),orgTO.getCustomerName())) {
 										logger.info("	mail sent successfully ... for process id : " + processId);
 										updateLog("Mail sent successfully to ", school.getEmail());
 
@@ -411,9 +418,15 @@ public class TascService implements PrismPdfService {
 										updateLog("Failed sending mail. Updating status.");
 									}
 								} else {
-									logger.info("Sending mail to Support group only .. no school mail id is defined.");
-									if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
-											schoolUserPresent, false, null)) {
+									logger.info("Sending mail to success Support group only .. no school mail id is defined.");
+									
+									/*Blocked as requested by Amalan: we don't need to send email for success to whole TierIII group*/
+									/*if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
+											schoolUserPresent, false, null)) {*/
+									
+									if (sendMail(level3OrgId, false, migration, tascProperties, mailSubject, 
+											tascProperties.getProperty("support.success.email"), null, null, processLog,
+											schoolUserPresent, false, null,school.getLvlOneOrgCode(),orgTO.getCustomerName())) {
 										updateLog("Mail sent successfully to ", supportEmail);
 									} else {
 										updateLog("Failed sending mail. Updating status.");
@@ -430,7 +443,7 @@ public class TascService implements PrismPdfService {
 								
 								logger.info("Sending mail to Support group only .. for exception in posting file in FTP.");
 								if (sendFailureMail(level3OrgId, false, migration, tascProperties, mailSubject, supportEmail, encDocLocation, acLetterLocation, processLog,
-										schoolUserPresent, false, null,school.getLvlOneOrgCode(),school.getOrgNodeCode(), fileName)) {
+										schoolUserPresent, false, supportEmail,school.getLvlOneOrgCode(),school.getOrgNodeCode(), fileName)) {
 									updateLog("Mail sent successfully to ", supportEmail);
 								} else {
 									updateLog("Failed sending mail. Updating status.");
@@ -441,7 +454,8 @@ public class TascService implements PrismPdfService {
 							// Sending password email for PDF opening
 							updateLog("Sending password email for PDF opening");
 							logger.info("Sending password email for PDF opening");
-							sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
+							/*Blocked as requested by Amalan*/
+							//sendPasswordToMailId(level3OrgId, tascProperties, mailSubject, null, false, isEducationCenter, supportEmail);
 							
 						} else {
 							updateLog("Error generating PDF");
@@ -586,7 +600,8 @@ public class TascService implements PrismPdfService {
 	 * @return
 	 */
 	private boolean sendMail(String level3OrgId, boolean isInitialLoad, boolean migration, Properties prop, String mailSubject, String toMailAddr,
-			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, boolean letterMail, String supportEmail) {
+			String attachment, String attachmentTwo, StringBuffer processLog, boolean schoolUserPresent, 
+			boolean letterMail, String supportEmail,String stateCode, String customerName) {
 		logger.info("sending mail... ");
 		lStartTime = new Date().getTime();
 		boolean mailSent = false;
@@ -594,8 +609,17 @@ public class TascService implements PrismPdfService {
 		String mailBody = "";
 		try {
 			// mailSubject = prop.getProperty("mailSubject");
-			mailBody = prop.getProperty("messageBody") + prop.getProperty("messageFooter");
-			EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
+			if(attachment != null) { // Checking for school email or supportEmail
+				mailBody = prop.getProperty("messageBody") + prop.getProperty("messageFooter");
+				EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, supportEmail);
+			} else {
+				mailBody = CustomStringUtil.appendString(
+						 prop.getProperty("messageSupportBody") ," ",customerName," Customer (",stateCode ,")");
+				EmailSender.sendMailTasc(prop, toMailAddr, attachment, attachmentTwo, mailSubject, mailBody, toMailAddr);
+			}
+				
+			
+			
 			mailSent = true;
 		} catch (Exception e) {
 			logger.info("Mail sending failed ..." + e.getMessage());

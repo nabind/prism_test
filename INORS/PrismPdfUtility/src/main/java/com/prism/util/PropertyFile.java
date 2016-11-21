@@ -4,6 +4,8 @@ import static com.prism.util.Constants.LOAD_AS_RESOURCE_BUNDLE;
 import static com.prism.util.Constants.SUFFIX;
 import static com.prism.util.Constants.THROW_EXCEPTION_ON_LOAD_FAILURE;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Locale;
@@ -11,6 +13,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
+
 
 public class PropertyFile {
 
@@ -85,6 +88,15 @@ public class PropertyFile {
 				}
 				// Returns null on lookup failures:
 				in = loader.getResourceAsStream(name);
+				
+				if (in == null) {
+					try {
+						in = new FileInputStream(name);
+					} catch (FileNotFoundException e) {
+						result = null;
+					}
+				}
+				
 				if (in != null) {
 					result = new Properties();
 					result.load(in); // Can throw IOException

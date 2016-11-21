@@ -438,13 +438,14 @@ public class TascDao extends CommonDao {
 		OrgTO orgTO = new OrgTO();
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = CustomStringUtil.appendString("SELECT SUPPORT_EMAIL, SEND_LOGIN_PDF FROM CUSTOMER_INFO WHERE CUSTOMERID = ?");
+			String query = CustomStringUtil.appendString("SELECT SUPPORT_EMAIL, SEND_LOGIN_PDF, CUSTOMER_NAME FROM CUSTOMER_INFO WHERE CUSTOMERID = ?");
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.valueOf(customerId));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				orgTO.setEmail(rs.getString(1));
 				orgTO.setSendLoginPdf(rs.getString(2));
+				orgTO.setCustomerName(rs.getString(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -571,8 +572,10 @@ public class TascDao extends CommonDao {
 			
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				hierarchyFile = rs.getString(1) != null ? rs.getString(1): "" ;
+				hierarchyFile = rs.getString(1) ;
 			}
+			
+			hierarchyFile = hierarchyFile != null ? hierarchyFile: "";
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new Exception(e.getMessage());

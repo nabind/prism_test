@@ -17,7 +17,7 @@ public class SFTPUtil {
 	
 	private static final Logger logger = Logger.getLogger(SFTPUtil.class);
 	
-	public static boolean send (String fileName,String SFTPWORKINGDIR) {
+	public static boolean send (String fileName,String SFTPWORKINGDIR) throws Exception {
 		
 		Properties tascProperties = PropertyFile.loadProperties(Constants.TASC_PROPERTIES_FILE);
 		boolean isTransffered = false;
@@ -55,9 +55,7 @@ public class SFTPUtil {
             channelSftp.put(new FileInputStream(f), f.getName());
             isTransffered = true;
             logger.info("File transfered successfully to host.");
-        } catch (Exception ex) {
-        	logger.error("Exception found while tranfer the response." + ex.getMessage());
-        }
+        } 
         finally{
 
             channelSftp.exit();
