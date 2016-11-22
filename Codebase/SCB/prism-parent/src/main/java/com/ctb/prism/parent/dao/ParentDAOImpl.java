@@ -1447,8 +1447,6 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 				public CallableStatement createCallableStatement(Connection con) throws SQLException {
 					CallableStatement cs = con.prepareCall("{call " + IQueryConstants.GET_ACCOUNT_DETAILS + "}");
 					cs.setString(1, username);
-					//cs.registerOutParameter(2, oracle.jdbc.OracleTypes.CURSOR);
-					//cs.registerOutParameter(3, oracle.jdbc.OracleTypes.CURSOR);
 					cs.registerOutParameter(2, java.sql.Types.VARCHAR);
 					return cs;
 				}
@@ -1459,9 +1457,9 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ResultSet rsQuestion = null;
 					try {
 						cs.execute();
-						//rsUser = (ResultSet) cs.getObject(2);
-						//rsQuestion = (ResultSet) cs.getObject(3);
-						rsUser = cs.getResultSet();
+						if (cs.getMoreResults()) {
+							rsUser = cs.getResultSet();
+						}						
 						ParentTO parentTO = null;
 						while (rsUser.next()) {
 							parentTO = new ParentTO();

@@ -27,7 +27,7 @@
         driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
         validationQuery="SELECT 1"
         testOnBorrow="true"
-        url="jdbc:sqlserver://prism2-dev-db1:6001;databaseName=jasperserver;SelectMethod=cursor"
+        url="jdbc:sqlserver://10.160.23.88\\dev1:6001;databaseName=jasperserver;SelectMethod=cursor"
          />
     
     <Resource name="jdbc/tasc" auth="Container" type="javax.sql.DataSource"
