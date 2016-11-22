@@ -1703,7 +1703,7 @@ public class InorsController {
 	
 	//commenting INORS cron as it is throwing exception for not having the inors data source
 	
-	/*@Scheduled(cron = "${cron.expression}")
+	/*@Scheduled(cron = "${cron.expression}")*/
 	public void deleteScheduledGroupFilesInors() {
 		logger.log(IAppLogger.INFO, " START CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES --------------- ");
 		try {
@@ -1712,7 +1712,7 @@ public class InorsController {
 			// TODO: handle exception
 		}
 		logger.log(IAppLogger.INFO, "END CRON JOB @ 1 AM ----- f r o m  Scheduled method for INORS GROUP DOWNLOAD FILES--------------- ");
-	}*/
+	}
 
 	/**
 	 * Scheduler every night @ 1 AM Group Download files deletion and job
