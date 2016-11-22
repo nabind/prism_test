@@ -136,7 +136,7 @@ public class EmailSender {
 	 * @param mailBody
 	 * @param supportEmail
 	 * @throws Exception
-	 */
+	 */	
 	public static void sendMailTasc(final Properties prop, String recipientEmail, String subject, String mailBody, String supportEmail) throws Exception {
 		String host = prop.getProperty("mail.smtp.host");
 		String port = prop.getProperty("mail.smtp.port");
@@ -155,7 +155,7 @@ public class EmailSender {
 		if(prop.getProperty("mailToCustomer").equals("true")) {
 			sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		} else {
-			sendHTMLMail(true, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
+			sendHTMLMail(true, host, port, sender, "", "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		}
 	}
 

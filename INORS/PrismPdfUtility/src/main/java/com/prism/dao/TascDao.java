@@ -586,4 +586,47 @@ public class TascDao extends CommonDao {
 		return hierarchyFile;
 	}
 	
+	
+	/**
+	 * Fetch org information
+	 * 
+	 * @param jasperOrgId
+	 * @param state
+	 * @param hierarchical
+	 * @return
+	 * @throws Exception
+	 */
+	public OrgTO getCustomerDetails(String jasperOrgId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrgTO state = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			String query = CustomStringUtil.appendString("SELECT ",
+														" SUBSTR(O.ORG_NODE_CODE_PATH, 3, 3), ",
+														" C.CUSTOMER_CODE, C.CUSTOMER_NAME, c.support_email  ",
+														" FROM ORG_NODE_DIM O, CUSTOMER_INFO C ",
+														" WHERE O.CUSTOMERID = C.CUSTOMERID ",
+														" AND O.ORG_NODEID = ?");
+			
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, jasperOrgId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				state = new OrgTO();
+				state.setLvlOneOrgCode(rs.getString(1));
+				state.setCustomerCode(rs.getString(2));
+				state.setCustomerName(rs.getString(3));
+				state.setEmail(rs.getString(4));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		return state;
+	}
+	
 }
