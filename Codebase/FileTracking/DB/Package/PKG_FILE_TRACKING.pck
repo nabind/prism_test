@@ -1435,7 +1435,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                              SDI.DOCUMENTID,
                              SDI.SCHEDULE_ID,
                              TO_CHAR(SDI.TCA_SCHEDULED_DATE, ''MM/DD/YYYY HH24:MI:SS'') TCA_SCHEDULED_DATE,
-                             SDI.TEST_LANGUAGE
+                             SDI.TEST_LANGUAGE,
+                             (SELECT SSDV.DEMO_VALUE
+                                FROM STU_SUBTEST_DEMO_VALUES SSDV, DEMOGRAPHIC DEMO
+                               WHERE SSDV.STUDENT_BIO_ID = SBD.STUDENT_BIO_ID
+                                 AND SSDV.SUBTESTID = SD.SUBTESTID
+                                 AND SSDV.SUBTESTID = DEMO.SUBTESTID
+                                 AND SSDV.DEMOID = DEMO.DEMOID
+                                 AND DEMO.DEMO_CODE LIKE ''LithoCodeUDB_%''
+                                 AND DEMO.CUSTOMERID = SBD.CUSTOMERID) UDB_LITHO_CODE
                         FROM STUDENT_BIO_DIM    SBD,
                              SUBTEST_SCORE_FACT SSF,
                              STUDENT_DOC_INFO   SDI,
@@ -1548,7 +1556,15 @@ CREATE OR REPLACE PACKAGE BODY PKG_FILE_TRACKING AS
                      TO_CHAR(SDI.UDB_PROCESSED_DATE, ''MM/DD/YYYY HH24:MI:SS'') FILE_GENERATION_DATE_TIME,
                      SDI.SCANBATCH SCANBATCH,
                      SDI.SCANSTACK SCANSTACK,
-                     SDI.SCANSEQUENCE SCANSEQUENCE
+                     SDI.SCANSEQUENCE SCANSEQUENCE,
+                     (SELECT SSDV.DEMO_VALUE
+                        FROM STU_SUBTEST_DEMO_VALUES SSDV, DEMOGRAPHIC DEMO
+                       WHERE SSDV.STUDENT_BIO_ID = SDI.STUDENT_BIO_ID
+                         AND SSDV.SUBTESTID = SD.SUBTESTID
+                         AND SSDV.SUBTESTID = DEMO.SUBTESTID
+                         AND SSDV.DEMOID = DEMO.DEMOID
+                         AND DEMO.DEMO_CODE LIKE ''LithoCodeUDB_%''
+                         AND DEMO.CUSTOMERID = SDI.CUSTOMERID) UDB_LITHO_CODE
                 FROM STUDENT_REG_INFO SRI, STUDENT_DOC_INFO SDI, SUBTEST_DIM SD
                WHERE SRI.STUDENT_REGID = SDI.STUDENT_REGID
                  AND SDI.CONTENT_CODE = SD.SUBTEST_CODE';
