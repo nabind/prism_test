@@ -93,6 +93,7 @@ public class StudentDetailsTO implements Serializable {
 	private String documentId = "";
 	private String level1OrgCode = "";
 	private String tcaScheduleDate = "";
+	private String udbLithoCode = "";
 	
 	
 	
@@ -706,6 +707,12 @@ public class StudentDetailsTO implements Serializable {
 	}
 	public void setDocumentId(String documentId) {
 		this.documentId = documentId;
+	}
+	public String getUdbLithoCode() {
+		return udbLithoCode;
+	}
+	public void setUdbLithoCode(String udbLithoCode) {
+		this.udbLithoCode = udbLithoCode;
 	}
 	
 	

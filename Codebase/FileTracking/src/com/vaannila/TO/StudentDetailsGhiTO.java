@@ -45,6 +45,7 @@ public class StudentDetailsGhiTO implements Serializable {
 	private String scanBatch;
 	private String scanStack;
 	private String scanSequence;
+	private String udbLithoCode = "";
 	
 	public String getScanBatch() {
 		return scanBatch;
@@ -320,6 +321,12 @@ public class StudentDetailsGhiTO implements Serializable {
 	}
 	public void setFieldTestForm(String fieldTestForm) {
 		this.fieldTestForm = fieldTestForm;
+	}
+	public String getUdbLithoCode() {
+		return udbLithoCode;
+	}
+	public void setUdbLithoCode(String udbLithoCode) {
+		this.udbLithoCode = udbLithoCode;
 	}
 	
 }

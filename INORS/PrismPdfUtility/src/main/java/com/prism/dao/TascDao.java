@@ -76,15 +76,11 @@ public class TascDao extends CommonDao {
 					"   CUSTOMERID,", // 10
 					"   TO_CHAR(SYSDATE, 'DDMM') AS DATE_STR,", // 11
 					"   TO_CHAR(SYSDATE, 'DDMMYYHH24MISS') AS DATE_STR_WT_YEAR,", // 12
-					"   (SELECT ORG_NODE_CODE ",
-					"      FROM ORG_NODE_DIM OD, ORG_LSTNODE_LINK OL ",
-					"	   WHERE OD.ORG_NODEID = OL.ORG_NODEID ",
-					" 		 AND OD.ORG_NODE_LEVEL = 1 ",
-					"        AND OL.ORG_LSTNODEID = ?) STATE_CODE ", //13
+					"   substr(ORG_NODE_CODE_PATH,3,3) STATE_CODE  ", //13
 					" FROM ORG_NODE_DIM", " WHERE ORG_NODEID = ?");
+			
 			pstmt = conn.prepareCall(query);
 			pstmt.setString(1, jasperOrgId);
-			pstmt.setString(2, jasperOrgId);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				school = new OrgTO();
@@ -442,13 +438,14 @@ public class TascDao extends CommonDao {
 		OrgTO orgTO = new OrgTO();
 		try {
 			conn = driver.connect(DATA_SOURCE, null);
-			String query = CustomStringUtil.appendString("SELECT SUPPORT_EMAIL, SEND_LOGIN_PDF FROM CUSTOMER_INFO WHERE CUSTOMERID = ?");
+			String query = CustomStringUtil.appendString("SELECT SUPPORT_EMAIL, SEND_LOGIN_PDF, CUSTOMER_NAME FROM CUSTOMER_INFO WHERE CUSTOMERID = ?");
 			pstmt = conn.prepareCall(query);
 			pstmt.setLong(1, Long.valueOf(customerId));
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				orgTO.setEmail(rs.getString(1));
 				orgTO.setSendLoginPdf(rs.getString(2));
+				orgTO.setCustomerName(rs.getString(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -562,6 +559,74 @@ public class TascDao extends CommonDao {
 		}
 		logger.debug("customerId=" + customerId + ", Returning Root Path = " + rootPath);
 		return rootPath;
+	}
+	
+	public String getHierarchyFileName() throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String hierarchyFile = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			pstmt = conn.prepareCall(Constants.GET_HIERARCHY_FILE);
+			
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				hierarchyFile = rs.getString(1) ;
+			}
+			
+			hierarchyFile = hierarchyFile != null ? hierarchyFile: "";
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		logger.debug("HierarchyFile=" + hierarchyFile);
+		return hierarchyFile;
+	}
+	
+	
+	/**
+	 * Fetch org information
+	 * 
+	 * @param jasperOrgId
+	 * @param state
+	 * @param hierarchical
+	 * @return
+	 * @throws Exception
+	 */
+	public OrgTO getCustomerDetails(String jasperOrgId) throws Exception {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		OrgTO state = null;
+		try {
+			conn = driver.connect(DATA_SOURCE, null);
+			String query = CustomStringUtil.appendString("SELECT ",
+														" SUBSTR(O.ORG_NODE_CODE_PATH, 3, 3), ",
+														" C.CUSTOMER_CODE, C.CUSTOMER_NAME, c.support_email  ",
+														" FROM ORG_NODE_DIM O, CUSTOMER_INFO C ",
+														" WHERE O.CUSTOMERID = C.CUSTOMERID ",
+														" AND O.ORG_NODEID = ?");
+			
+			pstmt = conn.prepareCall(query);
+			pstmt.setString(1, jasperOrgId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				state = new OrgTO();
+				state.setLvlOneOrgCode(rs.getString(1));
+				state.setCustomerCode(rs.getString(2));
+				state.setCustomerName(rs.getString(3));
+				state.setEmail(rs.getString(4));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		} finally {
+			releaseResources(conn, pstmt, rs);
+		}
+		return state;
 	}
 	
 }

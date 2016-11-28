@@ -40,10 +40,19 @@ public class OrgTO implements Comparable<OrgTO> {
 	private String testAdministration;
 	private String orgNodeCodePath;
 	private String lvlOneOrgCode;
+	private String customerName;
 
 	
 
 	
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
 	// Istep
 	private String orgNode;
 	private String parentElementName;

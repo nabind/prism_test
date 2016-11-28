@@ -335,6 +335,7 @@
 						<th>Schedule Id</th>
 						<th>Tca Schedule Date</th>
 						<th>Test Language</th>
+						<th>UDB Litho Code</th>
 					</tr>
 					</thead>
 				<tbody>
@@ -369,6 +370,7 @@
 					<td><%=process.getScheduleId() %></td>
 					<td><%=process.getTcaScheduleDate() %></td>
 					<td><%=process.getTestLanguage() %></td>
+					<td><%=process.getUdbLithoCode() %></td>
 				</tr>
 			<%}
 			}
@@ -409,6 +411,7 @@
 					<th>Scan Stack</th>
 					<th>File Name</th>
 					<th>File Generation Date-Time</th>
+					<th>UDB Litho Code</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -446,6 +449,7 @@
 					<td><%=docStatusTo.getScanStack() %></td>
 					<td><%=docStatusTo.getFileName() %></td>
 					<td><%=docStatusTo.getFileGenDateTime() %></td>
+					<td><%=docStatusTo.getUdbLithoCode() %></td>
 				</tr>
 			
 			<%}

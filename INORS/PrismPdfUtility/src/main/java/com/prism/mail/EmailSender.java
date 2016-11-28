@@ -103,10 +103,14 @@ public class EmailSender {
 		String SMTP_USERNAME = prop.getProperty("mail.smtp.user");
 		String SMTP_PASSWORD = prop.getProperty("mail.smtp.pass");
 		ArrayList<String> attach = new ArrayList<String>();
-		attach.add(attachment);
+		if (attachment != null) {
+			attach.add(attachment);
+		}
+		
 		if (attachmentTwo != null) {
 			attach.add(attachmentTwo);
 		}
+		
 		if (host == null || port == null) {
 			throw new Exception("Make sure smtp parametres are correctly defined");
 		}
@@ -118,7 +122,7 @@ public class EmailSender {
 		if(prop.getProperty("mailToCustomer").equals("true")) {
 			sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 		} else {
-			sendHTMLMail(true, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
+			sendHTMLMail(true, host, port, sender, "", "", supportEmail, subject, mailBody, attach, SMTP_USERNAME, SMTP_PASSWORD);
 		}
 	}
 
@@ -132,7 +136,7 @@ public class EmailSender {
 	 * @param mailBody
 	 * @param supportEmail
 	 * @throws Exception
-	 */
+	 */	
 	public static void sendMailTasc(final Properties prop, String recipientEmail, String subject, String mailBody, String supportEmail) throws Exception {
 		String host = prop.getProperty("mail.smtp.host");
 		String port = prop.getProperty("mail.smtp.port");
@@ -151,7 +155,7 @@ public class EmailSender {
 		if(prop.getProperty("mailToCustomer").equals("true")) {
 			sendHTMLMail(true, host, port, sender, recipientEmail, "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		} else {
-			sendHTMLMail(true, host, port, sender, prop.getProperty("mailToCustomer"), "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
+			sendHTMLMail(true, host, port, sender, "", "", supportEmail, subject, mailBody, null, SMTP_USERNAME, SMTP_PASSWORD);
 		}
 	}
 
@@ -169,7 +173,12 @@ public class EmailSender {
 			Session mvSession = Session.getDefaultInstance(props, null);
 			if (authRequired) {
 				props.put("mail.smtp.auth", "true");
-				mvSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+				/*mvSession = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
+					}
+				});*/
+				mvSession = Session.getInstance(props, new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
 						return new PasswordAuthentication(SMTP_USERNAME, SMTP_PASSWORD);
 					}

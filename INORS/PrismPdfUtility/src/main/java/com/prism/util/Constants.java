@@ -118,4 +118,9 @@ public interface Constants {
 																				" FROM CUSTOMER_INFO CUST, DASH_CONTRACT_PROP PROP ",
 																				" WHERE CUST.CUSTOMERID = ? ",
 																				" AND PROP.DB_PROPERTY_NAME = 'static.pdf.location'");
+	
+	public static final String GET_HIERARCHY_FILE = CustomStringUtil.appendString("SELECT B.FILE_NAME ",
+																				  " FROM STG_ORG_NODE_DIM A, STG_HIER_PROCESS_STATUS B ",
+																				  "	WHERE A.PROCESS_ID = B.PROCESS_ID ",
+																				  " AND ROWNUM = 1");
 }

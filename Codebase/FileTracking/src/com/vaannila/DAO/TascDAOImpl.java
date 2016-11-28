@@ -1940,6 +1940,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				processTO.setScheduleId(rsOp.getString("SCHEDULE_ID")!=null?rsOp.getString("SCHEDULE_ID"):"");
 				processTO.setTcaScheduleDate(rsOp.getString("TCA_SCHEDULED_DATE")!=null?rsOp.getString("TCA_SCHEDULED_DATE"):"");
 				processTO.setTestLanguage(rsOp.getString("TEST_LANGUAGE")!=null?rsOp.getString("TEST_LANGUAGE"):"");
+				processTO.setUdbLithoCode(rsOp.getString("UDB_LITHO_CODE")!=null?rsOp.getString("UDB_LITHO_CODE"):"");
 				processListOp.add(processTO);
 			}
 			
@@ -1972,6 +1973,7 @@ public int saveComments(StudentDetailsTO studentDetailsTO )  throws Exception {
 				studentDetailsTO.setScanBatch(rsDocStatusGhi.getString("SCANBATCH")!=null ? rsDocStatusGhi.getString("SCANBATCH") : "");
 				studentDetailsTO.setScanStack(rsDocStatusGhi.getString("SCANSTACK")!=null ? rsDocStatusGhi.getString("SCANSTACK") : "");
 				studentDetailsTO.setScanSequence(rsDocStatusGhi.getString("SCANSEQUENCE")!=null ? rsDocStatusGhi.getString("SCANSEQUENCE") : "");
+				studentDetailsTO.setUdbLithoCode(rsDocStatusGhi.getString("UDB_LITHO_CODE")!=null ? rsDocStatusGhi.getString("UDB_LITHO_CODE") : "");
 				processListDocStatus.add(studentDetailsTO);
 			}
 			
