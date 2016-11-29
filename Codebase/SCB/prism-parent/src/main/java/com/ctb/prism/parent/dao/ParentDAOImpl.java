@@ -1457,9 +1457,7 @@ public class ParentDAOImpl extends BaseDAO implements IParentDAO {
 					ResultSet rsQuestion = null;
 					try {
 						cs.execute();
-						if (cs.getMoreResults()) {
-							rsUser = cs.getResultSet();
-						}						
+												
 						ParentTO parentTO = null;
 						while (rsUser.next()) {
 							parentTO = new ParentTO();
